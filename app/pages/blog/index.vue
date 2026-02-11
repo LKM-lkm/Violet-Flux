@@ -16,19 +16,14 @@
     <main class="blog-list">
       <h1>Blog</h1>
       
-      <div class="debug">
-        <p>Articles count: {{ articles?.length || 0 }}</p>
-        <pre>{{ JSON.stringify(articles, null, 2) }}</pre>
-      </div>
-
-      <div class="search-box">
-        <Icon name="lucide:search" />
-        <input v-model="search" type="text" placeholder="Search articles..." />
+      <div class="search-wrapper">
+        <Icon name="lucide:search" class="search-icon" />
+        <input v-model="search" type="text" placeholder="Search articles..." class="search-input" />
       </div>
 
       <div v-if="filteredArticles?.length" class="articles">
-        <article v-for="article in filteredArticles" :key="article._path" class="article-card">
-          <NuxtLink :to="article._path">
+        <article v-for="article in filteredArticles" :key="article.path" class="article-card">
+          <NuxtLink :to="article.path">
             <h2>{{ article.title }}</h2>
             <p>{{ article.description }}</p>
           </NuxtLink>
@@ -59,9 +54,12 @@ onMounted(() => {
   isDark.value = document.documentElement.classList.contains('dark')
 })
 
-const { data: articles } = await useAsyncData('articles', () => 
-  queryCollection('content').all()
-)
+const { data: articles } = await useAsyncData('blog-articles', async () => {
+  const all = await queryCollection('content').all()
+  return all.filter(item => item.path?.startsWith('/blog/'))
+}, {
+  watch: []
+})
 
 const filteredArticles = computed(() => {
   if (!articles.value) return []
@@ -126,10 +124,12 @@ const filteredArticles = computed(() => {
 }
 
 .blog-list {
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 4rem 2rem;
   flex: 1;
+  box-sizing: border-box;
 }
 
 .blog-list h1 {
@@ -138,27 +138,35 @@ const filteredArticles = computed(() => {
   margin-bottom: 2rem;
 }
 
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  margin-bottom: 3rem;
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 3rem !important;
 }
 
-.search-box input {
-  flex: 1;
-  border: none;
-  background: none;
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.25rem 1rem 3rem;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  border-radius: 0.75rem;
+  background: transparent;
   color: var(--text);
   font-size: 1rem;
   outline: none;
+  transition: border-color 0.2s;
 }
 
-.search-box input::placeholder {
-  color: var(--text-muted);
+.search-input:focus {
+  border-color: rgba(128, 128, 128, 0.4);
 }
 
 .no-results {
@@ -167,35 +175,34 @@ const filteredArticles = computed(() => {
   color: var(--text-muted);
 }
 
-.debug {
-  background: var(--secondary);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.875rem;
-  overflow-x: auto;
-}
-
 .articles {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .article-card {
-  padding: 2rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  transition: all 0.2s;
+  transition: transform 0.2s;
 }
 
 .article-card:hover {
-  border-color: var(--text);
+  transform: translateY(-2px);
 }
 
 .article-card a {
+  display: block;
+  padding: 2rem;
   text-decoration: none;
   color: var(--text);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 0.75rem;
+  background: transparent;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.article-card a:hover {
+  border-color: rgba(128, 128, 128, 0.3);
+  background: rgba(128, 128, 128, 0.05);
 }
 
 .article-card h2 {
