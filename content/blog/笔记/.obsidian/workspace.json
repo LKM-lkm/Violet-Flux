@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",
+                "file": "📔我的/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "Sibelius2024下载运行教程"
+              "title": "CloudFlare Workers 被墙解决方案"
             }
           }
         ],
@@ -186,7 +186,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:创建新数据库": false,
+      "bases:新建数据库": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
