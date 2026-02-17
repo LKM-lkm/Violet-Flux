@@ -609,13 +609,7 @@ const filteredArticles = computed(() => {
 }
 
 /* UTILS */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--border);
-}
-
-.dark .glass-card { background: rgba(0, 0, 0, 0.2); }
+/* Using global .glass-card */
 
 .mt-10 { margin-top: 2.5rem; }
 

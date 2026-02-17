@@ -65,6 +65,13 @@
             <div class="article-meta" v-if="getTags(article).length">
               <span v-for="tag in getTags(article)" :key="tag" class="tag-label">#{{ tag }}</span>
             </div>
+
+            <!-- AI Summary System -->
+            <AiSummary 
+              v-if="article" 
+              :content="JSON.stringify(article.body)" 
+              :article-id="article.id" 
+            />
           </header>
           
           <div class="article-body">
@@ -445,12 +452,7 @@ onUnmounted(() => {
 }
 
 /* UTILS */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--border);
-}
-.dark .glass-card { background: rgba(0, 0, 0, 0.2); }
+/* Using global .glass-card */
 
 .empty-icon-wrapper {
   width: 100px;

@@ -37,6 +37,9 @@
   --primary-glow: rgba(112, 26, 69, 0.2);
   --secondary: #fff5f8;
   --accent: #9d174d;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(112, 26, 69, 0.15);
+  --card-shadow: 0 20px 50px -12px rgba(112, 26, 69, 0.15);
 }
 
 :root.dark {
@@ -48,6 +51,27 @@
   --primary-glow: rgba(157, 23, 77, 0.3);
   --secondary: #1a1418;
   --accent: #d946ef;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* Global glassmorphism utility */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--card-shadow);
+  border-radius: 2rem;
+  transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
 }
 
 body {

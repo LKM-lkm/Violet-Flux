@@ -147,8 +147,6 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   align-items: center;
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; width: 100%; }
-
 .logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 800; }
 .nav { display: flex; gap: 2rem; align-items: center; }
 .nav a { color: var(--text-muted); text-decoration: none; font-size: 0.9375rem; transition: color 0.2s; }
@@ -192,12 +190,8 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 }
 
 .glass-card {
-  background: rgba(128, 128, 128, 0.04);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
   border-radius: 2rem;
   padding: 2.5rem;
-  transition: transform 0.3s ease;
 }
 
 .author-card {

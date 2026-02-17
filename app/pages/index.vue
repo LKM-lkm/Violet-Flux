@@ -5,6 +5,7 @@
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
+      <div class="mist-overlay"></div>
       <div class="noise-overlay"></div>
     </div>
 
@@ -66,6 +67,8 @@
             <div class="particle p-1"></div>
             <div class="particle p-2"></div>
             <div class="particle p-3"></div>
+            <div class="particle p-4"></div>
+            <div class="particle p-5"></div>
           </div>
         </div>
       </div>
@@ -168,6 +171,21 @@ const currentYear = new Date().getFullYear();
   pointer-events: none;
 }
 
+.mist-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent, var(--bg));
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  animation: cloud-pulse 10s infinite alternate ease-in-out;
+  z-index: 1;
+}
+
+@keyframes cloud-pulse {
+  from { transform: scale(1) translate(0, 0); opacity: 0.3; }
+  to { transform: scale(1.2) translate(20px, -20px); opacity: 0.6; }
+}
+
 /* Grid Pattern Overlay */
 .flux-bg::after {
   content: "";
@@ -187,13 +205,6 @@ const currentYear = new Date().getFullYear();
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(15px);
   z-index: 10;
-}
-
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  width: 100%;
 }
 
 .header .container {
@@ -362,12 +373,8 @@ const currentYear = new Date().getFullYear();
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 2.2rem;
   position: absolute;
-  transition: all 0.6s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
 .flux-card:hover {
@@ -381,7 +388,7 @@ const currentYear = new Date().getFullYear();
   height: 420px;
   z-index: 5;
   padding: 1.8rem;
-  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--card-shadow);
 }
 
 .card-glow {
@@ -401,7 +408,7 @@ const currentYear = new Date().getFullYear();
 .green { background: #27c93f; }
 
 .card-header { display: flex; gap: 0.6rem; margin-bottom: 2.5rem; }
-.line { height: 8px; background: rgba(128, 128, 128, 0.1); border-radius: 4px; margin-bottom: 1.2rem; }
+.line { height: 8px; background: var(--border); border-radius: 4px; margin-bottom: 1.2rem; opacity: 0.5; }
 
 .card-signature {
   position: absolute;
@@ -421,7 +428,8 @@ const currentYear = new Date().getFullYear();
   right: 5%;
   z-index: 4;
   transform: rotate(8deg);
-  opacity: 0.7;
+  box-shadow: var(--card-shadow);
+  opacity: 0.8;
 }
 
 .sub-card-2 {
@@ -431,7 +439,8 @@ const currentYear = new Date().getFullYear();
   left: 5%;
   z-index: 3;
   transform: rotate(-12deg);
-  opacity: 0.5;
+  box-shadow: var(--card-shadow);
+  opacity: 0.6;
 }
 
 /* Floating Particles */
@@ -447,6 +456,8 @@ const currentYear = new Date().getFullYear();
 .p-1 { width: 10px; height: 10px; top: 20%; left: 10%; animation-delay: -2s; }
 .p-2 { width: 6px; height: 6px; bottom: 30%; right: 15%; animation-delay: -5s; }
 .p-3 { width: 15px; height: 15px; top: 60%; left: 80%; background: var(--accent); }
+.p-4 { width: 4px; height: 4px; top: 10%; right: 25%; opacity: 0.2; }
+.p-5 { width: 8px; height: 8px; bottom: 10%; left: 30%; opacity: 0.3; animation-delay: -8s; }
 
 @keyframes particle-float {
   from { transform: translate(0, 0); }
