@@ -1,4 +1,4 @@
-<template>
+         <template>
   <div class="blog-layout">
     <header class="header">
       <div class="container">
@@ -78,8 +78,8 @@
           <article v-for="article in filteredArticles" :key="article.path" class="article-card">
             <NuxtLink :to="article.path">
               <div class="card-content">
-                <span class="category-path">{{ getBreadcrumbs(article.path) }}</span>
-                <h2 class="title">{{ article.title || getFileName(article.path) }}</h2>
+                <span class="category-path">{{ getBreadcrumbs(article.displayPath) }}</span>
+                <h2 class="title">{{ article.title || getFileName(article.displayPath) }}</h2>
                 <p v-if="article.description" class="desc">{{ article.description }}</p>
                 <div class="card-footer">
                   <div class="tags-row" v-if="getTags(article).length">
@@ -111,16 +111,21 @@ const selectedTags = ref([])
 
 const { data: articles } = await useAsyncData('blog-articles-v4', async () => {
   const all = await queryCollection('content').all()
+  console.log('Fetched Articles:', all.map(a => ({ path: a.path, stem: a.stem })))
   return all
     .map(item => {
-      let path = item.path.replace(/\/+/g, '/')
-      // If path doesn't start with /blog, prepend it (ensuring internal links work)
-      if (!path.startsWith('/blog')) {
-        path = '/blog' + (path.startsWith('/') ? '' : '/') + path
-      }
+      // Logic: Use item.id (the relative file path from blog/) as the ultimate source of truth
+      // Example item.id: "笔记/📔我的/SCREEN.md"
+      let cleanId = item.id.replace(/\.md$/, '')
+      
+      // Ensure it starts with /blog/
+      let finalPath = '/blog/' + cleanId
+      finalPath = finalPath.replace(/\/+/g, '/')
+      
       return {
         ...item,
-        path: decodeURIComponent(path)
+        path: encodeURI(finalPath),
+        displayPath: decodeURIComponent(finalPath)
       }
     })
     .filter(item => {
@@ -136,6 +141,7 @@ const folderTree = computed(() => {
   const tree = []
   
   articles.value.forEach(article => {
+    if (!article?.path) return
     const parts = article.path.split('/').filter(Boolean)
     if (parts[0] !== 'blog') return
     
@@ -180,6 +186,7 @@ const toggleTag = (tag) => {
 }
 
 const getBreadcrumbs = (path) => {
+  if (!path) return 'General'
   const parts = path.split('/').filter(Boolean)
   // blog / folder / sub / file -> folder / sub
   if (parts.length <= 2) return 'General'
@@ -187,6 +194,7 @@ const getBreadcrumbs = (path) => {
 }
 
 const getFileName = (path) => {
+  if (!path) return 'Untitled'
   const parts = path.split('/').filter(Boolean)
   let name = parts[parts.length - 1] || 'Untitled'
   // Handle 'index' specifically if desired
@@ -204,13 +212,13 @@ const filteredArticles = computed(() => {
   if (!articles.value) return []
   return articles.value.filter(article => {
     const matchesSearch = !search.value || 
-      article.title?.toLowerCase().includes(search.value.toLowerCase()) ||
-      article.description?.toLowerCase().includes(search.value.toLowerCase())
+      (article.title && String(article.title).toLowerCase().includes(search.value.toLowerCase())) ||
+      (article.description && String(article.description).toLowerCase().includes(search.value.toLowerCase()))
     
     // Hierarchical path matching
     const matchesPath = !selectedPath.value || 
       article.path === selectedPath.value || 
-      article.path.startsWith(selectedPath.value + '/')
+      (article.path && String(article.path).startsWith(selectedPath.value + '/'))
     
     const articleTags = getTags(article)
     const matchesTags = selectedTags.value.length === 0 || 

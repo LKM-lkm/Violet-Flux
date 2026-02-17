@@ -57,6 +57,13 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    publicAssets: [
+      {
+        baseURL: '_blog_assets',
+        dir: './content/blog',
+        maxAge: 60 * 60 * 24 * 7
+      }
+    ],
     prerender: {
       crawlLinks: true,
       routes: ['/', '/blog'],
@@ -64,6 +71,16 @@ export default defineNuxtConfig({
     }
   },
 
+  content: {
+    markdown: {
+      remarkPlugins: {
+        'remark-wiki-link': {
+          hrefTemplate: (permalink) => `/blog/${permalink}`,
+          aliasDivider: '|'
+        }
+      }
+    }
+  },
   routeRules: {
     '/blog/**': { prerender: true }
   }

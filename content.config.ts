@@ -5,7 +5,7 @@ export default defineContentConfig({
     content: defineCollection({
       type: 'page',
       source: {
-        include: 'blog/**',
+        include: 'blog/**/*.md',
         exclude: ['**/.*/**', '**/node_modules/**', '**/assets/**', '**/.obsidian/**']
       },
       schema: z.object({

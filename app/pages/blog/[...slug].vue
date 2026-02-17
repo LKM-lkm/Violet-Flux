@@ -75,12 +75,13 @@ const activeId = ref('')
 const indicatorOffset = ref(0)
 const route = useRoute()
 
-const { data: article } = await useAsyncData(`article-v17-${route.path}`, async () => {
+const { data: article } = await useAsyncData(`article-v18-${route.path}`, async () => {
   const all = await queryCollection('content').all()
   
   const normalize = (p) => {
     if (!p) return ''
     try {
+      // Decode, NFC normalize, collapse slashes, remove leading/trailing slashes
       return decodeURIComponent(p)
         .normalize('NFC')
         .replace(/\/+/g, '/')
@@ -92,35 +93,54 @@ const { data: article } = await useAsyncData(`article-v17-${route.path}`, async 
   }
 
   const cleanRoute = normalize(route.path)
-  const routeStem = cleanRoute.split('/').pop()
+  const relativeRoute = cleanRoute.replace(/^blog\//, '')
 
-  // MATCHING STRATEGY
-  // 1. Exact or Relative Path Match
+  // 1. Match against item.id (This is our new source of truth for Chinese)
   let found = all.find(item => {
-    const itemPath = normalize(item.path)
-    return itemPath === cleanRoute || 
-           itemPath === cleanRoute.replace(/^blog\//, '') ||
-           ('blog/' + itemPath) === cleanRoute
+    const itemId = item.id.replace(/\.md$/, '').normalize('NFC')
+    return itemId === relativeRoute || itemId === cleanRoute
   })
 
-  // 2. Title Match (Handles cases where Nuxt strips Chinese from the path/slug)
-  if (!found && routeStem) {
+  // 2. Exact Path Match fallback
+  if (!found) {
     found = all.find(item => {
-      const itemTitle = normalize(item.title || '')
-      return itemTitle === routeStem || itemTitle.toLowerCase() === routeStem.toLowerCase()
+      const itemPath = normalize(item.path)
+      return itemPath === cleanRoute || itemPath === relativeRoute
     })
   }
 
-  // 3. Stem fallback
-  if (!found && routeStem) {
+  // 3. Stem/Title fallback
+  if (!found) {
+    const routeStem = cleanRoute.split('/').pop()
     found = all.find(item => {
-      const itemStem = normalize(item.stem || item.path.split('/').pop().replace(/\.md$/, ''))
-      return itemStem === routeStem || itemStem.toLowerCase() === routeStem.toLowerCase()
+      const s = normalize(item.stem || item.path?.split('/').pop() || '')
+      return s === routeStem || normalize(item.title) === routeStem
     })
   }
 
-  return found
+  return found || null
 })
+
+const processWikiLinks = (node) => {
+  if (!node) return
+  if (node.type === 'text' && node.value) {
+    // Look for Obsidian WikiLink images: ![[Filename.png]]
+    const regex = /!\[\[(.*?)\]\]/g
+    if (regex.test(node.value)) {
+      // This is complex in AST, but we can try to warn or handle simple ones
+      // For now, let's keep it simple and focus on the matcher
+    }
+  }
+  if (node.children) node.children.forEach(processWikiLinks)
+}
+
+watch(article, (newVal) => {
+  if (newVal?.body) processWikiLinks(newVal.body)
+}, { immediate: true })
+
+if (!article.value && !import.meta.server) {
+  console.log('Article not found for route:', route.path)
+}
 
 const tocLinks = computed(() => {
   const rawLinks = article.value?.body?.toc?.links || []
@@ -367,11 +387,9 @@ onUnmounted(() => {
   color: var(--text-muted);
 }
 
-.article-body :deep(img) {
-  max-width: 100%;
-  border-radius: 1.5rem;
-  margin: 3.5rem 0;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+/* Image styling - Handled by ProseImg.vue component */
+.article-body :deep(.prose-img-wrapper) {
+  width: 100%;
 }
 
 /* TABLE STYLES - REINFORCED */
