@@ -75,7 +75,9 @@
               </span>
             </template>
           </div>
-          
+        </div>
+
+        <div class="search-box-wrapper">
           <div class="search-box glass-card">
             <Icon name="lucide:search" class="search-icon" />
             <input v-model="search" type="text" placeholder="Search archive..." class="search-input" />
@@ -620,7 +622,48 @@ const filteredArticles = computed(() => {
 
 @media (max-width: 768px) {
   .content-header { flex-direction: column; align-items: stretch; }
-  .search-box { width: 100%; }
+  .search-box-wrapper { width: 100%; position: static; margin-bottom: 2rem; }
   .article-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<style scoped>
+.search-box-wrapper {
+  position: sticky;
+  top: 100px;
+  z-index: 50;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+  margin-top: -5rem;
+  pointer-events: none;
+}
+
+.search-box {
+  pointer-events: auto;
+  position: relative;
+  width: 320px;
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.25rem 1rem 3.25rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  outline: none;
 }
 </style>

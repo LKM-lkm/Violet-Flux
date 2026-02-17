@@ -420,9 +420,17 @@ const currentYear = new Date().getFullYear();
 
 /* FOOTER REFORM */
 .footer {
-  padding: 2rem 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem 0;
   border-top: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1); /* Fallback */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  user-select: none;
+  z-index: 100;
 }
 
 .footer-container {
