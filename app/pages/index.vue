@@ -104,7 +104,6 @@ const currentYear = new Date().getFullYear();
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
   background: var(--bg);
   color: var(--text);
 }
@@ -317,7 +316,7 @@ const currentYear = new Date().getFullYear();
 
 .btn {
   padding: 1.1rem 2.8rem;
-  border-radius: 1.1rem;
+  border-radius: 0.8rem;
   font-weight: 700;
   text-decoration: none;
   font-size: 1.05rem;
@@ -348,8 +347,8 @@ const currentYear = new Date().getFullYear();
   backdrop-filter: blur(15px);
 }
 
-.btn-secondary:hover { 
-  background: rgba(128, 128, 128, 0.08); 
+.btn-secondary:hover {
+  background: rgba(128, 128, 128, 0.08);
   transform: translateY(-5px);
   border-color: var(--text-muted);
 }
@@ -373,7 +372,7 @@ const currentYear = new Date().getFullYear();
 }
 
 .glass-card {
-  border-radius: 2.2rem;
+  border-radius: 1.2rem;
   position: absolute;
 }
 
@@ -489,6 +488,7 @@ const currentYear = new Date().getFullYear();
   color: var(--text);
   letter-spacing: 0.05em;
 }
+
 
 @keyframes slideLeft {
   from { opacity: 0; transform: translateX(-60px); }

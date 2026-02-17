@@ -63,16 +63,37 @@ const generateSummary = async () => {
       return
     }
 
+    // Extract raw text from Nuxt Content AST to send cleaner data to AI
+    let rawText = ''
+    try {
+      const body = JSON.parse(props.content)
+      const extractText = (node) => {
+        if (node.type === 'text') return node.value
+        if (node.children) return node.children.map(extractText).join(' ')
+        return ''
+      }
+      rawText = body.children.map(extractText).join('\n').substring(0, 3000)
+    } catch (e) {
+      rawText = props.content.substring(0, 3000)
+    }
+
     // Call Cloudflare Worker
+    console.log('Requesting AI summary for:', props.articleId)
     const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: props.content.substring(0, 3000) }) // Content limit
-    })
+      body: JSON.stringify({ content: rawText }) 
+    });
 
-    if (!response.ok) throw new Error('Worker failed')
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Worker Response Error:', response.status, errorText);
+      throw new Error(`Worker returned ${response.status}`);
+    }
     
     const data = await response.json()
+    if (!data.summary) throw new Error('No summary returned')
+    
     fullText.value = data.summary
     
     // Save to cache
@@ -80,7 +101,7 @@ const generateSummary = async () => {
     
     startTyping()
   } catch (err) {
-    console.error('AI Summary Error:', err)
+    console.error('AI Summary Fetch Error:', err)
     status.value = 'error'
   }
 }

@@ -21,7 +21,7 @@
       </div>
     </header>
 
-    <div class="container page-container">
+    <div class="container page-container" :class="{ 'has-sidebar': tocLinks.length > 0 }">
       <!-- Sidebar TOC - Glassmorphic -->
       <aside v-if="tocLinks.length" class="sidebar">
         <div class="toc-wrapper glass-card">
@@ -211,7 +211,6 @@ onUnmounted(() => {
   background: var(--bg);
   color: var(--text);
   position: relative;
-  overflow-x: hidden;
 }
 
 /* FLUX BACKGROUND */
@@ -309,23 +308,26 @@ onUnmounted(() => {
 
 /* LAYOUT */
 .page-container {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 6rem;
   padding: 8rem 2rem;
   position: relative;
   z-index: 2;
 }
 
+.page-container.has-sidebar {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 6rem;
+}
+
 .sidebar {
   position: sticky;
-  top: 10rem;
+  top: 8rem;
   height: fit-content;
 }
 
 .toc-wrapper {
   padding: 2rem;
-  border-radius: 1.5rem;
+  border-radius: 1rem;
 }
 
 .toc-header {
@@ -404,7 +406,7 @@ onUnmounted(() => {
   color: var(--primary); 
   background: var(--primary-glow); 
   padding: 0.3rem 0.8rem; 
-  border-radius: 0.6rem; 
+  border-radius: 0.5rem; 
   margin-right: 0.6rem; 
 }
 
@@ -436,7 +438,7 @@ onUnmounted(() => {
   border-left: 5px solid var(--primary);
   background: var(--secondary);
   padding: 2.5rem 3rem;
-  border-radius: 0 1.5rem 1.5rem 0;
+  border-radius: 0 0.8rem 0.8rem 0;
   font-style: italic;
   margin: 3.5rem 0;
   color: var(--text-muted);

@@ -63,7 +63,7 @@
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow);
-  border-radius: 2rem;
+  border-radius: 1.2rem;
   transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
@@ -74,12 +74,21 @@
   width: 100%;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+}
+
 body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
   font-family: 'Geist Sans', sans-serif;
   background-color: var(--bg);
   color: var(--text);
-  margin: 0;
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
   line-height: 1.6;
 }
 
@@ -90,7 +99,7 @@ body {
 pre {
   background: var(--secondary);
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: 0.8rem;
   padding: 1.5rem;
   margin: 2rem 0;
   overflow-x: auto;

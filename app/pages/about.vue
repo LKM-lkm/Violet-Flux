@@ -30,7 +30,7 @@
         <!-- Author Side (Assume 'Likem' is the persona) -->
         <aside class="author-card glass-card">
           <div class="avatar-wrapper">
-             <div class="avatar-placeholder">DL</div>
+             <img src="https://avatars.githubusercontent.com/u/183704833?v=4" alt="Likem" class="avatar-img" />
           </div>
           <h2 class="author-name">Likem</h2>
           <p class="author-title">Digital Architect & Pianist</p>
@@ -103,14 +103,13 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   background: var(--bg);
   color: var(--text);
   position: relative;
-  overflow-x: hidden;
 }
 
 .flux-bg {
   position: absolute;
   inset: 0;
-  filter: blur(100px);
-  opacity: 0.25;
+  filter: blur(120px);
+  opacity: 0.15;
   z-index: 0;
   pointer-events: none;
 }
@@ -174,7 +173,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   font-weight: 800;
   margin-bottom: 1rem;
   letter-spacing: -0.03em;
-  background: linear-gradient(to bottom, var(--text) 50%, var(--primary));
+  background: linear-gradient(to bottom, var(--text) 30%, var(--text-muted));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -190,7 +189,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 }
 
 .glass-card {
-  border-radius: 2rem;
+  border-radius: 1.2rem;
   padding: 2.5rem;
 }
 
@@ -203,24 +202,15 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 .avatar-wrapper {
   width: 120px;
   height: 120px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  border-radius: 50%;
   margin: 0 auto 1.5rem;
-  padding: 4px;
 }
 
-.avatar-placeholder {
+.avatar-img {
   width: 100%;
   height: 100%;
-  background: var(--bg);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  font-weight: 800;
-  font-family: 'Bricolage Grotesque';
-  color: var(--primary);
+  object-fit: cover;
+  border: 2px solid var(--bg);
 }
 
 .author-name { font-family: 'Bricolage Grotesque'; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
@@ -230,7 +220,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 .social-btn {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--secondary);
   color: var(--text);
   display: flex;
@@ -242,7 +232,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 .social-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
-.tag { font-size: 0.75rem; font-weight: 700; color: var(--primary); background: var(--primary-glow); padding: 0.25rem 0.75rem; border-radius: 6px; }
+.tag { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--secondary); padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border); }
 
 /* STORY SIDE */
 .main-story { display: flex; flex-direction: column; gap: 2rem; }

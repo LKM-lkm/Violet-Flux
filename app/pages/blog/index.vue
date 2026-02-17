@@ -251,7 +251,6 @@ const filteredArticles = computed(() => {
   background: var(--bg);
   color: var(--text);
   position: relative;
-  overflow-x: hidden;
 }
 
 /* FLUX BACKGROUND */
@@ -454,7 +453,7 @@ const filteredArticles = computed(() => {
   position: relative;
   width: 320px;
   padding: 0;
-  border-radius: 1.25rem;
+  border-radius: 0.8rem;
   overflow: hidden;
 }
 
@@ -487,7 +486,7 @@ const filteredArticles = computed(() => {
 
 .blog-card {
   padding: 0;
-  border-radius: 2.25rem;
+  border-radius: 1.2rem;
   transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
@@ -543,7 +542,7 @@ const filteredArticles = computed(() => {
   color: var(--text-muted);
   background: var(--secondary);
   padding: 0.3rem 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   margin-right: 0.5rem;
 }
 
