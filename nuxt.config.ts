@@ -7,4 +7,16 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
+  
+  nitro: {
+    preset: 'cloudflare-pages',
+    prerender: {
+      crawlLinks: true,
+      routes: ['/blog']
+    }
+  },
+  
+  routeRules: {
+    '/blog/**': { prerender: true },
+  }
 })

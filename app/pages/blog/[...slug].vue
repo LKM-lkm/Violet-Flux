@@ -42,8 +42,7 @@ onMounted(() => {
 })
 
 const { data: article } = await useAsyncData(`article-${route.path}`, async () => {
-  const all = await queryCollection('content').all()
-  return all.find(item => item.path === route.path)
+  return await queryContent(route.path).findOne()
 })
 </script>
 

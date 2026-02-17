@@ -55,10 +55,7 @@ onMounted(() => {
 })
 
 const { data: articles } = await useAsyncData('blog-articles', async () => {
-  const all = await queryCollection('content').all()
-  return all.filter(item => item.path?.startsWith('/blog/'))
-}, {
-  watch: []
+  return await queryContent('/blog').find()
 })
 
 const filteredArticles = computed(() => {
