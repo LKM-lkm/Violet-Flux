@@ -30,24 +30,24 @@
 
 :root {
   --bg: #ffffff;
-  --text: #0b021a;
-  --text-muted: #5d5179;
-  --border: rgba(138, 43, 226, 0.15);
-  --primary: #8b5cf6;
-  --primary-glow: rgba(139, 92, 246, 0.4);
-  --secondary: #f5f3ff;
-  --accent: #a78bfa;
+  --text: #1a0210;
+  --text-muted: #6b5161;
+  --border: rgba(112, 26, 69, 0.12);
+  --primary: #701a45; /* Darker, redder violet (Wine/Plum) */
+  --primary-glow: rgba(112, 26, 69, 0.3);
+  --secondary: #fff5f8;
+  --accent: #9d174d;
 }
 
 :root.dark {
-  --bg: #030005;
-  --text: #f3f0ff;
-  --text-muted: #a78bfa;
-  --border: rgba(167, 139, 250, 0.2);
-  --primary: #c084fc;
-  --primary-glow: rgba(192, 132, 252, 0.5);
-  --secondary: #0f0a1a;
-  --accent: #e9d5ff;
+  --bg: #050002;
+  --text: #fff0f5;
+  --text-muted: #d946ef;
+  --border: rgba(217, 70, 239, 0.15);
+  --primary: #a21caf; /* Redder fuchsia for dark mode */
+  --primary-glow: rgba(162, 28, 175, 0.4);
+  --secondary: #120108;
+  --accent: #f0abfc;
 }
 
 body {

@@ -118,6 +118,7 @@ onMounted(() => {
   font-weight: 800;
   margin: 0 0 1rem;
   background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: fadeInUp 0.8s ease-out;

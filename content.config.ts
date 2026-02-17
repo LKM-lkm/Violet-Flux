@@ -4,7 +4,10 @@ export default defineContentConfig({
   collections: {
     content: defineCollection({
       type: 'page',
-      source: 'blog/**',
+      source: {
+        include: 'blog/**',
+        exclude: ['**/.*/**', '**/node_modules/**', '**/.obsidian/**']
+      },
       schema: z.object({
         tags: z.array(z.string()).default([]),
         date: z.string().optional(),
