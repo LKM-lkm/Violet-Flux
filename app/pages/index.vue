@@ -115,8 +115,9 @@ const currentYear = new Date().getFullYear();
 
 .blob {
   position: absolute;
-  border-radius: 50%;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   animation: blob-float 25s infinite alternate ease-in-out;
+  mix-blend-mode: screen;
 }
 
 .blob-1 {
@@ -138,19 +139,21 @@ const currentYear = new Date().getFullYear();
 }
 
 .blob-3 {
-  width: 400px;
-  height: 400px;
-  background: #4f46e5;
-  top: 40%;
-  left: 30%;
+  width: 450px;
+  height: 450px;
+  background: var(--primary); /* Was explicit blue #4f46e5 */
+  top: 35%;
+  left: 35%;
+  opacity: 0.4;
   animation-delay: -12s;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
 }
 
 @keyframes blob-float {
-  0% { transform: translate(0, 0) scale(1) rotate(0); }
-  33% { transform: translate(50px, -70px) scale(1.1) rotate(60deg); }
-  66% { transform: translate(-40px, 40px) scale(0.9) rotate(120deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(180deg); }
+  0% { transform: translate(0, 0) scale(1) rotate(0); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  33% { transform: translate(50px, -70px) scale(1.1) rotate(60deg); border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+  66% { transform: translate(-40px, 40px) scale(0.9) rotate(120deg); border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+  100% { transform: translate(0, 0) scale(1) rotate(180deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
 }
 
 .mist-overlay {
@@ -417,7 +420,7 @@ const currentYear = new Date().getFullYear();
 
 /* FOOTER REFORM */
 .footer {
-  padding: 4rem 0;
+  padding: 2rem 0;
   border-top: 1px solid var(--border);
   background: rgba(0, 0, 0, 0.1);
 }
