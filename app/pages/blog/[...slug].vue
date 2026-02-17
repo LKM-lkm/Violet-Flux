@@ -1,7 +1,14 @@
 <template>
   <div class="blog-layout">
+    <!-- Fluid background consistent with home/about/blog-index -->
+    <div class="flux-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="noise-overlay"></div>
+    </div>
+
     <header class="header">
-      <div class="container">
+      <div class="container header-container">
         <h1 class="logo">Violet Flux</h1>
         <nav class="nav">
           <NuxtLink to="/">Home</NuxtLink>
@@ -14,13 +21,13 @@
       </div>
     </header>
 
-    <div class="page-container">
-      <!-- Sidebar TOC -->
+    <div class="container page-container">
+      <!-- Sidebar TOC - Glassmorphic -->
       <aside v-if="tocLinks.length" class="sidebar">
-        <div class="toc-wrapper">
+        <div class="toc-wrapper glass-card">
           <div class="toc-header">
-            <Icon name="lucide:list" class="mr-2 opacity-50" />
-            <h3>Index</h3>
+            <Icon name="lucide:list" class="toc-icon" />
+            <span class="toc-title">Index</span>
           </div>
           <nav class="toc">
             <div 
@@ -36,7 +43,7 @@
                 :style="{ paddingLeft: `${(link.depth - 1) * 1}rem` }"
                 :id="`toc-${link.id}`"
               >
-                <a :href="`#${link.id}`" @click.prevent="scrollTo(link.id)">
+                <a :href="`#${link.id}`" @click.prevent="scrollTo(link.id)" class="toc-link">
                   {{ link.text }}
                 </a>
               </li>
@@ -48,7 +55,13 @@
       <main class="main-content" :class="{ 'no-sidebar': !tocLinks.length }">
         <article v-if="article">
           <header class="article-header">
-            <h1 class="article-title">{{ article.title }}</h1>
+            <div class="header-meta">
+              <NuxtLink to="/blog" class="back-link">
+                <Icon name="lucide:chevron-left" />
+                Back to Archive
+              </NuxtLink>
+            </div>
+            <h1 class="article-title text-gradient">{{ article.title }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
               <span v-for="tag in getTags(article)" :key="tag" class="tag-label">#{{ tag }}</span>
             </div>
@@ -60,9 +73,12 @@
         </article>
         
         <div v-else class="not-found">
-          <Icon name="lucide:alert-circle" class="text-6xl opacity-20 mb-6" />
-          <h1>Content not found</h1>
-          <NuxtLink to="/blog" class="back-link">Return to Blog</NuxtLink>
+          <div class="empty-icon-wrapper">
+            <Icon name="lucide:ghost" class="empty-icon" />
+          </div>
+          <h1>Knowledge lost in flux</h1>
+          <p>The content you're looking for doesn't exist or has moved.</p>
+          <NuxtLink to="/blog" class="cta-back">Return to Library</NuxtLink>
         </div>
       </main>
     </div>
@@ -75,13 +91,12 @@ const activeId = ref('')
 const indicatorOffset = ref(0)
 const route = useRoute()
 
-const { data: article } = await useAsyncData(`article-v18-${route.path}`, async () => {
+const { data: article } = await useAsyncData(`article-v18-premium-${route.path}`, async () => {
   const all = await queryCollection('content').all()
   
   const normalize = (p) => {
     if (!p) return ''
     try {
-      // Decode, NFC normalize, collapse slashes, remove leading/trailing slashes
       return decodeURIComponent(p)
         .normalize('NFC')
         .replace(/\/+/g, '/')
@@ -95,13 +110,11 @@ const { data: article } = await useAsyncData(`article-v18-${route.path}`, async 
   const cleanRoute = normalize(route.path)
   const relativeRoute = cleanRoute.replace(/^blog\//, '')
 
-  // 1. Match against item.id (This is our new source of truth for Chinese)
   let found = all.find(item => {
     const itemId = item.id.replace(/\.md$/, '').normalize('NFC')
     return itemId === relativeRoute || itemId === cleanRoute
   })
 
-  // 2. Exact Path Match fallback
   if (!found) {
     found = all.find(item => {
       const itemPath = normalize(item.path)
@@ -109,7 +122,6 @@ const { data: article } = await useAsyncData(`article-v18-${route.path}`, async 
     })
   }
 
-  // 3. Stem/Title fallback
   if (!found) {
     const routeStem = cleanRoute.split('/').pop()
     found = all.find(item => {
@@ -120,27 +132,6 @@ const { data: article } = await useAsyncData(`article-v18-${route.path}`, async 
 
   return found || null
 })
-
-const processWikiLinks = (node) => {
-  if (!node) return
-  if (node.type === 'text' && node.value) {
-    // Look for Obsidian WikiLink images: ![[Filename.png]]
-    const regex = /!\[\[(.*?)\]\]/g
-    if (regex.test(node.value)) {
-      // This is complex in AST, but we can try to warn or handle simple ones
-      // For now, let's keep it simple and focus on the matcher
-    }
-  }
-  if (node.children) node.children.forEach(processWikiLinks)
-}
-
-watch(article, (newVal) => {
-  if (newVal?.body) processWikiLinks(newVal.body)
-}, { immediate: true })
-
-if (!article.value && !import.meta.server) {
-  console.log('Article not found for route:', route.path)
-}
 
 const tocLinks = computed(() => {
   const rawLinks = article.value?.body?.toc?.links || []
@@ -212,107 +203,207 @@ onUnmounted(() => {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+  position: relative;
+  overflow-x: hidden;
 }
 
+/* FLUX BACKGROUND */
+.flux-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  filter: blur(100px);
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.flux-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.2;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  animation: blob-float 20s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: var(--primary);
+  top: -10%;
+  right: -5%;
+  opacity: 0.6;
+}
+
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  background: var(--accent);
+  bottom: -5%;
+  left: 5%;
+  animation-delay: -10s;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.05;
+  z-index: 1;
+}
+
+/* HEADER */
 .header {
-  padding: 1.25rem 0;
+  height: 80px;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(15px);
+  z-index: 100;
   position: sticky;
   top: 0;
-  background: var(--bg);
-  backdrop-filter: blur(12px);
-  z-index: 100;
 }
 
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
+.header-container { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.nav { display: flex; gap: 2.5rem; align-items: center; }
+.nav a { font-size: 0.9375rem; color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav a:hover { color: var(--text); }
+
+.theme-toggle {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: transform 0.2s;
 }
+.theme-toggle:hover { transform: scale(1.1); }
 
-.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.25rem; font-weight: 800; }
-.nav { display: flex; gap: 2rem; align-items: center; }
-.nav a { font-size: 0.9375rem; color: var(--text-muted); text-decoration: none; }
-.theme-toggle { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-muted); }
-
+/* LAYOUT */
 .page-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  padding: 0 2rem;
-  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 6rem;
+  padding: 8rem 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .sidebar {
-  width: 240px;
   position: sticky;
-  top: 6rem;
-  height: calc(100vh - 8rem);
-  padding-top: 5rem;
-  border-right: 1px solid var(--border);
-  margin-right: 4rem;
+  top: 10rem;
+  height: fit-content;
+}
+
+.toc-wrapper {
+  padding: 2rem;
+  border-radius: 1.5rem;
 }
 
 .toc-header {
-  margin-bottom: 2rem;
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-.toc-header h3 { 
-  font-size: 0.7rem; 
-  text-transform: uppercase; 
-  letter-spacing: 0.15em; 
-  color: var(--text-muted); 
-  font-weight: 700; 
-}
+.toc-icon { color: var(--primary); font-size: 1.1rem; }
+.toc-title { font-family: 'Bricolage Grotesque'; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; color: var(--text-muted); }
 
 .toc { position: relative; border-left: 1px solid var(--border); }
 
 .active-indicator {
   position: absolute;
-  left: -2px;
-  width: 3px;
+  left: -1px;
+  width: 2px;
   height: 28px;
   background: var(--primary);
-  box-shadow: 0 0 12px var(--primary-glow);
+  box-shadow: 0 0 10px var(--primary-glow);
   transition: transform 0.3s cubic-bezier(0.2, 1, 0.2, 1);
-  z-index: 2;
   border-radius: 4px;
 }
 
 .toc-list { list-style: none; padding: 0; margin: 0; }
-.toc-list li { padding: 0.5rem 1.5rem; transition: all 0.2s; }
-.toc-list li a { 
+.toc-list li { transition: all 0.2s; }
+.toc-link { 
+  display: block;
+  padding: 0.5rem 1.25rem;
   color: var(--text-muted); 
   text-decoration: none; 
   font-size: 0.875rem; 
-  display: block; 
+  transition: all 0.2s;
 }
 
-.toc-list li.active a { color: var(--primary); font-weight: 700; }
+.toc-list li.active .toc-link { color: var(--primary); font-weight: 700; background: var(--primary-glow); border-radius: 0 8px 8px 0; }
 
-.main-content { flex: 1; max-width: 820px; padding: 5rem 0; min-width: 0; }
-.main-content.no-sidebar { margin: 0 auto; }
+/* CONTENT */
+.main-content { min-width: 0; }
+.main-content.no-sidebar { max-width: 820px; margin: 0 auto; }
 
-.article-header { margin-bottom: 4rem; }
+.article-header { margin-bottom: 5rem; }
+.header-meta { margin-bottom: 2rem; }
+.back-link { 
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--primary); }
+
 .article-title { 
   font-family: 'Bricolage Grotesque', sans-serif; 
-  font-size: 3.5rem; 
-  line-height: 1.2; 
-  margin-bottom: 1.5rem; 
+  font-size: 4.5rem; 
+  line-height: 1.1; 
+  margin-bottom: 2rem; 
   font-weight: 800; 
+  letter-spacing: -0.04em;
 }
-.tag-label { font-size: 0.75rem; color: var(--text-muted); background: var(--secondary); padding: 0.2rem 0.6rem; border-radius: 0.4rem; margin-right: 0.5rem; }
 
-/* ARTICLE BODY TYPOGRAPHY */
+.text-gradient {
+  background: linear-gradient(135deg, var(--text) 40%, var(--primary) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tag-label { 
+  font-size: 0.75rem; 
+  font-weight: 700;
+  color: var(--primary); 
+  background: var(--primary-glow); 
+  padding: 0.3rem 0.8rem; 
+  border-radius: 0.6rem; 
+  margin-right: 0.6rem; 
+}
+
+/* BODY TYPOGRAPHY */
 .article-body {
-  font-family: 'Geist Sans', sans-serif;
-  font-size: 1.125rem;
+  font-size: 1.1875rem;
   line-height: 1.8;
   color: var(--text);
 }
@@ -321,136 +412,73 @@ onUnmounted(() => {
 .article-body :deep(h2),
 .article-body :deep(h3) {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text);
-  margin-top: 3.5rem;
-  margin-bottom: 1.5rem;
-  scroll-margin-top: 100px;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  scroll-margin-top: 120px;
+  letter-spacing: -0.02em;
 }
 
-/* Forceful removal of heading underlines (The 'surgical' fix) */
-.article-body :deep(h1),
-.article-body :deep(h2),
-.article-body :deep(h3),
-.article-body :deep(h4) {
-  text-decoration: none !important;
-  border-bottom: none !important;
-}
+.article-body :deep(h2) { font-size: 2.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
+.article-body :deep(h3) { font-size: 1.625rem; }
 
-.article-body :deep(h1) a,
-.article-body :deep(h2) a,
-.article-body :deep(h3) a,
-.article-body :deep(h4) a {
-  text-decoration: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  color: inherit !important;
-}
-
-.article-body :deep(h2) {
-  font-size: 2rem;
-  padding-bottom: 0.2rem;
-}
-
-.article-body :deep(h3) {
-  font-size: 1.5rem;
-}
-
-.article-body :deep(p) {
-  margin-bottom: 1.5rem;
-  opacity: 0.9;
-}
-
-/* Restoring the dots and numbers */
-.article-body :deep(ul) {
-  list-style: disc;
-  margin: 1.5rem 0;
-  padding-left: 1.5rem;
-}
-
-.article-body :deep(ol) {
-  list-style: decimal;
-  margin: 1.5rem 0;
-  padding-left: 1.5rem;
-}
-
-.article-body :deep(li) {
-  margin-bottom: 0.5rem;
-}
+.article-body :deep(p) { margin-bottom: 2rem; opacity: 0.9; }
 
 .article-body :deep(blockquote) {
-  border-left: 4px solid var(--primary);
-  padding-left: 1.5rem;
+  border-left: 5px solid var(--primary);
+  background: var(--secondary);
+  padding: 2.5rem 3rem;
+  border-radius: 0 1.5rem 1.5rem 0;
   font-style: italic;
-  margin: 2.3rem 0;
+  margin: 3.5rem 0;
   color: var(--text-muted);
-}
-
-/* Image styling - Handled by ProseImg.vue component */
-.article-body :deep(.prose-img-wrapper) {
-  width: 100%;
-}
-
-/* TABLE STYLES - REINFORCED */
-.article-body :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 2.5rem 0;
-  font-size: 0.95rem;
-  border: 1px solid var(--border);
-}
-
-.article-body :deep(th),
-.article-body :deep(td) {
-  border: 1px solid var(--border) !important;
-  padding: 0.75rem 1rem;
-  text-align: left;
-}
-
-.article-body :deep(th) {
-  background: rgba(128, 128, 128, 0.08);
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.article-body :deep(tr:nth-child(even)) {
-  background: rgba(128, 128, 128, 0.03);
-}
-
-/* Link styles */
-.article-body :deep(a) {
-  color: var(--primary);
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.article-body :deep(p a),
-.article-body :deep(li a) {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.article-body :deep(a:hover) {
-  opacity: 0.8;
 }
 
 .article-body :deep(code:not(pre code)) {
   background: var(--secondary);
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 0.5rem;
-  font-size: 0.875em;
-  font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Fira Code', 'Liberation Mono', 'Courier New', monospace;
-  color: var(--primary);
-  border: 1px solid var(--border);
-  font-weight: 500;
+  font-size: 0.9em;
+  color: var(--accent);
+  font-weight: 600;
 }
 
-.not-found { text-align: center; padding: 6rem 0; }
-.back-link { display: inline-block; margin-top: 2rem; padding: 0.8rem 1.5rem; border: 1px solid var(--border); border-radius: 0.8rem; text-decoration: none; color: var(--text); }
+/* UTILS */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border);
+}
+.dark .glass-card { background: rgba(0, 0, 0, 0.2); }
+
+.empty-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  background: var(--secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2.5rem;
+}
+.empty-icon { font-size: 3rem; opacity: 0.3; }
+
+.not-found { text-align: center; padding: 10rem 0; }
+.cta-back {
+  display: inline-block;
+  margin-top: 3rem;
+  padding: 1rem 2.5rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 1rem;
+  text-decoration: none;
+  font-weight: 800;
+}
 
 @media (max-width: 1024px) {
+  .page-container { grid-template-columns: 1fr; padding-top: 4rem; }
   .sidebar { display: none; }
-  .article-title { font-size: 2.75rem; }
+  .article-title { font-size: 3rem; }
 }
 </style>

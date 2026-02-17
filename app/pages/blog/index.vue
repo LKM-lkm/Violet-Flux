@@ -1,11 +1,18 @@
-         <template>
+<template>
   <div class="blog-layout">
+    <!-- Fluid background consistent with home/about -->
+    <div class="flux-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="noise-overlay"></div>
+    </div>
+
     <header class="header">
-      <div class="container">
+      <div class="container header-container">
         <h1 class="logo">Violet Flux</h1>
         <nav class="nav">
           <NuxtLink to="/">Home</NuxtLink>
-          <NuxtLink to="/blog">Blog</NuxtLink>
+          <NuxtLink to="/blog" class="nav-active">Blog</NuxtLink>
           <NuxtLink to="/about">About</NuxtLink>
           <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
@@ -14,19 +21,19 @@
       </div>
     </header>
 
-    <div class="blog-container">
+    <div class="container blog-container">
       <!-- Sidebar for Tree Navigation and Tags -->
-      <aside class="sidebar">
+      <aside class="sidebar glass-card">
         <div class="filter-section">
-          <h3>Knowledge Base</h3>
+          <h3 class="section-title">Knowledge</h3>
           <nav class="tree-nav">
             <button 
               :class="{ active: !selectedPath }" 
               @click="selectedPath = ''"
               class="tree-root-btn"
             >
-              <Icon name="lucide:library" class="mr-2" />
-              All Notes
+              <Icon name="lucide:layers" class="icon-m" />
+              All Content
             </button>
             
             <div class="folder-tree">
@@ -41,8 +48,8 @@
           </nav>
         </div>
 
-        <div class="filter-section mt-8">
-          <h3>Tags</h3>
+        <div class="filter-section mt-10">
+          <h3 class="section-title">Topics</h3>
           <div class="tag-cloud">
             <button 
               v-for="tag in allTags" 
@@ -59,31 +66,39 @@
 
       <main class="content">
         <div class="content-header">
-          <div class="breadcrumb-nav">
-            <span class="root" @click="selectedPath = ''">Blog</span>
+          <div class="path-display">
+            <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
-              <span v-for="(p, i) in selectedPath.replace('/blog', '').split('/').filter(Boolean)" :key="i" class="crumb">
-                <Icon name="lucide:chevron-right" class="chevron" />
+              <span v-for="(p, i) in selectedPath.replace('/blog', '').split('/').filter(Boolean)" :key="i" class="path-crumb">
+                <Icon name="lucide:chevron-right" class="chevron-sm" />
                 {{ p }}
               </span>
             </template>
           </div>
-          <div class="search-wrapper">
+          
+          <div class="search-box glass-card">
             <Icon name="lucide:search" class="search-icon" />
-            <input v-model="search" type="text" placeholder="Search knowledge base..." class="search-input" />
+            <input v-model="search" type="text" placeholder="Search archive..." class="search-input" />
           </div>
         </div>
         
         <div v-if="filteredArticles?.length" class="article-grid">
-          <article v-for="article in filteredArticles" :key="article.path" class="article-card">
-            <NuxtLink :to="article.path">
-              <div class="card-content">
-                <span class="category-path">{{ getBreadcrumbs(article.displayPath) }}</span>
-                <h2 class="title">{{ article.title || getFileName(article.displayPath) }}</h2>
-                <p v-if="article.description" class="desc">{{ article.description }}</p>
+          <article v-for="article in filteredArticles" :key="article.path" class="blog-card glass-card">
+            <NuxtLink :to="article.path" class="card-link">
+              <div class="card-inner">
+                <div class="card-meta">
+                  <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
+                </div>
+                <h2 class="card-title">{{ article.title || getFileName(article.displayPath) }}</h2>
+                <p v-if="article.description" class="card-desc">{{ article.description }}</p>
+                
                 <div class="card-footer">
-                  <div class="tags-row" v-if="getTags(article).length">
-                    <span v-for="tag in getTags(article)" :key="tag" class="tag-pill">#{{ tag }}</span>
+                  <div class="tags-group" v-if="getTags(article).length">
+                    <span v-for="tag in getTags(article)" :key="tag" class="tag-chip">#{{ tag }}</span>
+                  </div>
+                  <div class="read-more">
+                    Read
+                    <Icon name="lucide:arrow-up-right" class="arrow-icon" />
                   </div>
                 </div>
               </div>
@@ -91,11 +106,14 @@
           </article>
         </div>
         
-        <div v-else class="no-results">
-          <div class="empty-state">
-            <Icon name="lucide:search-x" class="empty-icon" />
-            <p v-if="articles?.length">No matching articles in this selection</p>
-            <p v-else>Thinking... if no articles appear, check your <code>content/blog/</code> folder.</p>
+        <div v-else class="empty-boundary">
+          <div class="empty-content">
+            <div class="empty-icon-wrapper">
+              <Icon name="lucide:wind" class="empty-icon" />
+            </div>
+            <h3>Nothing found in this sector</h3>
+            <p>Try refining your search or clearing the path filter.</p>
+            <button @click="resetFilters" class="reset-btn">Reset Filters</button>
           </div>
         </div>
       </main>
@@ -109,16 +127,11 @@ const search = ref('')
 const selectedPath = ref('')
 const selectedTags = ref([])
 
-const { data: articles } = await useAsyncData('blog-articles-v4', async () => {
+const { data: articles } = await useAsyncData('blog-articles-v4-premium', async () => {
   const all = await queryCollection('content').all()
-  console.log('Fetched Articles:', all.map(a => ({ path: a.path, stem: a.stem })))
   return all
     .map(item => {
-      // Logic: Use item.id (the relative file path from blog/) as the ultimate source of truth
-      // Example item.id: "笔记/📔我的/SCREEN.md"
       let cleanId = item.id.replace(/\.md$/, '')
-      
-      // Ensure it starts with /blog/
       let finalPath = '/blog/' + cleanId
       finalPath = finalPath.replace(/\/+/g, '/')
       
@@ -130,7 +143,6 @@ const { data: articles } = await useAsyncData('blog-articles-v4', async () => {
     })
     .filter(item => {
       const segments = item.path.split('/')
-      // Strict exclusion of hidden/system folders
       if (segments.some(s => s.startsWith('.') && s.length > 1)) return false
       return true
     })
@@ -148,7 +160,6 @@ const folderTree = computed(() => {
     let currentLevel = tree
     let currentFullPath = '/blog'
     
-    // Build tree for folders (everything except the last item)
     for (let i = 1; i < parts.length - 1; i++) {
       const segment = parts[i]
       currentFullPath += '/' + segment
@@ -185,10 +196,15 @@ const toggleTag = (tag) => {
   else selectedTags.value.splice(index, 1)
 }
 
+const resetFilters = () => {
+  search.value = ''
+  selectedPath.value = ''
+  selectedTags.value = []
+}
+
 const getBreadcrumbs = (path) => {
   if (!path) return 'General'
   const parts = path.split('/').filter(Boolean)
-  // blog / folder / sub / file -> folder / sub
   if (parts.length <= 2) return 'General'
   return parts.slice(1, -1).join(' / ')
 }
@@ -197,7 +213,6 @@ const getFileName = (path) => {
   if (!path) return 'Untitled'
   const parts = path.split('/').filter(Boolean)
   let name = parts[parts.length - 1] || 'Untitled'
-  // Handle 'index' specifically if desired
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
@@ -215,7 +230,6 @@ const filteredArticles = computed(() => {
       (article.title && String(article.title).toLowerCase().includes(search.value.toLowerCase())) ||
       (article.description && String(article.description).toLowerCase().includes(search.value.toLowerCase()))
     
-    // Hierarchical path matching
     const matchesPath = !selectedPath.value || 
       article.path === selectedPath.value || 
       (article.path && String(article.path).startsWith(selectedPath.value + '/'))
@@ -236,22 +250,83 @@ const filteredArticles = computed(() => {
   flex-direction: column;
   background: var(--bg);
   color: var(--text);
+  position: relative;
+  overflow-x: hidden;
 }
 
+/* FLUX BACKGROUND */
+.flux-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  filter: blur(100px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.flux-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.2;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  animation: blob-float 20s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: var(--primary);
+  top: -10%;
+  right: -5%;
+  opacity: 0.6;
+}
+
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  background: var(--accent);
+  bottom: -5%;
+  left: 5%;
+  animation-delay: -10s;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.05;
+  z-index: 1;
+}
+
+/* HEADER */
 .header {
-  padding: 1.25rem 0;
+  height: 80px;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(15px);
+  z-index: 100;
   position: sticky;
   top: 0;
-  background: var(--bg);
-  backdrop-filter: blur(12px);
-  z-index: 100;
 }
 
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
+.header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -259,304 +334,300 @@ const filteredArticles = computed(() => {
 
 .logo {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  margin: 0;
   letter-spacing: -0.02em;
 }
 
-.nav {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.nav a {
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  text-decoration: none;
+.nav { display: flex; gap: 2.5rem; align-items: center; }
+.nav a { 
+  font-size: 0.9375rem; 
+  color: var(--text-muted); 
+  text-decoration: none; 
+  font-weight: 500;
   transition: color 0.2s;
 }
-
-.nav a:hover {
-  color: var(--text);
-}
+.nav a:hover, .nav-active { color: var(--text); }
 
 .theme-toggle {
-  background: none;
-  border: none;
-  font-size: 1.1rem;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 0.4rem;
-  color: var(--text-muted);
   display: flex;
   align-items: center;
-  transition: color 0.2s;
-}
-
-.theme-toggle:hover {
+  justify-content: center;
   color: var(--text);
+  transition: transform 0.2s;
 }
+.theme-toggle:hover { transform: scale(1.1); }
 
+/* LAYOUT */
 .blog-container {
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: 320px 1fr;
   gap: 4rem;
-  box-sizing: border-box;
+  padding: 5rem 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar {
-  width: 250px;
-  flex-shrink: 0;
+  padding: 2.5rem;
   position: sticky;
-  top: 6rem;
-  height: calc(100vh - 9rem);
+  top: 8rem;
+  height: fit-content;
+  max-height: calc(100vh - 12rem);
   overflow-y: auto;
-  padding-right: 1rem;
 }
 
-/* Custom Scrollbar for Sidebar */
 .sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.1); border-radius: 10px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-.filter-section h3 {
-  font-size: 0.7rem;
+.section-title {
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--text-muted);
+  color: var(--primary);
   margin-bottom: 1.5rem;
-  font-weight: 700;
-  opacity: 0.6;
+  font-weight: 800;
 }
 
 .tree-root-btn {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
   width: 100%;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--text-muted);
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 0.5rem;
 }
 
-.tree-root-btn:hover, .tree-root-btn.active {
-  background: rgba(128, 128, 128, 0.08);
-  color: var(--text);
-}
+.tree-root-btn:hover { background: var(--secondary); color: var(--text); }
+.tree-root-btn.active { background: var(--primary-glow); color: var(--primary); }
 
-.tree-root-btn.active {
-  font-weight: 600;
-  color: var(--primary);
-  background: rgba(139, 92, 246, 0.05);
-}
+.icon-m { width: 1.25rem; height: 1.25rem; }
 
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tag-btn {
-  padding: 0.3rem 0.75rem;
-  background: rgba(128, 128, 128, 0.05);
-  border: 1px solid rgba(128, 128, 128, 0.1);
-  border-radius: 2rem;
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tag-btn:hover {
-  border-color: rgba(128, 128, 128, 0.3);
-  color: var(--text);
-}
-
-.tag-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  box-shadow: 0 0 15px var(--primary-glow);
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-}
-
+/* SEARCH & CONTENT HEADER */
+.content { min-width: 0; }
 .content-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3.5rem;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+  gap: 2rem;
 }
 
-.breadcrumb-nav {
+.path-display {
   display: flex;
   align-items: center;
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-family: 'Bricolage Grotesque', sans-serif;
+  font-family: 'Bricolage Grotesque';
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
-.breadcrumb-nav .root {
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
+.root-label { cursor: pointer; transition: opacity 0.2s; }
+.root-label:hover { opacity: 0.5; }
 
-.breadcrumb-nav .root:hover {
-  opacity: 0.6;
-}
-
-.crumb {
+.path-crumb {
   display: flex;
   align-items: center;
   color: var(--text-muted);
   font-weight: 500;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
+  opacity: 0.6;
 }
 
-.chevron {
-  font-size: 0.9rem;
-  margin: 0 0.5rem;
-  opacity: 0.3;
-}
+.chevron-sm { font-size: 1.25rem; margin: 0 0.75rem; opacity: 0.3; }
 
-.search-wrapper {
+.search-box {
   position: relative;
   width: 320px;
+  padding: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
 }
 
 .search-icon {
   position: absolute;
-  left: 1.1rem;
+  left: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 1rem;
+  opacity: 0.5;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.75rem 1.25rem 0.75rem 2.75rem;
-  border: 1px solid rgba(128, 128, 128, 0.15);
-  border-radius: 0.85rem;
-  background: rgba(128, 128, 128, 0.03);
-  color: var(--text);
-  outline: none;
-  font-size: 0.95rem;
-  transition: all 0.2s;
-}
-
-.search-input:focus {
-  border-color: var(--text);
+  padding: 1rem 1.25rem 1rem 3.25rem;
   background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  outline: none;
 }
 
+/* CARDS */
 .article-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 2.5rem;
 }
 
-.article-card a {
-  display: block;
-  height: 100%;
-  text-decoration: none;
-  color: var(--text);
-  border: 1px solid rgba(128, 128, 128, 0.1);
-  border-radius: 1.25rem;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  overflow: hidden;
-  background: rgba(128, 128, 128, 0.02);
+.blog-card {
+  padding: 0;
+  border-radius: 2.25rem;
+  transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
-.article-card a:hover {
-  border-color: rgba(128, 128, 128, 0.25);
-  transform: translateY(-6px);
-  background: rgba(128, 128, 128, 0.06);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+.blog-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: var(--primary);
+  box-shadow: 0 30px 60px -20px var(--primary-glow);
 }
 
-.card-content {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+.card-link { text-decoration: none; color: inherit; display: block; height: 100%; }
+.card-inner { padding: 2.5rem; display: flex; flex-direction: column; height: 100%; }
 
-.category-path {
-  font-size: 0.65rem;
+.card-meta { margin-bottom: 1.5rem; }
+.meta-folder {
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
-  margin-bottom: 1.25rem;
-  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  font-weight: 800;
   opacity: 0.8;
 }
 
-.article-card h2 {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 1.625rem;
-  margin: 0 0 1rem;
-  line-height: 1.2;
-  font-weight: 700;
+.card-title {
+  font-family: 'Bricolage Grotesque';
+  font-size: 1.75rem;
+  line-height: 1.1;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
-.article-card p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.card-desc {
+  font-size: 1rem;
   line-height: 1.6;
-  margin: 0 0 2rem;
-  flex: 1;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-footer {
   margin-top: auto;
-}
-
-.tags-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.tag-pill {
+.tag-chip {
   font-size: 0.75rem;
+  font-weight: 700;
   color: var(--text-muted);
-  background: rgba(128, 128, 128, 0.08);
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.4rem;
-  font-weight: 500;
+  background: var(--secondary);
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.75rem;
+  margin-right: 0.5rem;
 }
 
-.empty-state {
+.read-more {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--primary);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s;
+}
+
+.blog-card:hover .read-more { opacity: 1; transform: translateX(0); }
+
+/* TAG CLOUD */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.tag-btn {
+  padding: 0.4rem 1rem;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tag-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.tag-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 10px 20px -5px var(--primary-glow); }
+
+/* EMPTY STATE */
+.empty-boundary {
+  padding: 8rem 0;
   text-align: center;
-  padding: 6rem 2rem;
-  color: var(--text-muted);
 }
 
-.empty-icon {
-  font-size: 3rem;
-  opacity: 0.15;
-  margin-bottom: 1.5rem;
+.empty-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: var(--secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
 }
 
-.mt-8 { margin-top: 2rem; }
-.mr-2 { margin-right: 0.5rem; }
+.empty-icon { font-size: 2.5rem; color: var(--text-muted); opacity: 0.4; }
 
-@media (max-width: 1024px) {
+.empty-content h3 { font-family: 'Bricolage Grotesque'; font-size: 1.5rem; margin-bottom: 1rem; }
+.reset-btn {
+  margin-top: 2rem;
+  padding: 0.75rem 2rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* UTILS */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border);
+}
+
+.dark .glass-card { background: rgba(0, 0, 0, 0.2); }
+
+.mt-10 { margin-top: 2.5rem; }
+
+@media (max-width: 1200px) {
+  .blog-container { grid-template-columns: 1fr; }
   .sidebar { display: none; }
-  .blog-container { padding: 2rem 1.5rem; gap: 0; }
-  .content-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .search-wrapper { width: 100%; }
+  .path-display { font-size: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .content-header { flex-direction: column; align-items: stretch; }
+  .search-box { width: 100%; }
+  .article-grid { grid-template-columns: 1fr; }
 }
 </style>

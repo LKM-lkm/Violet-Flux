@@ -68,6 +68,15 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/', '/blog'],
       failOnError: false
+    },
+    cloudflare: {
+      pages: {
+        routes: {
+          // Prevent Cloudflare from failing due to long Chinese paths in _routes.json
+          // We use a wildcard to exclude the blog folder from individual path rules
+          exclude: ['/blog/*', '/_blog_assets/*']
+        }
+      }
     }
   },
 
