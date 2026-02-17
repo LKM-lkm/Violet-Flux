@@ -7,16 +7,63 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
-  
+
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'preload',
+          href: '/Geist-Variable.woff2',
+          as: 'font',
+          type: 'font/woff2',
+          crossorigin: 'anonymous'
+        },
+        {
+          rel: 'preload',
+          href: '/BricolageGrotesque-Variable.woff2',
+          as: 'font',
+          type: 'font/woff2',
+          crossorigin: 'anonymous'
+        }
+      ],
+      script: [
+        {
+          innerHTML: `
+            window.MathJax = {
+              loader: { load: ['[tex]/ams'] },
+              tex: {
+                inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+                processEscapes: true,
+                packages: { '[+]': ['ams'] }
+              },
+              output: {
+                font: 'mathjax-termes'
+              },
+              startup: {
+                typeset: false
+              }
+            };
+          `.trim(),
+          type: 'text/javascript'
+        },
+        {
+          src: 'https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-mml-chtml.js',
+          id: 'MathJax-script',
+          async: true
+        }
+      ]
+    }
+  },
+
   nitro: {
-    preset: 'cloudflare-pages',
     prerender: {
       crawlLinks: true,
       routes: ['/blog']
     }
   },
-  
+
   routeRules: {
-    '/blog/**': { prerender: true },
+    '/blog/**': { prerender: true }
   }
 })

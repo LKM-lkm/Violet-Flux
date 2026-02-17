@@ -23,7 +23,7 @@
 
       <div v-if="filteredArticles?.length" class="articles">
         <article v-for="article in filteredArticles" :key="article.path" class="article-card">
-          <NuxtLink :to="article.path">
+          <NuxtLink :to="article.path?.replace(/\/+/g, '/')">
             <h2>{{ article.title }}</h2>
             <p>{{ article.description }}</p>
           </NuxtLink>
@@ -55,7 +55,13 @@ onMounted(() => {
 })
 
 const { data: articles } = await useAsyncData('blog-articles', async () => {
-  return await queryContent('/blog').find()
+  const all = await queryCollection('content').all()
+  return all
+    .filter(item => item.path?.includes('/blog/'))
+    .map(item => ({
+      ...item,
+      path: item.path.replace(/\/+/g, '/')
+    }))
 })
 
 const filteredArticles = computed(() => {

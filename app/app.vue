@@ -9,7 +9,7 @@
   src: url('/Geist-Variable.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -17,7 +17,7 @@
   src: url('/GeistItalic-Variable.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: italic;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -25,7 +25,7 @@
   src: url('/BricolageGrotesque-Variable.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 :root {
