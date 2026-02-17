@@ -118,20 +118,21 @@ onMounted(() => {
   isDark.value = document.documentElement.classList.contains('dark')
 })
 
-const { data: articles } = await useAsyncData('blog-articles', async () => {
+const { data: articles } = await useAsyncData('blog-articles-v2', async () => {
   const all = await queryCollection('content').all()
   return all
     .map(item => ({
       ...item,
-      path: item.path.replace(/\/+/g, '/')
+      // Decode path for consistent internal handling and filtering
+      path: decodeURIComponent(item.path.replace(/\/+/g, '/'))
     }))
     .filter(item => {
-      // 1. Must be in /blog
       if (!item.path.startsWith('/blog')) return false
       
-      // 2. Strict dot-folder filter
       const segments = item.path.split('/')
+      // Hide internal Obsidian configuration and hidden files
       if (segments.some(s => s.startsWith('.') && s.length > 1)) return false
+      if (segments.some(s => s.includes('_obsidian'))) return false
       
       return true
     })
