@@ -77,6 +77,10 @@
           <div class="article-body">
             <ContentRenderer :value="article" />
           </div>
+
+          <ClientOnly>
+            <CwdComments :slug="article.path" />
+          </ClientOnly>
         </article>
         
         <div v-else class="not-found">
@@ -451,6 +455,34 @@ onUnmounted(() => {
   font-size: 0.9em;
   color: var(--accent);
   font-weight: 600;
+}
+
+.article-body :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.8rem;
+  box-shadow: var(--card-shadow);
+  margin: 2rem auto;
+  display: block;
+}
+
+.article-body :deep(figure) {
+  margin: 2.5rem 0;
+  text-align: center;
+}
+
+.article-body :deep(figcaption) {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+.article-body :deep(iframe) {
+  max-width: 100%;
+  border-radius: 0.8rem;
+  margin: 2rem auto;
+  display: block;
 }
 
 /* UTILS */
