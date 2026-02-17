@@ -1,12 +1,10 @@
 <template>
   <div class="home">
-    <!-- Premium Background Elements -->
     <div class="flux-bg">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
       <div class="mist-overlay"></div>
-      <div class="noise-overlay"></div>
     </div>
 
     <header class="header">
@@ -63,12 +61,6 @@
             <div class="glass-card sub-card-1 flux-card"></div>
             <div class="glass-card sub-card-2 flux-card"></div>
             
-            <!-- Floating particles -->
-            <div class="particle p-1"></div>
-            <div class="particle p-2"></div>
-            <div class="particle p-3"></div>
-            <div class="particle p-4"></div>
-            <div class="particle p-5"></div>
           </div>
         </div>
       </div>
@@ -161,15 +153,6 @@ const currentYear = new Date().getFullYear();
   100% { transform: translate(0, 0) scale(1) rotate(180deg); }
 }
 
-.noise-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-  opacity: 0.05;
-  z-index: 2;
-  pointer-events: none;
-}
-
 .mist-overlay {
   position: absolute;
   inset: 0;
@@ -183,17 +166,6 @@ const currentYear = new Date().getFullYear();
 @keyframes cloud-pulse {
   from { transform: scale(1) translate(0, 0); opacity: 0.3; }
   to { transform: scale(1.2) translate(20px, -20px); opacity: 0.6; }
-}
-
-/* Grid Pattern Overlay */
-.flux-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.2;
-  z-index: 1;
 }
 
 /* HEADER */
@@ -280,11 +252,11 @@ const currentYear = new Date().getFullYear();
   backdrop-filter: blur(5px);
 }
 
-.pulse { animation: pulse 2s infinite; }
+.pulse { animation: pulse 4s infinite cubic-bezier(0.4, 0, 0.6, 1); }
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(192, 132, 252, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  50% { box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
 
 .title {
@@ -442,26 +414,6 @@ const currentYear = new Date().getFullYear();
   opacity: 0.6;
 }
 
-/* Floating Particles */
-.particle {
-  position: absolute;
-  background: var(--primary);
-  border-radius: 50%;
-  filter: blur(2px);
-  opacity: 0.4;
-  animation: particle-float 10s infinite alternate ease-in-out;
-}
-
-.p-1 { width: 10px; height: 10px; top: 20%; left: 10%; animation-delay: -2s; }
-.p-2 { width: 6px; height: 6px; bottom: 30%; right: 15%; animation-delay: -5s; }
-.p-3 { width: 15px; height: 15px; top: 60%; left: 80%; background: var(--accent); }
-.p-4 { width: 4px; height: 4px; top: 10%; right: 25%; opacity: 0.2; }
-.p-5 { width: 8px; height: 8px; bottom: 10%; left: 30%; opacity: 0.3; animation-delay: -8s; }
-
-@keyframes particle-float {
-  from { transform: translate(0, 0); }
-  to { transform: translate(30px, -40px); }
-}
 
 /* FOOTER REFORM */
 .footer {

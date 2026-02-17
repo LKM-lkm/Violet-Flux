@@ -610,7 +610,7 @@ const filteredArticles = computed(() => {
 /* UTILS */
 /* Using global .glass-card */
 
-.mt-10 { margin-top: 2.5rem; }
+
 
 @media (max-width: 1200px) {
   .blog-container { grid-template-columns: 1fr; }
