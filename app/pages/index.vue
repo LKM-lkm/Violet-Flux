@@ -114,9 +114,12 @@ onMounted(() => {
 
 .title {
   font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 4rem;
-  font-weight: 700;
+  font-size: 5rem;
+  font-weight: 800;
   margin: 0 0 1rem;
+  background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -129,7 +132,7 @@ onMounted(() => {
 
 .buttons {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
@@ -145,29 +148,33 @@ onMounted(() => {
 }
 
 .btn {
-  padding: 0.75rem 2rem;
-  border-radius: 0.5rem;
+  padding: 0.875rem 2.5rem;
+  border-radius: 0.75rem;
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary {
   background: var(--primary);
-  color: var(--secondary);
+  color: white;
+  box-shadow: 0 10px 20px -5px var(--primary-glow);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px var(--primary-glow);
 }
 
 .btn-secondary {
   background: var(--secondary);
   color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  opacity: 0.9;
+  background: rgba(128, 128, 128, 0.05);
+  transform: translateY(-2px);
 }
 
 .footer {
