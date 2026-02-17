@@ -7,7 +7,7 @@
           <NuxtLink to="/">Home</NuxtLink>
           <NuxtLink to="/blog">Blog</NuxtLink>
           <NuxtLink to="/about">About</NuxtLink>
-          <button @click="toggleTheme" class="theme-toggle">
+          <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
           </button>
         </nav>
@@ -104,36 +104,29 @@
 </template>
 
 <script setup>
-const isDark = ref(false)
+import { isDark, toggleDark } from '~/composables/useTheme'
 const search = ref('')
 const selectedPath = ref('')
 const selectedTags = ref([])
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark')
-}
-
-onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
-})
-
-const { data: articles } = await useAsyncData('blog-articles-v2', async () => {
+const { data: articles } = await useAsyncData('blog-articles-v4', async () => {
   const all = await queryCollection('content').all()
   return all
-    .map(item => ({
-      ...item,
-      // Decode path for consistent internal handling and filtering
-      path: decodeURIComponent(item.path.replace(/\/+/g, '/'))
-    }))
+    .map(item => {
+      let path = item.path.replace(/\/+/g, '/')
+      // If path doesn't start with /blog, prepend it (ensuring internal links work)
+      if (!path.startsWith('/blog')) {
+        path = '/blog' + (path.startsWith('/') ? '' : '/') + path
+      }
+      return {
+        ...item,
+        path: decodeURIComponent(path)
+      }
+    })
     .filter(item => {
-      if (!item.path.startsWith('/blog')) return false
-      
       const segments = item.path.split('/')
-      // Hide internal Obsidian configuration and hidden files
+      // Strict exclusion of hidden/system folders
       if (segments.some(s => s.startsWith('.') && s.length > 1)) return false
-      if (segments.some(s => s.includes('_obsidian'))) return false
-      
       return true
     })
 })

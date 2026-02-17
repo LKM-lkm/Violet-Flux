@@ -7,7 +7,7 @@
           <NuxtLink to="/">Home</NuxtLink>
           <NuxtLink to="/blog">Blog</NuxtLink>
           <NuxtLink to="/about">About</NuxtLink>
-          <button @click="toggleTheme" class="theme-toggle">
+          <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
           </button>
         </nav>
@@ -15,15 +15,14 @@
     </header>
 
     <div class="page-container">
-      <!-- Left Sidebar for TOC -->
+      <!-- Sidebar TOC -->
       <aside v-if="tocLinks.length" class="sidebar">
         <div class="toc-wrapper">
           <div class="toc-header">
-            <Icon name="lucide:align-left" class="mr-2 opacity-50" />
-            <h3>CONTENTS</h3>
+            <Icon name="lucide:list" class="mr-2 opacity-50" />
+            <h3>Index</h3>
           </div>
           <nav class="toc">
-            <!-- Refined Premium Indicator: Elegant Bar without "cheap" dot -->
             <div 
               class="active-indicator" 
               :style="{ transform: `translateY(${indicatorOffset}px)` }"
@@ -48,15 +47,6 @@
 
       <main class="main-content" :class="{ 'no-sidebar': !tocLinks.length }">
         <article v-if="article">
-          <!-- Article Header -->
-          <div class="breadcrumb-trail">
-            <NuxtLink to="/blog" class="breadcrumb-link">Blog</NuxtLink>
-            <template v-for="(p, i) in pathBreadcrumbs" :key="i">
-              <Icon name="lucide:chevron-right" class="breadcrumb-sep" />
-              <span class="breadcrumb-text">{{ p }}</span>
-            </template>
-          </div>
-
           <header class="article-header">
             <h1 class="article-title">{{ article.title }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
@@ -64,16 +54,15 @@
             </div>
           </header>
           
-          <!-- Optimized Typography Core -->
-          <div class="markdown-body">
+          <div class="article-body">
             <ContentRenderer :value="article" />
           </div>
         </article>
         
         <div v-else class="not-found">
-          <Icon name="lucide:search-x" class="text-6xl opacity-10 mb-6" />
-          <h1>Article could not be found</h1>
-          <NuxtLink to="/blog" class="back-link">Return to Library</NuxtLink>
+          <Icon name="lucide:alert-circle" class="text-6xl opacity-20 mb-6" />
+          <h1>Content not found</h1>
+          <NuxtLink to="/blog" class="back-link">Return to Blog</NuxtLink>
         </div>
       </main>
     </div>
@@ -81,30 +70,56 @@
 </template>
 
 <script setup>
-const route = useRoute()
-const isDark = ref(false)
+import { isDark, toggleDark } from '~/composables/useTheme'
 const activeId = ref('')
 const indicatorOffset = ref(0)
+const route = useRoute()
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark')
-}
-
-const pathBreadcrumbs = computed(() => {
-  const parts = route.path.split('/').filter(Boolean)
-  if (parts.length <= 2) return []
-  return parts.slice(1, -1)
-})
-
-const { data: article } = await useAsyncData(`article-v5-${route.path}`, async () => {
+const { data: article } = await useAsyncData(`article-v17-${route.path}`, async () => {
   const all = await queryCollection('content').all()
-  const cleanRoutePath = decodeURIComponent(route.path.replace(/\/+/g, '/')).toLowerCase()
   
-  return all.find(item => {
-    const itemPath = item.path.replace(/\/+/g, '/').toLowerCase()
-    return itemPath === cleanRoutePath || itemPath === cleanRoutePath + '/'
+  const normalize = (p) => {
+    if (!p) return ''
+    try {
+      return decodeURIComponent(p)
+        .normalize('NFC')
+        .replace(/\/+/g, '/')
+        .replace(/\/$/, '')
+        .replace(/^\//, '')
+    } catch (e) {
+      return p.replace(/\/+/g, '/').replace(/\/$/, '').replace(/^\//, '')
+    }
+  }
+
+  const cleanRoute = normalize(route.path)
+  const routeStem = cleanRoute.split('/').pop()
+
+  // MATCHING STRATEGY
+  // 1. Exact or Relative Path Match
+  let found = all.find(item => {
+    const itemPath = normalize(item.path)
+    return itemPath === cleanRoute || 
+           itemPath === cleanRoute.replace(/^blog\//, '') ||
+           ('blog/' + itemPath) === cleanRoute
   })
+
+  // 2. Title Match (Handles cases where Nuxt strips Chinese from the path/slug)
+  if (!found && routeStem) {
+    found = all.find(item => {
+      const itemTitle = normalize(item.title || '')
+      return itemTitle === routeStem || itemTitle.toLowerCase() === routeStem.toLowerCase()
+    })
+  }
+
+  // 3. Stem fallback
+  if (!found && routeStem) {
+    found = all.find(item => {
+      const itemStem = normalize(item.stem || item.path.split('/').pop().replace(/\.md$/, ''))
+      return itemStem === routeStem || itemStem.toLowerCase() === routeStem.toLowerCase()
+    })
+  }
+
+  return found
 })
 
 const tocLinks = computed(() => {
@@ -136,8 +151,8 @@ const scrollTo = (id) => {
 }
 
 const updateActiveHeading = () => {
-  const headings = Array.from(document.querySelectorAll('h2, h3, h1'))
-  const scrollPosition = window.scrollY + 180
+  const headings = Array.from(document.querySelectorAll('h1, h2, h3'))
+  const scrollPosition = window.scrollY + 200
   let currentId = ''
 
   for (const heading of headings) {
@@ -160,13 +175,10 @@ const updateActiveHeading = () => {
 }
 
 onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
   window.addEventListener('scroll', updateActiveHeading)
-  
   if (window.MathJax?.typesetPromise) {
     setTimeout(() => window.MathJax.typesetPromise(), 1000)
   }
-  
   setTimeout(updateActiveHeading, 600)
 })
 
@@ -215,9 +227,8 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
-/* Redesigned Sidebar: Premium Experience */
 .sidebar {
-  width: 260px;
+  width: 240px;
   position: sticky;
   top: 6rem;
   height: calc(100vh - 8rem);
@@ -235,7 +246,7 @@ onUnmounted(() => {
 .toc-header h3 { 
   font-size: 0.7rem; 
   text-transform: uppercase; 
-  letter-spacing: 0.2em; 
+  letter-spacing: 0.15em; 
   color: var(--text-muted); 
   font-weight: 700; 
 }
@@ -246,115 +257,175 @@ onUnmounted(() => {
   position: absolute;
   left: -2px;
   width: 3px;
-  height: 20px;
-  background: linear-gradient(to bottom, var(--primary), var(--accent));
-  box-shadow: 0 0 10px var(--primary-glow);
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  height: 28px;
+  background: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+  transition: transform 0.3s cubic-bezier(0.2, 1, 0.2, 1);
   z-index: 2;
   border-radius: 4px;
 }
 
 .toc-list { list-style: none; padding: 0; margin: 0; }
-.toc-list li { padding: 0.5rem 1.5rem; transition: color 0.3s ease; }
+.toc-list li { padding: 0.5rem 1.5rem; transition: all 0.2s; }
 .toc-list li a { 
   color: var(--text-muted); 
   text-decoration: none; 
   font-size: 0.875rem; 
   display: block; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
-  white-space: nowrap;
-  transition: all 0.2s;
 }
 
-.toc-list li.active a { 
-  color: var(--primary); 
-  font-weight: 600; 
-  padding-left: 4px;
-}
+.toc-list li.active a { color: var(--primary); font-weight: 700; }
 
-/* Typography & Content Body */
 .main-content { flex: 1; max-width: 820px; padding: 5rem 0; min-width: 0; }
 .main-content.no-sidebar { margin: 0 auto; }
 
-.breadcrumb-trail { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 2rem; }
-.breadcrumb-link { text-decoration: none; color: inherit; }
-.breadcrumb-sep { font-size: 0.75rem; opacity: 0.3; }
-
 .article-header { margin-bottom: 4rem; }
-.article-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 3.75rem; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em; font-weight: 800; }
+.article-title { 
+  font-family: 'Bricolage Grotesque', sans-serif; 
+  font-size: 3.5rem; 
+  line-height: 1.2; 
+  margin-bottom: 1.5rem; 
+  font-weight: 800; 
+}
 .tag-label { font-size: 0.75rem; color: var(--text-muted); background: var(--secondary); padding: 0.2rem 0.6rem; border-radius: 0.4rem; margin-right: 0.5rem; }
 
-/* Manually restoring "Default" high-quality article styles */
-.markdown-body {
-  font-family: inherit;
+/* ARTICLE BODY TYPOGRAPHY */
+.article-body {
+  font-family: 'Geist Sans', sans-serif;
   font-size: 1.125rem;
-  line-height: 1.75;
+  line-height: 1.8;
+  color: var(--text);
 }
 
-.markdown-body :deep(h1),
-.markdown-body :deep(h2),
-.markdown-body :deep(h3),
-.markdown-body :deep(h4) {
+.article-body :deep(h1),
+.article-body :deep(h2),
+.article-body :deep(h3) {
   font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
   color: var(--text);
   margin-top: 3.5rem;
-  margin-bottom: 1.25rem;
-  scroll-margin-top: 120px;
-  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 100px;
 }
 
-.markdown-body :deep(h2) { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-.markdown-body :deep(h3) { font-size: 1.5rem; }
-
-.markdown-body :deep(p) { margin-bottom: 1.5rem; }
-.markdown-body :deep(strong) { font-weight: 700; color: var(--text); }
-
-.markdown-body :deep(code) {
-  font-family: 'Fira Code', monospace;
-  background: var(--secondary);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: var(--accent);
+/* Forceful removal of heading underlines (The 'surgical' fix) */
+.article-body :deep(h1),
+.article-body :deep(h2),
+.article-body :deep(h3),
+.article-body :deep(h4) {
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
-.markdown-body :deep(pre) {
-  background: var(--secondary);
-  padding: 1.5rem;
-  border-radius: 1rem;
-  margin: 2rem 0;
-  overflow-x: auto;
+.article-body :deep(h1) a,
+.article-body :deep(h2) a,
+.article-body :deep(h3) a,
+.article-body :deep(h4) a {
+  text-decoration: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: inherit !important;
+}
+
+.article-body :deep(h2) {
+  font-size: 2rem;
+  padding-bottom: 0.2rem;
+}
+
+.article-body :deep(h3) {
+  font-size: 1.5rem;
+}
+
+.article-body :deep(p) {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+/* Restoring the dots and numbers */
+.article-body :deep(ul) {
+  list-style: disc;
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.article-body :deep(ol) {
+  list-style: decimal;
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.article-body :deep(li) {
+  margin-bottom: 0.5rem;
+}
+
+.article-body :deep(blockquote) {
+  border-left: 4px solid var(--primary);
+  padding-left: 1.5rem;
+  font-style: italic;
+  margin: 2.3rem 0;
+  color: var(--text-muted);
+}
+
+.article-body :deep(img) {
+  max-width: 100%;
+  border-radius: 1.5rem;
+  margin: 3.5rem 0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+}
+
+/* TABLE STYLES - REINFORCED */
+.article-body :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: 0.95rem;
   border: 1px solid var(--border);
 }
 
-.markdown-body :deep(pre code) {
-  background: none;
-  color: inherit;
-  padding: 0;
+.article-body :deep(th),
+.article-body :deep(td) {
+  border: 1px solid var(--border) !important;
+  padding: 0.75rem 1rem;
+  text-align: left;
 }
 
-.markdown-body :deep(ul), .markdown-body :deep(ol) {
-  padding-left: 2rem;
-  margin-bottom: 1.5rem;
+.article-body :deep(th) {
+  background: rgba(128, 128, 128, 0.08);
+  font-weight: 700;
+  color: var(--primary);
 }
 
-.markdown-body :deep(li) {
-  margin-bottom: 0.75rem;
+.article-body :deep(tr:nth-child(even)) {
+  background: rgba(128, 128, 128, 0.03);
 }
 
-.markdown-body :deep(blockquote) {
-  border-left: 4px solid var(--primary);
-  padding-left: 1.5rem;
-  color: var(--text-muted);
-  font-style: italic;
-  margin: 2rem 0;
+/* Link styles */
+.article-body :deep(a) {
+  color: var(--primary);
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
 
-.markdown-body :deep(img) {
-  max-width: 100%;
-  border-radius: 1rem;
-  margin: 2.5rem 0;
+.article-body :deep(p a),
+.article-body :deep(li a) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.article-body :deep(a:hover) {
+  opacity: 0.8;
+}
+
+.article-body :deep(code:not(pre code)) {
+  background: var(--secondary);
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.5rem;
+  font-size: 0.875em;
+  font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Fira Code', 'Liberation Mono', 'Courier New', monospace;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  font-weight: 500;
 }
 
 .not-found { text-align: center; padding: 6rem 0; }
@@ -362,5 +433,6 @@ onUnmounted(() => {
 
 @media (max-width: 1024px) {
   .sidebar { display: none; }
+  .article-title { font-size: 2.75rem; }
 }
 </style>

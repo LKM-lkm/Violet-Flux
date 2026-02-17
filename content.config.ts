@@ -6,7 +6,7 @@ export default defineContentConfig({
       type: 'page',
       source: {
         include: 'blog/**',
-        exclude: ['**/.*/**', '**/node_modules/**', '**/.obsidian/**']
+        exclude: ['**/.*/**', '**/node_modules/**', '**/assets/**', '**/.obsidian/**']
       },
       schema: z.object({
         tags: z.array(z.string()).default([]),

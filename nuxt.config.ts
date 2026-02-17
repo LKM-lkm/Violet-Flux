@@ -59,11 +59,12 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      failOnError: false // Temporary measure to allow build to pass if minor links fail
+      routes: ['/', '/blog'],
+      failOnError: false
     }
   },
 
   routeRules: {
-    '/blog/**': { isr: true }
+    '/blog/**': { prerender: true }
   }
 })

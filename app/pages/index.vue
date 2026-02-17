@@ -6,7 +6,7 @@
         <nav class="nav">
           <a href="/about">About</a>
           <a href="/blog">Blog</a>
-          <button @click="toggleTheme" class="theme-toggle">
+          <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
           </button>
         </nav>
@@ -29,17 +29,8 @@
 </template>
 
 <script setup>
-const isDark = ref(false)
+import { isDark, toggleDark } from '~/composables/useTheme'
 const currentYear = new Date().getFullYear();
-
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark')
-}
-
-onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
-})
 </script>
 
 <style scoped>

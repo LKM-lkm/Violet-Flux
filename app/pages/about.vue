@@ -7,7 +7,7 @@
           <NuxtLink to="/">Home</NuxtLink>
           <NuxtLink to="/blog">Blog</NuxtLink>
           <NuxtLink to="/about">About</NuxtLink>
-          <button @click="toggleTheme" class="theme-toggle">
+          <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
           </button>
         </nav>
@@ -48,14 +48,7 @@
 </template>
 
 <script setup>
-const isDark = ref(false)
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark')
-}
-onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
-})
+import { isDark, toggleDark } from '~/composables/useTheme'
 </script>
 
 <style scoped>
