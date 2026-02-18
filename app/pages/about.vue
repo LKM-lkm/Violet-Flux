@@ -97,7 +97,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 
 <style scoped>
 .about-layout {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -138,6 +138,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(10px);
   z-index: 10;
+  flex-shrink: 0; /*Prevent header from shrinking*/
 }
 
 .header-container {
@@ -164,7 +165,12 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   color: var(--text);
 }
 
-.page-content { position: relative; z-index: 1; padding: 5rem 0; }
+.page-content {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 0;
+  flex: 1; /* 填充剩余空间防止Footer被推到下面 */
+}
 
 .hero-simple { text-align: center; margin-bottom: 5rem; }
 .hero-simple .title {
@@ -263,7 +269,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 }
 .tech-icon { color: var(--primary); width: 1.25rem; height: 1.25rem; }
 
-.footer { padding: 4rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+.footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); flex-shrink: 0; }
 
 @media (max-width: 1024px) {
   .profile-grid { grid-template-columns: 1fr; }

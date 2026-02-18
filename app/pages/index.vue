@@ -426,7 +426,7 @@ const currentYear = new Date().getFullYear();
   width: 100%;
   padding: 1.5rem 0;
   border-top: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.1); /* Fallback */
+  background: rgba(0, 0, 0, 0.05); /* Fallback */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   user-select: none;

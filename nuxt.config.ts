@@ -91,6 +91,7 @@ export default defineNuxtConfig({
     }
   },
   routeRules: {
-    '/blog/**': { prerender: true }
+    '/blog/**': { prerender: true },
+    '/cwd-api/**': { proxy: 'https://cwd-api.likem.eu.cc/**' }
   }
 })
