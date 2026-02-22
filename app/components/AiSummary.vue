@@ -45,7 +45,7 @@ const fullText = ref('')
 const isTyping = ref(false)
 
 // For demonstration, you would replace this with your Cloudflare Worker URL
-const WORKER_URL = 'https://violet-flux-summery.likem.eu.cc/'
+const WORKER_URL = 'https://violet-flux-summery.likem.cc.cd'
 
 const generateSummary = async () => {
   if (status.value !== 'idle') return

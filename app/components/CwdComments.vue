@@ -21,9 +21,7 @@ const initComments = () => {
     try {
       commentsInstance = new CWDComments({
         el: '#cwd-comments',
-        // Use local proxy /cwd-api for both dev and prod
-        // This bypasses GFW blocking of workers.dev and handles CORS
-        apiBaseUrl: '/cwd-api',
+        apiBaseUrl: 'https://cwd-api.likem.cc.cd/',
         postSlug: props.slug,
         siteId: 'blog',
         lang: 'auto',
@@ -31,7 +29,7 @@ const initComments = () => {
         pageSize: 10,
         customCssUrl: '/styles/cwd-custom.css'
       })
-      console.log('CWD Initialized with BaseURL:', process.env.NODE_ENV === 'development' ? '/cwd-api' : 'https://cwd-api.likem.workers.dev/')
+      console.log('CWD Initialized with BaseURL:', 'https://cwd-api.likem.cc.cd/')
       commentsInstance.mount()
     } catch (e) {
       console.error('Failed to initialize CWD comments:', e)

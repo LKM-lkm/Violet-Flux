@@ -48,7 +48,7 @@ export default defineNuxtConfig({
           type: 'text/javascript'
         },
         {
-          src: 'https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-mml-chtml.js',
+          src: 'https://cdn.jsdelivr.net/npm/mathjax@4.1.1/tex-mml-chtml.js',
           id: 'MathJax-script',
           async: true
         }
@@ -92,6 +92,5 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/blog/**': { prerender: true },
-    '/cwd-api/**': { proxy: 'https://cwd-api.likem.eu.cc/**' }
   }
 })
