@@ -49,6 +49,7 @@ const resolvedSrc = computed(() => {
   const segments = cleanRoutePath.split('/').filter(Boolean)
   
   // Remove 'blog' and 'content' prefixes if they exist
+  // This ensures consistency between SSR and client-side
   const baseSegments = segments.filter(s => s !== 'blog' && s !== 'content')
   
   // Remove the last segment (the slug/filename of the post) to get the directory
@@ -78,16 +79,18 @@ const resolvedSrc = computed(() => {
   const fullPath = pathParts.join('/').replace(/\/+/g, '/')
   
   // Debug log - always log in development
-  console.log('ProseImg Debug:', {
-    original: props.src,
-    routePath: currentPath,
-    segments: segments,
-    baseSegments: baseSegments,
-    cleanSrc: cleanSrc,
-    pathParts: pathParts,
-    fullPath: fullPath,
-    encoded: encodeURI(fullPath)
-  })
+  if (import.meta.dev) {
+    console.log('ProseImg Debug:', {
+      original: props.src,
+      routePath: currentPath,
+      segments: segments,
+      baseSegments: baseSegments,
+      cleanSrc: cleanSrc,
+      pathParts: pathParts,
+      fullPath: fullPath,
+      encoded: encodeURI(fullPath)
+    })
+  }
   
   // Encode the final URI for Chinese characters and spaces
   return encodeURI(fullPath)
