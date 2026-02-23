@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
+    './modules/content-markdown-it'
   ],
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
@@ -82,39 +83,36 @@ export default defineNuxtConfig({
   },
 
   content: {
-    build: {
-      markdown: {
-        remarkPlugins: {
-          'remark-wiki-link': {
-            hrefTemplate: (permalink: string) => `/blog/${permalink}`,
-            aliasDivider: '|'
-          }
-        },
-        highlight: {
-          theme: {
-            default: 'github-light',
-            dark: 'github-dark'
-          },
-          langs: [
-            'javascript',
-            'typescript',
-            'python',
-            'java',
-            'c',
-            'cpp',
-            'bash',
-            'shell',
-            'json',
-            'yaml',
-            'markdown',
-            'html',
-            'css',
-            'vue',
-            'jsx',
-            'tsx'
-          ]
-        }
+    markdown: {
+      mdc: false,
+      toc: {
+        depth: 3,
+        searchDepth: 3
       }
+    },
+    highlight: {
+      theme: {
+        default: 'github-light',
+        dark: 'github-dark'
+      },
+      langs: [
+        'javascript',
+        'typescript',
+        'python',
+        'java',
+        'c',
+        'cpp',
+        'bash',
+        'shell',
+        'json',
+        'yaml',
+        'markdown',
+        'html',
+        'css',
+        'vue',
+        'jsx',
+        'tsx'
+      ]
     }
   },
   routeRules: {
