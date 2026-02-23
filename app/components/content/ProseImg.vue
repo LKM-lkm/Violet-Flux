@@ -7,7 +7,8 @@
       class="prose-img"
       loading="lazy"
     />
-    <span v-if="alt" class="image-caption">{{ alt }}</span>
+    <!-- 只在 alt 不是文件名时显示说明 -->
+    <span v-if="alt && !isFileName(alt)" class="image-caption">{{ alt }}</span>
   </div>
 </template>
 
@@ -28,6 +29,14 @@ const props = defineProps({
 })
 
 const route = useRoute()
+
+// 检查 alt 是否看起来像文件名
+const isFileName = (text) => {
+  if (!text) return false
+  // 如果包含文件扩展名或者是 "Pasted image" 开头，认为是文件名
+  return /\.(png|jpg|jpeg|gif|svg|webp)$/i.test(text) || 
+         /^Pasted image \d+$/i.test(text)
+}
 
 const resolvedSrc = computed(() => {
   if (!props.src) return ''

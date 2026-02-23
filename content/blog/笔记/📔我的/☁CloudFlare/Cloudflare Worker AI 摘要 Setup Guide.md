@@ -1,4 +1,7 @@
-# Cloudflare Worker AI Summary Setup Guide
+---
+tags:
+  - AI
+---
 
 This guide will help you deploy the backend for your "Violet Flux" blog's AI summary system.
 
@@ -43,7 +46,7 @@ export default {
         messages: [
           { 
             role: "system", 
-            content: "你是一个专业的博文摘要助手。请用一段约100-150字的中文总结下面这篇文章的核心内容。语气要优雅、精准，符合'紫流 (Violet Flux)'的科技与哲学美感。直接输出摘要内容，不要有'摘要：'等前缀。" 
+            content: "你是一个专业的博文摘要助手。请用一段约100-150字的中文总结下面这篇文章的核心内容。语气要优雅、精准，符合'紫流 (Violet Flux)'的科技与哲学美感。直接输出摘要内容，不要有'摘要：'等前缀。严禁直接输出原文或者重复代码。" 
           },
           { role: "user", content: content },
         ],
