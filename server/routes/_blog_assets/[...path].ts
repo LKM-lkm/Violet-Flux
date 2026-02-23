@@ -17,14 +17,34 @@ export default defineEventHandler(async (event) => {
       console.error('Failed to decode path:', relativePath, e)
     }
     
+    // Normalize path - replace emoji folder names with actual folder names
+    const pathMappings: Record<string, string> = {
+      '📔我的': 'Mine',
+      '☁CloudFlare': '☁CloudFlare',
+      '⬇️资源下载': '⬇️资源下载',
+      '𝄞Sibelius': '𝄞Sibelius',
+      '🌐网络技巧': '🌐网络技巧'
+    }
+    
+    // Apply all path mappings
+    let normalizedPath = relativePath
+    for (const [emoji, actual] of Object.entries(pathMappings)) {
+      normalizedPath = normalizedPath.replace(emoji, actual)
+    }
+    
+    // Remove duplicate 'blog' and 'content' segments that might appear in malformed routes
+    const segments = normalizedPath.split('/').filter(s => s && s !== 'blog' && s !== 'content')
+    normalizedPath = segments.join('/')
+    
     // Try multiple possible paths
     const possiblePaths = [
+      // Try with normalized path
+      join(process.cwd(), 'content', 'blog', normalizedPath),
+      // Try with original path
       join(process.cwd(), 'content', 'blog', relativePath),
-      // Replace 📔我的 with Mine
-      join(process.cwd(), 'content', 'blog', relativePath.replace('📔我的', 'Mine')),
-      // Replace ✍️ 文档工程 with other possible names
-      join(process.cwd(), 'content', 'blog', relativePath.replace('✍️ 文档工程', '✍️ 文档工程')),
-    ]
+      // Try with 笔记/Mine prefix if not already present
+      !normalizedPath.includes('笔记') ? join(process.cwd(), 'content', 'blog', '笔记', 'Mine', normalizedPath) : null,
+    ].filter(Boolean) as string[]
     
     let filePath = ''
     let found = false
@@ -41,6 +61,7 @@ export default defineEventHandler(async (event) => {
     console.log('Blog Assets Route:', {
       pathParam,
       relativePath,
+      normalizedPath,
       possiblePaths,
       filePath,
       found

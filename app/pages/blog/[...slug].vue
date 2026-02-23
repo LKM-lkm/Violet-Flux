@@ -940,13 +940,16 @@ watch(() => route.path, () => {
   color: var(--text-primary);
 }
 
-/* Markdown Alerts/Callouts 样式 */
+/* Markdown Alerts/Callouts 样式 - GitHub 风格 */
 .article-body :deep(.markdown-alert) {
-  padding: var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
   margin: var(--space-xl) 0;
   border-left: 4px solid;
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  font-style: normal;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .article-body :deep(.markdown-alert-title) {
@@ -955,52 +958,145 @@ watch(() => route.path, () => {
   gap: var(--space-sm);
   font-weight: 700;
   margin-bottom: var(--space-sm);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
+/* NOTE - 蓝色 */
 .article-body :deep(.markdown-alert-note) {
   border-left-color: #0969da;
-  background: rgba(9, 105, 218, 0.05);
+  background: linear-gradient(
+    135deg,
+    rgba(9, 105, 218, 0.08) 0%,
+    rgba(9, 105, 218, 0.04) 100%
+  );
 }
 
 .article-body :deep(.markdown-alert-note .markdown-alert-title) {
   color: #0969da;
 }
 
+/* TIP - 绿色 */
 .article-body :deep(.markdown-alert-tip) {
   border-left-color: #1a7f37;
-  background: rgba(26, 127, 55, 0.05);
+  background: linear-gradient(
+    135deg,
+    rgba(26, 127, 55, 0.08) 0%,
+    rgba(26, 127, 55, 0.04) 100%
+  );
 }
 
 .article-body :deep(.markdown-alert-tip .markdown-alert-title) {
   color: #1a7f37;
 }
 
+/* IMPORTANT - 紫色 */
 .article-body :deep(.markdown-alert-important) {
   border-left-color: #8250df;
-  background: rgba(130, 80, 223, 0.05);
+  background: linear-gradient(
+    135deg,
+    rgba(130, 80, 223, 0.08) 0%,
+    rgba(130, 80, 223, 0.04) 100%
+  );
 }
 
 .article-body :deep(.markdown-alert-important .markdown-alert-title) {
   color: #8250df;
 }
 
+/* WARNING - 橙色 */
 .article-body :deep(.markdown-alert-warning) {
-  border-left-color: #9a6700;
-  background: rgba(154, 103, 0, 0.05);
+  border-left-color: #d97706;
+  background: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.08) 0%,
+    rgba(217, 119, 6, 0.04) 100%
+  );
 }
 
 .article-body :deep(.markdown-alert-warning .markdown-alert-title) {
-  color: #9a6700;
+  color: #d97706;
 }
 
+/* CAUTION - 红色 */
 .article-body :deep(.markdown-alert-caution) {
   border-left-color: #cf222e;
-  background: rgba(207, 34, 46, 0.05);
+  background: linear-gradient(
+    135deg,
+    rgba(207, 34, 46, 0.08) 0%,
+    rgba(207, 34, 46, 0.04) 100%
+  );
 }
 
 .article-body :deep(.markdown-alert-caution .markdown-alert-title) {
   color: #cf222e;
+}
+
+/* 暗色模式下的 Alert 样式 */
+:root.dark .article-body :deep(.markdown-alert-note) {
+  border-left-color: #539bf5;
+  background: linear-gradient(
+    135deg,
+    rgba(83, 155, 245, 0.12) 0%,
+    rgba(83, 155, 245, 0.06) 100%
+  );
+}
+
+:root.dark .article-body :deep(.markdown-alert-note .markdown-alert-title) {
+  color: #539bf5;
+}
+
+:root.dark .article-body :deep(.markdown-alert-tip) {
+  border-left-color: #3fb950;
+  background: linear-gradient(
+    135deg,
+    rgba(63, 185, 80, 0.12) 0%,
+    rgba(63, 185, 80, 0.06) 100%
+  );
+}
+
+:root.dark .article-body :deep(.markdown-alert-tip .markdown-alert-title) {
+  color: #3fb950;
+}
+
+:root.dark .article-body :deep(.markdown-alert-important) {
+  border-left-color: #a371f7;
+  background: linear-gradient(
+    135deg,
+    rgba(163, 113, 247, 0.12) 0%,
+    rgba(163, 113, 247, 0.06) 100%
+  );
+}
+
+:root.dark .article-body :deep(.markdown-alert-important .markdown-alert-title) {
+  color: #a371f7;
+}
+
+:root.dark .article-body :deep(.markdown-alert-warning) {
+  border-left-color: #f59e0b;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.12) 0%,
+    rgba(245, 158, 11, 0.06) 100%
+  );
+}
+
+:root.dark .article-body :deep(.markdown-alert-warning .markdown-alert-title) {
+  color: #f59e0b;
+}
+
+:root.dark .article-body :deep(.markdown-alert-caution) {
+  border-left-color: #f85149;
+  background: linear-gradient(
+    135deg,
+    rgba(248, 81, 73, 0.12) 0%,
+    rgba(248, 81, 73, 0.06) 100%
+  );
+}
+
+:root.dark .article-body :deep(.markdown-alert-caution .markdown-alert-title) {
+  color: #f85149;
 }
 
 /* === 404 页面 === */

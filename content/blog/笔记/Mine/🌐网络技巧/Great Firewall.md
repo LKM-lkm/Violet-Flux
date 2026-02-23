@@ -3,8 +3,6 @@ tags:
   - 科学上网
   - 节点
 ---
-# Great Firewall
-
 ## 免费软件推荐
 
 1. Android（以下两个软件均可在Google Play下载稳定版本）
