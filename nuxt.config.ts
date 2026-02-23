@@ -81,11 +81,16 @@ export default defineNuxtConfig({
   },
 
   content: {
-    markdown: {
-      remarkPlugins: {
-        'remark-wiki-link': {
-          hrefTemplate: (permalink) => `/blog/${permalink}`,
-          aliasDivider: '|'
+    build: {
+      markdown: {
+        remarkPlugins: {
+          'remark-wiki-link': {
+            hrefTemplate: (permalink) => `/blog/${permalink}`,
+            aliasDivider: '|'
+          }
+        },
+        highlight: {
+          theme: 'github-dark'
         }
       }
     }
