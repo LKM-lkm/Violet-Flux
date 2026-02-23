@@ -94,7 +94,25 @@ export default defineNuxtConfig({
           theme: {
             default: 'github-light',
             dark: 'github-dark'
-          }
+          },
+          langs: [
+            'javascript',
+            'typescript',
+            'python',
+            'java',
+            'c',
+            'cpp',
+            'bash',
+            'shell',
+            'json',
+            'yaml',
+            'markdown',
+            'html',
+            'css',
+            'vue',
+            'jsx',
+            'tsx'
+          ]
         }
       }
     }

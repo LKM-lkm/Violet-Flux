@@ -825,6 +825,7 @@ watch(() => route.path, () => {
   box-shadow: var(--shadow-md),
               inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
+  white-space: pre; /* 保留换行和空格 */
 }
 
 .article-body :deep(pre code) {
@@ -835,17 +836,26 @@ watch(() => route.path, () => {
   font-weight: normal;
   display: block;
   color: var(--code-text);
+  white-space: pre; /* 保留换行和空格 */
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
-/* 保留语法高亮的颜色 */
+/* Shiki 语法高亮样式 */
 .article-body :deep(pre code .line) {
-  display: inline-block;
-  min-height: 1em;
+  display: block; /* 改为 block 确保换行 */
+  min-height: 1.5em;
+  line-height: 1.7;
 }
 
+/* 确保 Shiki 的 token 样式正常显示 */
 .article-body :deep(pre code span) {
-  /* 让 shiki 的语法高亮颜色正常显示 */
-  color: inherit;
+  font-family: inherit;
+}
+
+/* 如果没有高亮，至少保证可读性 */
+.article-body :deep(pre code:not([class*="language-"])) {
+  color: var(--code-text);
 }
 
 .article-body :deep(pre)::before {

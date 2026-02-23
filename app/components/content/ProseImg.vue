@@ -77,19 +77,17 @@ const resolvedSrc = computed(() => {
   
   const fullPath = pathParts.join('/').replace(/\/+/g, '/')
   
-  // Debug log in development
-  if (process.dev) {
-    console.log('ProseImg Debug:', {
-      original: props.src,
-      routePath: currentPath,
-      segments: segments,
-      baseSegments: baseSegments,
-      cleanSrc: cleanSrc,
-      pathParts: pathParts,
-      fullPath: fullPath,
-      encoded: encodeURI(fullPath)
-    })
-  }
+  // Debug log - always log in development
+  console.log('ProseImg Debug:', {
+    original: props.src,
+    routePath: currentPath,
+    segments: segments,
+    baseSegments: baseSegments,
+    cleanSrc: cleanSrc,
+    pathParts: pathParts,
+    fullPath: fullPath,
+    encoded: encodeURI(fullPath)
+  })
   
   // Encode the final URI for Chinese characters and spaces
   return encodeURI(fullPath)
