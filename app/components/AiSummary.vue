@@ -195,19 +195,19 @@ onMounted(() => {
 .text-content {
   font-size: 1rem;
   line-height: 1.7;
-  color: var(--text);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .placeholder-text {
   font-style: italic;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   margin: 0;
 }
 
 .error-text {
-  color: #ef4444;
+  color: var(--primary);
   font-size: 0.9rem;
   margin: 0;
 }

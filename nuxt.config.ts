@@ -59,9 +59,10 @@ export default defineNuxtConfig({
   nitro: {
     publicAssets: [
       {
-        baseURL: '_blog_assets',
+        baseURL: '/_blog_assets',
         dir: './content/blog',
-        maxAge: 60 * 60 * 24 * 7
+        maxAge: 60 * 60 * 24 * 7,
+        fallthrough: true
       }
     ],
     prerender: {
@@ -85,12 +86,15 @@ export default defineNuxtConfig({
       markdown: {
         remarkPlugins: {
           'remark-wiki-link': {
-            hrefTemplate: (permalink) => `/blog/${permalink}`,
+            hrefTemplate: (permalink: string) => `/blog/${permalink}`,
             aliasDivider: '|'
           }
         },
         highlight: {
-          theme: 'github-dark'
+          theme: {
+            default: 'github-light',
+            dark: 'github-dark'
+          }
         }
       }
     }

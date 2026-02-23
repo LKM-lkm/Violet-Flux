@@ -61,8 +61,8 @@ const copy = (text) => {
 .prose-pre-wrapper {
   margin: 2rem 0;
   border-radius: 0.75rem;
-  background: var(--secondary);
-  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   overflow: hidden;
   position: relative;
 }
@@ -72,8 +72,8 @@ const copy = (text) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: rgba(128, 128, 128, 0.05);
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
   font-size: 0.75rem;
   font-family: sans-serif;
 }
@@ -95,14 +95,14 @@ const copy = (text) => {
   border-radius: 0.4rem;
   border: none;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .copy-btn:hover, .floating-copy-btn:hover {
-  background: rgba(128, 128, 128, 0.1);
-  color: var(--text);
+  background: var(--border-light);
+  color: var(--text-primary);
 }
 
 .floating-copy-btn {
@@ -110,8 +110,8 @@ const copy = (text) => {
   top: 0.75rem;
   right: 0.75rem;
   z-index: 10;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
 }
 
 .code-container {

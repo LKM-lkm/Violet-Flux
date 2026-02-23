@@ -96,8 +96,8 @@ const currentYear = new Date().getFullYear();
   display: flex;
   flex-direction: column;
   position: relative;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* FLUX BACKGROUND */
@@ -159,7 +159,7 @@ const currentYear = new Date().getFullYear();
 .mist-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, transparent, var(--bg));
+  background: radial-gradient(circle at 50% 50%, transparent, var(--bg-primary));
   opacity: 0.5;
   mix-blend-mode: soft-light;
   animation: cloud-pulse 10s infinite alternate ease-in-out;
@@ -176,7 +176,7 @@ const currentYear = new Date().getFullYear();
   height: 80px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-light);
   backdrop-filter: blur(15px);
   z-index: 10;
 }
@@ -197,16 +197,16 @@ const currentYear = new Date().getFullYear();
 .nav { display: flex; gap: 2.5rem; align-items: center; }
 .nav a { 
   font-size: 0.9375rem; 
-  color: var(--text-muted); 
+  color: var(--text-secondary); 
   text-decoration: none; 
   font-weight: 500;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.nav a:hover { color: var(--text); transform: translateY(-2px); }
+.nav a:hover { color: var(--text-primary); transform: translateY(-2px); }
 
 .theme-toggle {
-  background: rgba(128, 128, 128, 0.05);
-  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   width: 40px;
   height: 40px;
   border-radius: 12px;
@@ -214,11 +214,11 @@ const currentYear = new Date().getFullYear();
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  color: var(--text-primary);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle:hover { background: var(--border); transform: rotate(15deg) scale(1.1); }
+.theme-toggle:hover { background: var(--border-light); transform: rotate(15deg) scale(1.1); }
 
 /* HERO SECTION */
 .hero-section {
@@ -227,6 +227,7 @@ const currentYear = new Date().getFullYear();
   align-items: center;
   position: relative;
   z-index: 1;
+  padding-bottom: 100px; /* 为fixed footer留出空间 */
 }
 
 .hero-container {
@@ -243,8 +244,8 @@ const currentYear = new Date().getFullYear();
 .badge {
   display: inline-block;
   padding: 0.6rem 1.2rem;
-  background: var(--secondary);
-  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -272,7 +273,7 @@ const currentYear = new Date().getFullYear();
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--text) 30%, var(--primary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--primary) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -281,7 +282,7 @@ const currentYear = new Date().getFullYear();
 .subtitle {
   font-size: 1.4rem;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   max-width: 580px;
   margin-bottom: 3.5rem;
   letter-spacing: -0.01em;
@@ -316,16 +317,16 @@ const currentYear = new Date().getFullYear();
 .btn-primary:hover .btn-icon { transform: translateX(6px); }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  color: var(--text);
+  background: var(--glass-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
   backdrop-filter: blur(15px);
 }
 
 .btn-secondary:hover {
-  background: rgba(128, 128, 128, 0.08);
+  background: var(--bg-tertiary);
   transform: translateY(-5px);
-  border-color: var(--text-muted);
+  border-color: var(--text-secondary);
 }
 
 /* HERO VISUAL (ADVANCED GLASS) */
@@ -353,8 +354,8 @@ const currentYear = new Date().getFullYear();
 
 .flux-card:hover {
   transform: translateY(-10px) rotateX(10deg) rotateY(-5deg);
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--glass-border);
+  background: var(--glass-bg);
 }
 
 .main-card {
@@ -362,7 +363,13 @@ const currentYear = new Date().getFullYear();
   height: 420px;
   z-index: 5;
   padding: 1.8rem;
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--shadow-xl);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
 }
 
 .card-glow {
@@ -372,8 +379,13 @@ const currentYear = new Date().getFullYear();
   width: 200%;
   height: 200%;
   background: radial-gradient(circle, var(--primary-glow), transparent 70%);
-  opacity: 0.3;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.main-card:hover .card-glow {
+  opacity: 0.3;
 }
 
 .dot { width: 12px; height: 12px; border-radius: 50%; }
@@ -382,7 +394,7 @@ const currentYear = new Date().getFullYear();
 .green { background: #27c93f; }
 
 .card-header { display: flex; gap: 0.6rem; margin-bottom: 2.5rem; }
-.line { height: 8px; background: var(--border); border-radius: 4px; margin-bottom: 1.2rem; opacity: 0.5; }
+.line { height: 8px; background: var(--border-light); border-radius: 4px; margin-bottom: 1.2rem; opacity: 0.5; }
 
 .card-signature {
   position: absolute;
@@ -392,7 +404,7 @@ const currentYear = new Date().getFullYear();
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .sub-card-1 {
@@ -402,8 +414,12 @@ const currentYear = new Date().getFullYear();
   right: 5%;
   z-index: 4;
   transform: rotate(8deg);
-  box-shadow: var(--card-shadow);
-  opacity: 0.8;
+  box-shadow: var(--shadow-xl);
+  opacity: 0.9;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
 }
 
 .sub-card-2 {
@@ -413,8 +429,12 @@ const currentYear = new Date().getFullYear();
   left: 5%;
   z-index: 3;
   transform: rotate(-12deg);
-  box-shadow: var(--card-shadow);
-  opacity: 0.6;
+  box-shadow: var(--shadow-xl);
+  opacity: 0.8;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
 }
 
 
@@ -424,11 +444,13 @@ const currentYear = new Date().getFullYear();
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.05); /* Fallback */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 1.8rem 0;
+  border-top: 1px solid var(--border-light);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 var(--glass-border);
   user-select: none;
   z-index: 100;
 }
@@ -437,19 +459,33 @@ const currentYear = new Date().getFullYear();
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
+.footer-left p {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
 .signature-tag {
-  background: var(--secondary);
-  border: 1px solid var(--border);
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
   font-family: 'Bricolage Grotesque';
   font-weight: 700;
-  color: var(--text);
+  color: var(--primary);
   letter-spacing: 0.05em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.signature-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--primary-glow);
+  border-color: var(--primary);
 }
 
 

@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "fix-latex": "node scripts/escape-latex-braces.mjs"
+    "fix-latex": "node scripts/escape-latex-braces.mjs",
+    "theme": "node scripts/change-theme-color.mjs"
   },
   "dependencies": {
     "@nuxt/content": "^3.11.0",

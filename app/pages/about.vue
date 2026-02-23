@@ -100,8 +100,8 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   position: relative;
 }
 
@@ -135,7 +135,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   height: 80px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-light);
   backdrop-filter: blur(10px);
   z-index: 10;
   flex-shrink: 0; /*Prevent header from shrinking*/
@@ -149,12 +149,12 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 
 .logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 800; }
 .nav { display: flex; gap: 2rem; align-items: center; }
-.nav a { color: var(--text-muted); text-decoration: none; font-size: 0.9375rem; transition: color 0.2s; }
+.nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9375rem; transition: color 0.2s; }
 .nav a.router-link-active { color: var(--primary); font-weight: 600; }
 
 .theme-toggle {
-  background: var(--secondary);
-  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -162,7 +162,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  color: var(--text-primary);
 }
 
 .page-content {
@@ -179,12 +179,12 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   font-weight: 800;
   margin-bottom: 1rem;
   letter-spacing: -0.03em;
-  background: linear-gradient(to bottom, var(--text) 30%, var(--text-muted));
+  background: linear-gradient(to bottom, var(--text-primary) 30%, var(--text-secondary));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.hero-simple .subtitle { font-size: 1.25rem; color: var(--text-muted); }
+.hero-simple .subtitle { font-size: 1.25rem; color: var(--text-secondary); }
 
 /* PROFILE GRID - FIXING LAYOUT */
 .profile-grid {
@@ -197,6 +197,12 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 .glass-card {
   border-radius: 1.2rem;
   padding: 2.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--card-shadow),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .author-card {
@@ -216,19 +222,19 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--bg);
+  border: 2px solid var(--bg-primary);
 }
 
 .author-name { font-family: 'Bricolage Grotesque'; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
-.author-title { color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem; }
+.author-title { color: var(--text-secondary); font-size: 1rem; margin-bottom: 1.5rem; }
 
 .social-links { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
 .social-btn {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: var(--secondary);
-  color: var(--text);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,7 +244,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 .social-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
-.tag { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); background: var(--secondary); padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border); }
+.tag { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-secondary); padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-light); }
 
 /* STORY SIDE */
 .main-story { display: flex; flex-direction: column; gap: 2rem; }
@@ -249,7 +255,7 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   margin-bottom: 1.5rem; 
   color: var(--primary);
 }
-.story-card p { font-size: 1.125rem; line-height: 1.8; color: var(--text-muted); }
+.story-card p { font-size: 1.125rem; line-height: 1.8; color: var(--text-secondary); }
 
 .tech-grid {
   display: grid;
@@ -262,14 +268,14 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(128, 128, 128, 0.03);
+  background: var(--bg-secondary);
   border-radius: 1rem;
   font-weight: 600;
   font-size: 0.9375rem;
 }
 .tech-icon { color: var(--primary); width: 1.25rem; height: 1.25rem; }
 
-.footer { padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); flex-shrink: 0; }
+.footer { padding: 2rem 0; border-top: 1px solid var(--border-light); text-align: center; color: var(--text-secondary); flex-shrink: 0; }
 
 @media (max-width: 1024px) {
   .profile-grid { grid-template-columns: 1fr; }

@@ -61,7 +61,7 @@ watch(() => props.selectedPath, (newPath) => {
   padding: 0.4rem 0.75rem;
   border-radius: 0.4rem;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -70,13 +70,13 @@ watch(() => props.selectedPath, (newPath) => {
 }
 
 .tree-item-btn:hover {
-  background: rgba(128, 128, 128, 0.05);
-  color: var(--text);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .tree-item-btn.active {
-  background: rgba(128, 128, 128, 0.1);
-  color: var(--text);
+  background: var(--border-light);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -89,7 +89,7 @@ watch(() => props.selectedPath, (newPath) => {
 
 .tree-children {
   margin-left: 1.25rem;
-  border-left: 1px solid rgba(128, 128, 128, 0.1);
+  border-left: 1px solid var(--border-light);
   padding-left: 0.25rem;
   display: flex;
   flex-direction: column;

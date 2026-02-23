@@ -33,7 +33,12 @@ const resolvedSrc = computed(() => {
   if (!props.src) return ''
   
   // If it's already an absolute URL or a direct root path, leave it be
-  if (props.src.startsWith('http') || props.src.startsWith('/') || props.src.startsWith('data:')) {
+  if (props.src.startsWith('http') || props.src.startsWith('data:')) {
+    return props.src
+  }
+  
+  // If it starts with /, it's already a root path
+  if (props.src.startsWith('/')) {
     return props.src
   }
 
@@ -43,24 +48,50 @@ const resolvedSrc = computed(() => {
   const cleanRoutePath = decodeURIComponent(currentPath.replace(/\/$/, ''))
   const segments = cleanRoutePath.split('/').filter(Boolean)
   
-  // Remove 'blog' prefix if it exists to match the folder structure in content/blog
-  const baseSegments = segments.filter(s => s !== 'blog')
+  // Remove 'blog' and 'content' prefixes if they exist
+  const baseSegments = segments.filter(s => s !== 'blog' && s !== 'content')
   
   // Remove the last segment (the slug/filename of the post) to get the directory
-  baseSegments.pop()
+  if (baseSegments.length > 0) {
+    baseSegments.pop()
+  }
   
-  // Clean up the src
-  let cleanSrc = decodeURIComponent(props.src).replace(/^\.\//, '')
+  // Clean up the src - decode first to handle %20 etc
+  let cleanSrc = props.src.replace(/^\.\//, '')
+  // Decode if it's already encoded
+  try {
+    cleanSrc = decodeURIComponent(cleanSrc)
+  } catch (e) {
+    // If decode fails, use as is
+  }
   
   // WIKILINK FIX: If it's just a filename (no slash), assume it's in an 'assets' folder
   if (!cleanSrc.includes('/') && !cleanSrc.startsWith('assets/')) {
     cleanSrc = `assets/${cleanSrc}`
   }
   
-  // Join segments and encode URIs for the final path
-  const fullPath = `/_blog_assets/${baseSegments.join('/')}/${cleanSrc}`.replace(/\/+/g, '/')
+  // Join segments for the final path
+  const pathParts = baseSegments.length > 0 
+    ? ['/_blog_assets', ...baseSegments, cleanSrc]
+    : ['/_blog_assets', cleanSrc]
   
-  // We MUST encode the final URI because it likely contains Chinese
+  const fullPath = pathParts.join('/').replace(/\/+/g, '/')
+  
+  // Debug log in development
+  if (process.dev) {
+    console.log('ProseImg Debug:', {
+      original: props.src,
+      routePath: currentPath,
+      segments: segments,
+      baseSegments: baseSegments,
+      cleanSrc: cleanSrc,
+      pathParts: pathParts,
+      fullPath: fullPath,
+      encoded: encodeURI(fullPath)
+    })
+  }
+  
+  // Encode the final URI for Chinese characters and spaces
   return encodeURI(fullPath)
 })
 </script>
@@ -77,8 +108,8 @@ const resolvedSrc = computed(() => {
   max-width: 100%;
   height: auto;
   border-radius: 1.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
+  box-shadow: 0 25px 50px -12px var(--shadow-lg);
+  border: 1px solid var(--border-light);
   transition: transform 0.3s ease;
 }
 
@@ -89,7 +120,7 @@ const resolvedSrc = computed(() => {
 .image-caption {
   margin-top: 1rem;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-style: italic;
   text-align: center;
 }

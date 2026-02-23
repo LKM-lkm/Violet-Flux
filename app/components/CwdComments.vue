@@ -73,7 +73,7 @@ watch(() => props.slug, (newSlug) => {
 .cwd-comments-container {
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-light);
   min-height: 200px; /* Prevent layout shift */
 }
 </style>

@@ -13,19 +13,23 @@ files.forEach(file => {
   let content = original
   let fileFixed = 0
   
-  // 转义 inline math 中的花括号 $...$
-  content = content.replace(/\$([^\$\n]+)\$/g, (match, math) => {
-    if (math.includes('{') || math.includes('}')) {
-      fileFixed++
-      // 避免重复转义：先移除已有的转义，再重新转义
-      const unescaped = math.replace(/\\\{/g, '{').replace(/\\\}/g, '}')
-      const escaped = unescaped.replace(/\{/g, '\\{').replace(/\}/g, '\\}')
-      return `$${escaped}$`
-    }
-    return match
+  // 保护 \( 和 \) 界定符（转换为 $...$）
+  content = content.replace(/\\\(([^\)]+)\\\)/g, (match, math) => {
+    fileFixed++
+    const unescaped = math.replace(/\\\{/g, '{').replace(/\\\}/g, '}')
+    const escaped = unescaped.replace(/\{/g, '\\{').replace(/\}/g, '\\}')
+    return `$${escaped}$`
   })
   
-  // 转义 display math 中的花括号 $$...$$
+  // 保护 \[ 和 \] 界定符（转换为 $$...$$）
+  content = content.replace(/\\\[([\s\S]+?)\\\]/g, (match, math) => {
+    fileFixed++
+    const unescaped = math.replace(/\\\{/g, '{').replace(/\\\}/g, '}')
+    const escaped = unescaped.replace(/\{/g, '\\{').replace(/\}/g, '\\}')
+    return `$$${escaped}$$`
+  })
+  
+  // 转义 display math 中的花括号 $$...$$ (必须在 inline math 之前处理)
   content = content.replace(/\$\$([\s\S]+?)\$\$/g, (match, math) => {
     if (math.includes('{') || math.includes('}')) {
       fileFixed++
@@ -36,13 +40,14 @@ files.forEach(file => {
     return match
   })
   
-  // 转义 LaTeX 块 \[...\] 中的花括号
-  content = content.replace(/\\\[([\s\S]+?)\\\]/g, (match, math) => {
+  // 转义 inline math 中的花括号 $...$
+  content = content.replace(/\$([^\$\n]+)\$/g, (match, math) => {
     if (math.includes('{') || math.includes('}')) {
       fileFixed++
+      // 避免重复转义：先移除已有的转义，再重新转义
       const unescaped = math.replace(/\\\{/g, '{').replace(/\\\}/g, '}')
       const escaped = unescaped.replace(/\{/g, '\\{').replace(/\}/g, '\\}')
-      return `\\[${escaped}\\]`
+      return `$${escaped}$`
     }
     return match
   })
