@@ -940,6 +940,69 @@ watch(() => route.path, () => {
   color: var(--text-primary);
 }
 
+/* Markdown Alerts/Callouts 样式 */
+.article-body :deep(.markdown-alert) {
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  border-left: 4px solid;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+}
+
+.article-body :deep(.markdown-alert-title) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-lg);
+}
+
+.article-body :deep(.markdown-alert-note) {
+  border-left-color: #0969da;
+  background: rgba(9, 105, 218, 0.05);
+}
+
+.article-body :deep(.markdown-alert-note .markdown-alert-title) {
+  color: #0969da;
+}
+
+.article-body :deep(.markdown-alert-tip) {
+  border-left-color: #1a7f37;
+  background: rgba(26, 127, 55, 0.05);
+}
+
+.article-body :deep(.markdown-alert-tip .markdown-alert-title) {
+  color: #1a7f37;
+}
+
+.article-body :deep(.markdown-alert-important) {
+  border-left-color: #8250df;
+  background: rgba(130, 80, 223, 0.05);
+}
+
+.article-body :deep(.markdown-alert-important .markdown-alert-title) {
+  color: #8250df;
+}
+
+.article-body :deep(.markdown-alert-warning) {
+  border-left-color: #9a6700;
+  background: rgba(154, 103, 0, 0.05);
+}
+
+.article-body :deep(.markdown-alert-warning .markdown-alert-title) {
+  color: #9a6700;
+}
+
+.article-body :deep(.markdown-alert-caution) {
+  border-left-color: #cf222e;
+  background: rgba(207, 34, 46, 0.05);
+}
+
+.article-body :deep(.markdown-alert-caution .markdown-alert-title) {
+  color: #cf222e;
+}
+
 /* === 404 页面 === */
 .not-found {
   text-align: center;

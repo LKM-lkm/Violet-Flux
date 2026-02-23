@@ -57,8 +57,7 @@ const resolvedSrc = computed(() => {
   const cleanRoutePath = decodeURIComponent(currentPath.replace(/\/$/, ''))
   const segments = cleanRoutePath.split('/').filter(Boolean)
   
-  // Remove 'blog' and 'content' prefixes if they exist
-  // This ensures consistency between SSR and client-side
+  // Remove ALL occurrences of 'blog' and 'content' to handle malformed routes
   const baseSegments = segments.filter(s => s !== 'blog' && s !== 'content')
   
   // Remove the last segment (the slug/filename of the post) to get the directory
@@ -81,11 +80,12 @@ const resolvedSrc = computed(() => {
   }
   
   // Join segments for the final path
+  // Filter out empty strings to avoid multiple slashes
   const pathParts = baseSegments.length > 0 
-    ? ['/_blog_assets', ...baseSegments, cleanSrc]
+    ? ['/_blog_assets', ...baseSegments.filter(s => s), cleanSrc]
     : ['/_blog_assets', cleanSrc]
   
-  const fullPath = pathParts.join('/').replace(/\/+/g, '/')
+  const fullPath = pathParts.filter(s => s).join('/').replace(/\/+/g, '/')
   
   // Debug log - always log in development
   if (import.meta.dev) {

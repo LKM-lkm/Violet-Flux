@@ -3,18 +3,18 @@ tags:
   - AI
 ---
 
-This guide will help you deploy the backend for your "Violet Flux" blog's AI summary system.
+本指南将帮助您为“Violet Flux”博客的AI摘要系统部署后端。
 
 ## 1. 创建一个 Cloudflare Worker
 
 1. 登录你的 [Cloudflare Dashboard](https://dash.cloudflare.com/).
-2. Navigate to **Workers & Pages** > **Overview** > **Create application**.
+2. 导航至 **Workers & Pages** > **Overview** > **Create application**。
 3. 选择 **Create Worker**, give it a name (e.g., `violet-flux-ai`), and click **Deploy**.
 4. Click **Edit Code**.
 
 ## 2. Worker Script
 
-Copy and paste the following code into your Worker's `index.js` (or `index.ts`):
+将以下代码复制并粘贴到您的Worker的`index.js`（或`index.ts`）中：
 
 ```javascript
 export default {
@@ -68,9 +68,9 @@ export default {
 };
 ```
 
-## 3. Enable AI Binding
+## 3. 启用AI绑定
 
-1. Save the code and go back to the Worker's **Settings** tab.
+1. 保存代码并返回到Worker的 **设置** 选项卡。
 2. Select **Variables**.
 3. Scroll down to **AI Bindings**.
 4. Click **Add Binding**.
@@ -88,7 +88,7 @@ const WORKER_URL = 'https://your-worker.your-subdomain.workers.dev'
 
 ---
 
-## How it works
+## 工作原理
 
 1. **Frontend**: When a blog post loads, `AiSummary.vue` sends the first 3000 characters of the blog content to your Worker.
 2. **Backend**: The Worker uses Cloudflare's serverless AI to generate a concise summary using the Llama 3 model.
