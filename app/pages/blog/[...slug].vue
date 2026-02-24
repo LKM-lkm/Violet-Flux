@@ -1,5 +1,10 @@
 <template>
   <div class="blog-layout">
+    <!-- 阅读进度条 -->
+    <ClientOnly>
+      <ReadingProgress />
+    </ClientOnly>
+
     <!-- 背景效果 -->
     <div class="flux-bg">
       <div class="blob blob-1"></div>
@@ -98,6 +103,12 @@
             <ContentRenderer :value="article" />
           </div>
 
+          <!-- 文章导航（上一篇/下一篇） -->
+          <ArticleNavigation :current-path="article.path" />
+
+          <!-- 相关文章推荐 -->
+          <RelatedArticles :article="article" :max-items="3" />
+
           <ClientOnly>
             <CwdComments :slug="article.path" />
           </ClientOnly>
@@ -124,7 +135,12 @@ const indicatorOffset = ref(0)
 const mobileMenuOpen = ref(false)
 const route = useRoute()
 
-const { data: article } = await useAsyncData(`article-v19-${route.path}`, async () => {
+// 使用官方推荐的 queryCollectionItemSurroundings 获取上一页/下一页
+const { data: surround } = await useAsyncData(`surround-${route.path}`, () => {
+  return queryCollectionItemSurroundings('content', route.path)
+})
+
+const { data: article } = await useAsyncData(`article-v22-${route.path}`, async () => {
   const all = await queryCollection('content').all()
   
   const normalize = (p) => {
@@ -225,45 +241,61 @@ onMounted(() => {
   }
   setTimeout(updateActiveHeading, 600)
   
-  // 处理 GitHub 风格的 Alert
+  // 处理 GitHub Alert - 客户端转换
   nextTick(() => {
-    const blockquotes = document.querySelectorAll('.article-body blockquote')
-    blockquotes.forEach(bq => {
-      const firstP = bq.querySelector('p:first-child')
-      if (!firstP) return
+    const processAlerts = () => {
+      const blockquotes = document.querySelectorAll('.article-body blockquote')
       
-      const text = firstP.textContent?.trim() || ''
-      
-      // 检测 Alert 类型
-      const alertTypes = {
-        '[!TIP]': { class: 'alert-tip', icon: '💡', title: 'Tip' },
-        '[!WARNING]': { class: 'alert-warning', icon: '⚠️', title: 'Warning' },
-        '[!NOTE]': { class: 'alert-note', icon: 'ℹ️', title: 'Note' },
-        '[!IMPORTANT]': { class: 'alert-important', icon: '❗', title: 'Important' },
-        '[!CAUTION]': { class: 'alert-caution', icon: '🚨', title: 'Caution' }
-      }
-      
-      for (const [marker, config] of Object.entries(alertTypes)) {
-        if (text.startsWith(marker)) {
-          // 添加 alert 类
-          bq.classList.add('alert-container', config.class)
-          
-          // 创建标题元素
-          const titleDiv = document.createElement('div')
-          titleDiv.className = 'alert-title'
-          titleDiv.innerHTML = `<span>${config.icon}</span><span>${config.title}</span>`
-          
-          // 移除原始的 [!TIP] 等文本
-          const content = text.replace(marker, '').trim()
-          firstP.textContent = content
-          
-          // 插入标题
-          bq.insertBefore(titleDiv, firstP)
-          
-          break
+      blockquotes.forEach(bq => {
+        // 跳过已处理的
+        if (bq.classList.contains('markdown-alert')) return
+        
+        const firstP = bq.querySelector('p:first-child')
+        if (!firstP) return
+        
+        const text = firstP.textContent?.trim() || ''
+        
+        // Alert 类型映射
+        const alertMap = {
+          '[!NOTE]': { type: 'note', icon: 'ℹ️', title: 'Note' },
+          '[!TIP]': { type: 'tip', icon: '💡', title: 'Tip' },
+          '[!IMPORTANT]': { type: 'important', icon: '❗', title: 'Important' },
+          '[!WARNING]': { type: 'warning', icon: '⚠️', title: 'Warning' },
+          '[!CAUTION]': { type: 'caution', icon: '🚨', title: 'Caution' }
         }
-      }
-    })
+        
+        for (const [marker, config] of Object.entries(alertMap)) {
+          if (text.startsWith(marker)) {
+            // 转换为 GitHub Alert 结构
+            bq.classList.add('markdown-alert', `markdown-alert-${config.type}`)
+            
+            // 创建标题
+            const title = document.createElement('p')
+            title.className = 'markdown-alert-title'
+            title.innerHTML = `${config.icon} ${config.title}`
+            
+            // 移除 marker 并保留内容
+            const content = text.replace(marker, '').trim()
+            firstP.textContent = content
+            
+            // 插入标题
+            bq.insertBefore(title, firstP)
+            
+            break
+          }
+        }
+      })
+    }
+    
+    // 立即处理
+    processAlerts()
+    
+    // 监听内容变化（如果有动态加载）
+    const observer = new MutationObserver(processAlerts)
+    const articleBody = document.querySelector('.article-body')
+    if (articleBody) {
+      observer.observe(articleBody, { childList: true, subtree: true })
+    }
   })
 })
 
@@ -981,24 +1013,13 @@ watch(() => route.path, () => {
   color: var(--text-primary);
 }
 
-/* GitHub 风格 Alert 样式 - markdown-it-github-alerts 生成的 HTML */
+/* GitHub Alert 样式 */
 .article-body :deep(.markdown-alert) {
-  padding: 1rem;
-  margin: 1rem 0;
-  border: 1px solid;
-  border-left-width: 0.25rem;
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
+  border-left: 0.25rem solid;
   border-radius: 0.375rem;
-  font-style: normal;
-  background: transparent;
-}
-
-.article-body :deep(.markdown-alert > p) {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.article-body :deep(.markdown-alert > p:not(:last-child)) {
-  margin-bottom: 0.5rem;
+  background: var(--bg-secondary);
 }
 
 .article-body :deep(.markdown-alert-title) {
@@ -1007,59 +1028,47 @@ watch(() => route.path, () => {
   gap: 0.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
 }
 
-.article-body :deep(.markdown-alert-title svg) {
-  width: 1rem;
-  height: 1rem;
-}
-
-/* TIP - 绿色 */
-.article-body :deep(.markdown-alert-tip) {
-  border-color: #1a7f37;
-  background-color: rgba(26, 127, 55, 0.05);
-}
-
-.article-body :deep(.markdown-alert-tip .markdown-alert-title) {
-  color: #1a7f37;
-}
-
-/* WARNING - 橙色 */
-.article-body :deep(.markdown-alert-warning) {
-  border-color: #d97706;
-  background-color: rgba(217, 119, 6, 0.05);
-}
-
-.article-body :deep(.markdown-alert-warning .markdown-alert-title) {
-  color: #d97706;
-}
-
-/* NOTE - 蓝色 */
 .article-body :deep(.markdown-alert-note) {
-  border-color: #0969da;
-  background-color: rgba(9, 105, 218, 0.05);
+  border-left-color: #0969da;
+  background: rgba(9, 105, 218, 0.05);
 }
 
 .article-body :deep(.markdown-alert-note .markdown-alert-title) {
   color: #0969da;
 }
 
-/* IMPORTANT - 紫色 */
+.article-body :deep(.markdown-alert-tip) {
+  border-left-color: #1a7f37;
+  background: rgba(26, 127, 55, 0.05);
+}
+
+.article-body :deep(.markdown-alert-tip .markdown-alert-title) {
+  color: #1a7f37;
+}
+
 .article-body :deep(.markdown-alert-important) {
-  border-color: #8250df;
-  background-color: rgba(130, 80, 223, 0.05);
+  border-left-color: #8250df;
+  background: rgba(130, 80, 223, 0.05);
 }
 
 .article-body :deep(.markdown-alert-important .markdown-alert-title) {
   color: #8250df;
 }
 
-/* CAUTION - 红色 */
+.article-body :deep(.markdown-alert-warning) {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.05);
+}
+
+.article-body :deep(.markdown-alert-warning .markdown-alert-title) {
+  color: #d97706;
+}
+
 .article-body :deep(.markdown-alert-caution) {
-  border-color: #cf222e;
-  background-color: rgba(207, 34, 46, 0.05);
+  border-left-color: #cf222e;
+  background: rgba(207, 34, 46, 0.05);
 }
 
 .article-body :deep(.markdown-alert-caution .markdown-alert-title) {
@@ -1067,191 +1076,48 @@ watch(() => route.path, () => {
 }
 
 /* 暗色模式 */
-:root.dark .article-body :deep(.markdown-alert-tip) {
-  border-color: #3fb950;
-  background-color: rgba(63, 185, 80, 0.1);
-}
-
-:root.dark .article-body :deep(.markdown-alert-tip .markdown-alert-title) {
-  color: #3fb950;
-}
-
-:root.dark .article-body :deep(.markdown-alert-warning) {
-  border-color: #f59e0b;
-  background-color: rgba(245, 158, 11, 0.1);
-}
-
-:root.dark .article-body :deep(.markdown-alert-warning .markdown-alert-title) {
-  color: #f59e0b;
-}
-
 :root.dark .article-body :deep(.markdown-alert-note) {
-  border-color: #539bf5;
-  background-color: rgba(83, 155, 245, 0.1);
+  border-left-color: #539bf5;
+  background: rgba(83, 155, 245, 0.1);
 }
 
 :root.dark .article-body :deep(.markdown-alert-note .markdown-alert-title) {
   color: #539bf5;
 }
 
+:root.dark .article-body :deep(.markdown-alert-tip) {
+  border-left-color: #3fb950;
+  background: rgba(63, 185, 80, 0.1);
+}
+
+:root.dark .article-body :deep(.markdown-alert-tip .markdown-alert-title) {
+  color: #3fb950;
+}
+
 :root.dark .article-body :deep(.markdown-alert-important) {
-  border-color: #a371f7;
-  background-color: rgba(163, 113, 247, 0.1);
+  border-left-color: #a371f7;
+  background: rgba(163, 113, 247, 0.1);
 }
 
 :root.dark .article-body :deep(.markdown-alert-important .markdown-alert-title) {
   color: #a371f7;
 }
 
-:root.dark .article-body :deep(.markdown-alert-caution) {
-  border-color: #f85149;
-  background-color: rgba(248, 81, 73, 0.1);
+:root.dark .article-body :deep(.markdown-alert-warning) {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
 }
 
-:root.dark .article-body :deep(.markdown-alert-caution .markdown-alert-title) {
-  color: #f85149;
-}
-
-/* 兼容旧的 alert-container 类（JavaScript 生成的） */
-.article-body :deep(.alert-container) {
-  padding: 1rem;
-  margin: 1rem 0;
-  border: 1px solid;
-  border-left-width: 0.25rem;
-  border-radius: 0.375rem;
-  font-style: normal;
-  position: relative;
-  background: transparent;
-}
-
-.article-body :deep(.alert-container)::before,
-.article-body :deep(.alert-container)::after {
-  display: none !important;
-}
-
-.article-body :deep(.alert-container p) {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.article-body :deep(.alert-container p:not(:last-child)) {
-  margin-bottom: 0.5rem;
-}
-
-.article-body :deep(.alert-title) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.article-body :deep(.alert-title span:first-child) {
-  font-size: 1rem;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-}
-
-.article-body :deep(.alert-title span:last-child) {
-  text-transform: capitalize;
-}
-
-/* TIP - 绿色 */
-.article-body :deep(.alert-tip) {
-  border-color: #1a7f37;
-  background-color: rgba(26, 127, 55, 0.05);
-}
-
-.article-body :deep(.alert-tip .alert-title) {
-  color: #1a7f37;
-}
-
-/* WARNING - 橙色 */
-.article-body :deep(.alert-warning) {
-  border-color: #d97706;
-  background-color: rgba(217, 119, 6, 0.05);
-}
-
-.article-body :deep(.alert-warning .alert-title) {
-  color: #d97706;
-}
-
-/* NOTE - 蓝色 */
-.article-body :deep(.alert-note) {
-  border-color: #0969da;
-  background-color: rgba(9, 105, 218, 0.05);
-}
-
-.article-body :deep(.alert-note .alert-title) {
-  color: #0969da;
-}
-
-/* IMPORTANT - 紫色 */
-.article-body :deep(.alert-important) {
-  border-color: #8250df;
-  background-color: rgba(130, 80, 223, 0.05);
-}
-
-.article-body :deep(.alert-important .alert-title) {
-  color: #8250df;
-}
-
-/* CAUTION - 红色 */
-.article-body :deep(.alert-caution) {
-  border-color: #cf222e;
-  background-color: rgba(207, 34, 46, 0.05);
-}
-
-.article-body :deep(.alert-caution .alert-title) {
-  color: #cf222e;
-}
-
-/* 暗色模式 */
-:root.dark .article-body :deep(.alert-tip) {
-  border-color: #3fb950;
-  background-color: rgba(63, 185, 80, 0.1);
-}
-
-:root.dark .article-body :deep(.alert-tip .alert-title) {
-  color: #3fb950;
-}
-
-:root.dark .article-body :deep(.alert-warning) {
-  border-color: #f59e0b;
-  background-color: rgba(245, 158, 11, 0.1);
-}
-
-:root.dark .article-body :deep(.alert-warning .alert-title) {
+:root.dark .article-body :deep(.markdown-alert-warning .markdown-alert-title) {
   color: #f59e0b;
 }
 
-:root.dark .article-body :deep(.alert-note) {
-  border-color: #539bf5;
-  background-color: rgba(83, 155, 245, 0.1);
+:root.dark .article-body :deep(.markdown-alert-caution) {
+  border-left-color: #f85149;
+  background: rgba(248, 81, 73, 0.1);
 }
 
-:root.dark .article-body :deep(.alert-note .alert-title) {
-  color: #539bf5;
-}
-
-:root.dark .article-body :deep(.alert-important) {
-  border-color: #a371f7;
-  background-color: rgba(163, 113, 247, 0.1);
-}
-
-:root.dark .article-body :deep(.alert-important .alert-title) {
-  color: #a371f7;
-}
-
-:root.dark .article-body :deep(.alert-caution) {
-  border-color: #f85149;
-  background-color: rgba(248, 81, 73, 0.1);
-}
-
-:root.dark .article-body :deep(.alert-caution .alert-title) {
+:root.dark .article-body :deep(.markdown-alert-caution .markdown-alert-title) {
   color: #f85149;
 }
 

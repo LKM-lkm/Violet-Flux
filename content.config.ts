@@ -14,5 +14,5 @@ export default defineContentConfig({
         image: z.string().optional(),
       })
     }),
-  },
+  }
 })

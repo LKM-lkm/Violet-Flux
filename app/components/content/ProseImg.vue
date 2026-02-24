@@ -79,8 +79,7 @@ const resolvedSrc = computed(() => {
     cleanSrc = `assets/${cleanSrc}`
   }
   
-  // Join segments for the final path
-  // Filter out empty strings to avoid multiple slashes
+  // Join segments for the final path - use public directory path
   const pathParts = baseSegments.length > 0 
     ? ['/_blog_assets', ...baseSegments.filter(s => s), cleanSrc]
     : ['/_blog_assets', cleanSrc]

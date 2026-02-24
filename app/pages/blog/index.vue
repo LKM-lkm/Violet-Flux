@@ -129,6 +129,16 @@ const search = ref('')
 const selectedPath = ref('')
 const selectedTags = ref([])
 
+// 使用官方推荐的 queryCollectionNavigation
+const { data: navigation } = await useAsyncData('blog-navigation', () => 
+  queryCollectionNavigation('content')
+)
+
+// 使用官方推荐的 queryCollectionSearchSections 用于全文搜索
+const { data: searchSections } = await useAsyncData('blog-search-sections', () =>
+  queryCollectionSearchSections('content')
+)
+
 const { data: articles } = await useAsyncData('blog-articles-v4-premium', async () => {
   const all = await queryCollection('content').all()
   return all
@@ -227,21 +237,50 @@ const getTags = (article) => {
 
 const filteredArticles = computed(() => {
   if (!articles.value) return []
-  return articles.value.filter(article => {
-    const matchesSearch = !search.value || 
-      (article.title && String(article.title).toLowerCase().includes(search.value.toLowerCase())) ||
-      (article.description && String(article.description).toLowerCase().includes(search.value.toLowerCase()))
+  
+  let results = articles.value
+  
+  // 使用全文搜索
+  if (search.value && searchSections.value) {
+    const searchLower = search.value.toLowerCase()
+    const matchingPaths = new Set()
     
-    const matchesPath = !selectedPath.value || 
+    // 在搜索段落中查找匹配
+    searchSections.value.forEach(section => {
+      if (
+        section.title?.toLowerCase().includes(searchLower) ||
+        section.content?.toLowerCase().includes(searchLower)
+      ) {
+        matchingPaths.add(section.id)
+      }
+    })
+    
+    results = results.filter(article => {
+      // 检查文章路径是否在匹配的搜索结果中
+      const articleId = article.id || article.path.replace('/blog/', '')
+      return matchingPaths.has(articleId) ||
+        (article.title && String(article.title).toLowerCase().includes(searchLower)) ||
+        (article.description && String(article.description).toLowerCase().includes(searchLower))
+    })
+  }
+  
+  // 路径过滤
+  if (selectedPath.value) {
+    results = results.filter(article => 
       article.path === selectedPath.value || 
       (article.path && String(article.path).startsWith(selectedPath.value + '/'))
-    
-    const articleTags = getTags(article)
-    const matchesTags = selectedTags.value.length === 0 || 
-      selectedTags.value.every(tag => articleTags.includes(tag))
-    
-    return matchesSearch && matchesPath && matchesTags
-  })
+    )
+  }
+  
+  // 标签过滤
+  if (selectedTags.value.length > 0) {
+    results = results.filter(article => {
+      const articleTags = getTags(article)
+      return selectedTags.value.every(tag => articleTags.includes(tag))
+    })
+  }
+  
+  return results
 })
 </script>
 
@@ -556,6 +595,16 @@ const filteredArticles = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+}
+
+.tags-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .tag-chip {
@@ -565,7 +614,8 @@ const filteredArticles = computed(() => {
   background: var(--bg-secondary);
   padding: 0.3rem 0.75rem;
   border-radius: 0.5rem;
-  margin-right: 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .read-more {
