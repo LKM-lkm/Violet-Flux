@@ -1,32 +1,24 @@
 <template>
-  <div class="alert" :style="{ 'border-color': color }">
-    <slot></slot>
-  </div>
+  <UAlert
+    :color="color"
+    :title="title"
+    :description="description"
+    :icon="icon"
+  >
+    <template v-if="$slots.default" #default>
+      <slot />
+    </template>
+  </UAlert>
 </template>
 
 <script setup lang="ts">
-const { color } = defineProps({
+defineProps({
   color: {
     type: String,
-    default: 'orange'
-  }
+    default: 'primary'
+  },
+  title: String,
+  description: String,
+  icon: String
 })
 </script>
-
-<style scoped>
-.alert {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border: 2px solid;
-  border-radius: 0.5rem;
-  background-color: var(--bg-primary);
-  box-shadow: 0 4px 6px var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.alert:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px var(--shadow-md);
-}
-</style>

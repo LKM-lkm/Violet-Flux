@@ -70,14 +70,20 @@ watch(() => props.selectedPath, (newPath) => {
 }
 
 .tree-item-btn:hover {
-  background: var(--bg-secondary);
+  background: rgba(180, 151, 215, 0.08);
   color: var(--text-primary);
 }
 
 .tree-item-btn.active {
-  background: var(--border-light);
-  color: var(--text-primary);
-  font-weight: 500;
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.15), 
+    rgba(194, 169, 228, 0.1)
+  );
+  color: var(--primary);
+  font-weight: 600;
+  border-left: 3px solid var(--primary);
+  padding-left: calc(0.75rem - 3px);
+  box-shadow: inset 0 0 12px rgba(180, 151, 215, 0.15);
 }
 
 .icon {
@@ -85,6 +91,12 @@ watch(() => props.selectedPath, (newPath) => {
   height: 1rem;
   margin-right: 0.5rem;
   opacity: 0.5;
+  transition: all 0.2s;
+}
+
+.tree-item-btn.active .icon {
+  color: var(--primary);
+  opacity: 1;
 }
 
 .tree-children {

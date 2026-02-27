@@ -359,18 +359,19 @@ watch(() => route.path, () => {
 .blob-1 {
   width: 600px;
   height: 600px;
-  background: var(--primary);
+  background: radial-gradient(circle, #b497d7, #a682cf);
   top: -10%;
   right: -5%;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .blob-2 {
-  width: 400px;
-  height: 400px;
-  background: var(--accent);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #c2a9e4, #b497d7);
   bottom: -5%;
   left: 5%;
+  opacity: 0.25;
   animation-delay: -10s;
 }
 
@@ -559,12 +560,12 @@ watch(() => route.path, () => {
   padding: var(--space-lg);
   position: relative;
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--card-shadow),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .toc-wrapper::before {
@@ -573,8 +574,8 @@ watch(() => route.path, () => {
   inset: 0;
   background: radial-gradient(
     circle at top right,
-    rgba(112, 26, 69, 0.05) 0%,
-    rgba(157, 23, 77, 0.03) 35%,
+    rgba(180, 151, 215, 0.08) 0%,
+    rgba(194, 169, 228, 0.05) 35%,
     transparent 65%
   );
   opacity: 0.5;
@@ -614,12 +615,8 @@ watch(() => route.path, () => {
   left: 0;
   width: 3px;
   height: 24px;
-  background: linear-gradient(
-    180deg, 
-    var(--primary) 0%,
-    var(--primary-hover) 100%
-  );
-  box-shadow: 0 0 8px var(--primary-glow);
+  background: linear-gradient(180deg, #b497d7, #9163c0);
+  box-shadow: 0 0 12px rgba(180, 151, 215, 0.6);
   transition: transform var(--duration-normal) var(--ease-out);
   border-radius: var(--radius-sm);
 }
@@ -650,6 +647,7 @@ watch(() => route.path, () => {
 .toc-list li.active .toc-link {
   color: var(--primary);
   font-weight: 600;
+  text-shadow: 0 0 8px rgba(180, 151, 215, 0.3);
 }
 
 /* === 主内容 === */
@@ -696,10 +694,10 @@ watch(() => route.path, () => {
   margin-bottom: var(--space-lg);
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(
-    135deg, 
+  background: linear-gradient(135deg, 
     var(--text-primary) 0%,
-    var(--primary) 100%
+    #b497d7 50%,
+    #9163c0 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -714,14 +712,13 @@ watch(() => route.path, () => {
   left: 0;
   width: 140px;
   height: 3px;
-  background: linear-gradient(
-    90deg, 
-    var(--primary) 0%,
-    var(--primary-hover) 50%,
+  background: linear-gradient(90deg, 
+    #b497d7 0%,
+    #c2a9e4 50%,
     transparent 100%
   );
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 12px var(--primary-glow);
+  box-shadow: 0 0 16px rgba(180, 151, 215, 0.6);
 }
 
 .article-meta {
@@ -735,7 +732,10 @@ watch(() => route.path, () => {
   font-size: var(--text-xs);
   font-weight: 600;
   color: var(--primary);
-  background: var(--primary-light);
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.1), 
+    rgba(194, 169, 228, 0.15)
+  );
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
@@ -762,10 +762,10 @@ watch(() => route.path, () => {
 }
 
 .tag-label:hover {
-  background: var(--primary);
+  background: linear-gradient(135deg, #b497d7, #a682cf);
   color: white;
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px var(--primary-glow);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(180, 151, 215, 0.5);
   transform: translateY(-2px);
 }
 
@@ -838,12 +838,11 @@ watch(() => route.path, () => {
 
 .article-body :deep(blockquote) {
   border-left: 4px solid var(--primary);
-  background: linear-gradient(
-    135deg,
-    var(--bg-secondary) 0%,
-    rgba(112, 26, 69, 0.04) 40%,
-    rgba(157, 23, 77, 0.06) 70%,
-    rgba(157, 23, 77, 0.08) 100%
+  background: linear-gradient(135deg,
+    rgba(250, 248, 252, 0.9) 0%,
+    rgba(243, 238, 248, 0.7) 40%,
+    rgba(235, 228, 242, 0.6) 70%,
+    rgba(235, 228, 242, 0.5) 100%
   );
   padding: var(--space-lg) var(--space-xl);
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
@@ -863,7 +862,7 @@ watch(() => route.path, () => {
   left: 20px;
   font-size: 80px;
   color: var(--primary);
-  opacity: 0.08;
+  opacity: 0.1;
   font-family: Georgia, serif;
   line-height: 1;
 }
@@ -877,7 +876,7 @@ watch(() => route.path, () => {
   height: 140px;
   background: radial-gradient(
     circle at bottom right,
-    var(--primary-light),
+    rgba(180, 151, 215, 0.15),
     transparent 70%
   );
   opacity: 0.6;

@@ -4,6 +4,7 @@
     <div class="flux-bg">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
       <div class="noise-overlay"></div>
     </div>
 
@@ -322,19 +323,31 @@ const filteredArticles = computed(() => {
 .blob-1 {
   width: 600px;
   height: 600px;
-  background: var(--primary);
+  background: radial-gradient(circle, #b497d7, #a682cf);
   top: -10%;
   right: -5%;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .blob-2 {
-  width: 400px;
-  height: 400px;
-  background: var(--accent);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #c2a9e4, #b497d7);
   bottom: -5%;
   left: 5%;
+  opacity: 0.25;
   animation-delay: -10s;
+}
+
+.blob-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #9163c0, #7743a3);
+  top: 40%;
+  left: 50%;
+  opacity: 0.2;
+  animation: blob-float 25s infinite alternate ease-in-out;
+  animation-delay: -5s;
 }
 
 @keyframes blob-float {
@@ -419,12 +432,13 @@ const filteredArticles = computed(() => {
   max-height: calc(100vh - 12rem);
   overflow-y: auto;
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--card-shadow),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(180, 151, 215, 0.15);
 }
 
 .sidebar::-webkit-scrollbar { width: 4px; }
@@ -437,6 +451,7 @@ const filteredArticles = computed(() => {
   color: var(--primary);
   margin-bottom: 1.5rem;
   font-weight: 800;
+  text-shadow: 0 0 10px var(--primary-glow);
 }
 
 .tree-root-btn {
@@ -457,7 +472,14 @@ const filteredArticles = computed(() => {
 }
 
 .tree-root-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-.tree-root-btn.active { background: var(--primary-glow); color: var(--primary); }
+.tree-root-btn.active { 
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.15), 
+    rgba(194, 169, 228, 0.1)
+  );
+  color: var(--primary);
+  box-shadow: inset 0 0 12px rgba(180, 151, 215, 0.2);
+}
 
 .icon-m { width: 1.25rem; height: 1.25rem; }
 
@@ -543,7 +565,7 @@ const filteredArticles = computed(() => {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--card-shadow),
+  box-shadow: var(--shadow-md),
               inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
@@ -551,11 +573,36 @@ const filteredArticles = computed(() => {
   position: relative;
 }
 
+.blog-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1.2rem;
+  padding: 1px;
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.3), 
+    rgba(194, 169, 228, 0.2),
+    rgba(166, 130, 207, 0.3)
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
 .blog-card:hover {
-  transform: translateY(-8px) scale(1.01);
+  transform: translateY(-8px) scale(1.02);
   border-color: var(--border-medium);
   box-shadow: var(--shadow-2xl),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+              0 0 32px rgba(180, 151, 215, 0.4);
+}
+
+.blog-card:hover::before {
+  opacity: 1;
 }
 
 .card-link { 
@@ -632,14 +679,26 @@ const filteredArticles = computed(() => {
 .tag-chip {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
+  color: var(--primary);
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.1), 
+    rgba(194, 169, 228, 0.15)
+  );
+  border: 1px solid var(--border-light);
   padding: 0.3rem 0.75rem;
   border-radius: 0.5rem;
   white-space: nowrap;
   flex-shrink: 0;
   display: inline-block;
   line-height: 1.2;
+  transition: all 0.3s;
+}
+
+.tag-chip:hover {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(180, 151, 215, 0.4);
+  transform: translateY(-2px);
 }
 
 .read-more {
@@ -672,8 +731,13 @@ const filteredArticles = computed(() => {
   cursor: pointer;
   transition: all 0.2s;
 }
-.tag-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
-.tag-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 10px 20px -5px var(--primary-glow); }
+.tag-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(180, 151, 215, 0.08); }
+.tag-btn.active { 
+  background: linear-gradient(135deg, #b497d7, #a682cf);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(180, 151, 215, 0.4);
+}
 
 /* EMPTY STATE */
 .empty-boundary {

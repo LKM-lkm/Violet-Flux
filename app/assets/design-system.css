@@ -4,36 +4,36 @@
  */
 
 :root {
-  --bg: #ffffff;
-  --text: #1a0210;
-  --text-muted: #6b5161;
-  --border: rgba(112, 26, 69, 0.12);
-  --primary: #701a45; /* Darker, redder violet (Wine/Plum) */
-  --primary-hover: #9d174d; /* Slightly brighter on hover */
-  --primary-glow: rgba(112, 26, 69, 0.2);
-  --primary-light: rgba(112, 26, 69, 0.08);
-  --secondary: #fff5f8;
-  --accent: #9d174d;
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(112, 26, 69, 0.15);
-  --card-shadow: 0 20px 50px -12px rgba(112, 26, 69, 0.15);
+  --bg: #faf8fc;
+  --text: #2d1b3d;
+  --text-muted: #6b5578;
+  --border: rgba(180, 151, 215, 0.2);
+  --primary: #b497d7;
+  --primary-hover: #c2a9e4;
+  --primary-glow: rgba(180, 151, 215, 0.3);
+  --primary-light: rgba(180, 151, 215, 0.1);
+  --secondary: #a682cf;
+  --accent: #c2a9e4;
+  --glass-bg: rgba(250, 248, 252, 0.7);
+  --glass-border: rgba(180, 151, 215, 0.2);
+  --card-shadow: 0 20px 50px -12px rgba(180, 151, 215, 0.2);
   
   /* === 保留的系统变量 === */
-  --bg-primary: #ffffff;
-  --bg-secondary: #fff5f8;
-  --bg-tertiary: #fef0f5;
+  --bg-primary: #faf8fc;
+  --bg-secondary: #f3eef8;
+  --bg-tertiary: #ebe4f2;
   
-  --text-primary: #1a0210;
-  --text-secondary: #6b5161;
-  --text-tertiary: #9b8191;
+  --text-primary: #2d1b3d;
+  --text-secondary: #6b5578;
+  --text-tertiary: #a087b4;
   
-  --border-light: rgba(112, 26, 69, 0.12);
-  --border-medium: rgba(112, 26, 69, 0.18);
-  --border-strong: rgba(112, 26, 69, 0.25);
+  --border-light: rgba(180, 151, 215, 0.15);
+  --border-medium: rgba(180, 151, 215, 0.25);
+  --border-strong: rgba(180, 151, 215, 0.35);
   
   /* === 代码块专用 === */
-  --code-bg: #fef0f5;
-  --code-text: #1a0210;
+  --code-bg: #f3eef8;
+  --code-text: #2d1b3d;
   
   /* === 圆角系统 === */
   --radius-sm: 0.5rem;
@@ -69,11 +69,11 @@
   --text-6xl: 3.75rem;
   
   /* === 阴影系统 === */
-  --shadow-sm: 0 1px 2px rgba(112, 26, 69, 0.05);
-  --shadow-md: 0 4px 6px rgba(112, 26, 69, 0.08);
-  --shadow-lg: 0 10px 15px rgba(112, 26, 69, 0.12);
-  --shadow-xl: 0 20px 25px rgba(112, 26, 69, 0.15);
-  --shadow-2xl: 0 25px 50px rgba(112, 26, 69, 0.2);
+  --shadow-sm: 0 2px 8px rgba(180, 151, 215, 0.08);
+  --shadow-md: 0 4px 16px rgba(180, 151, 215, 0.12);
+  --shadow-lg: 0 8px 24px rgba(180, 151, 215, 0.16);
+  --shadow-xl: 0 12px 32px rgba(180, 151, 215, 0.2);
+  --shadow-2xl: 0 20px 48px rgba(180, 151, 215, 0.25);
   
   /* === 动画时长 === */
   --duration-fast: 150ms;
@@ -88,43 +88,43 @@
 
 /* === Dark Mode === */
 :root.dark {
-  --bg: #0d0a0c;
-  --text: #e8d4dd; /* 降低亮度 */
-  --text-muted: #a88d9a; /* 降低亮度 */
-  --border: rgba(112, 26, 69, 0.3);
-  --primary: #b8154f; /* 降低亮度的酒红 */
-  --primary-hover: #c2185b; /* 稍亮的酒红 */
-  --primary-glow: rgba(184, 21, 79, 0.25);
-  --primary-light: rgba(184, 21, 79, 0.12);
-  --secondary: #1a1418;
-  --accent: #c2185b;
-  --glass-bg: rgba(13, 10, 12, 0.75);
-  --glass-border: rgba(184, 21, 79, 0.15);
-  --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+  --bg: #1a0f21;
+  --text: #e8dff0;
+  --text-muted: #b8a5c9;
+  --border: rgba(194, 169, 228, 0.25);
+  --primary: #c2a9e4;
+  --primary-hover: #d4c0ed;
+  --primary-glow: rgba(194, 169, 228, 0.4);
+  --primary-light: rgba(194, 169, 228, 0.15);
+  --secondary: #b497d7;
+  --accent: #d4c0ed;
+  --glass-bg: rgba(26, 15, 33, 0.8);
+  --glass-border: rgba(194, 169, 228, 0.15);
+  --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6);
   
   /* === 保留的系统变量 === */
-  --bg-primary: #0d0a0c;
-  --bg-secondary: #1a1418;
-  --bg-tertiary: #251a22;
+  --bg-primary: #1a0f21;
+  --bg-secondary: #2d1b3d;
+  --bg-tertiary: #3d2a4d;
   
-  --text-primary: #e8d4dd;
-  --text-secondary: #a88d9a;
-  --text-tertiary: #7a5f6d;
+  --text-primary: #e8dff0;
+  --text-secondary: #b8a5c9;
+  --text-tertiary: #8a7299;
   
-  --border-light: rgba(112, 26, 69, 0.3);
-  --border-medium: rgba(112, 26, 69, 0.4);
-  --border-strong: rgba(112, 26, 69, 0.5);
+  --border-light: rgba(194, 169, 228, 0.2);
+  --border-medium: rgba(194, 169, 228, 0.3);
+  --border-strong: rgba(194, 169, 228, 0.4);
   
   /* === 代码块专用 === */
-  --code-bg: #1a1418;
-  --code-text: #e8d4dd;
+  --code-bg: #2d1b3d;
+  --code-text: #e8dff0;
   
   /* === 阴影系统 === */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.7);
-  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --shadow-2xl: 0 20px 48px rgba(0, 0, 0, 0.8);
 }
 
 /* === 全局样式 === */

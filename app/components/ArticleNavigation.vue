@@ -1,32 +1,36 @@
 <template>
   <nav v-if="prevArticle || nextArticle" class="article-navigation">
-    <NuxtLink 
-      v-if="prevArticle" 
-      :to="prevArticle.path" 
-      class="nav-link nav-prev"
+    <NuxtLink
+      v-if="prevArticle"
+      :to="prevArticle.path"
+      class="nav-card nav-prev"
     >
-      <div class="nav-label">
-        <Icon name="i-lucide-chevron-left" class="nav-icon" />
-        <span>上一篇</span>
-      </div>
-      <div class="nav-title">{{ prevArticle.title }}</div>
-      <div v-if="prevArticle.description" class="nav-description">
-        {{ truncate(prevArticle.description, 60) }}
+      <div class="nav-content">
+        <div class="nav-label">
+          <UIcon name="i-lucide-chevron-left" class="nav-icon" />
+          <span>上一篇</span>
+        </div>
+        <div class="nav-title">{{ prevArticle.title }}</div>
+        <div v-if="prevArticle.description" class="nav-description">
+          {{ truncate(prevArticle.description, 60) }}
+        </div>
       </div>
     </NuxtLink>
 
-    <NuxtLink 
-      v-if="nextArticle" 
-      :to="nextArticle.path" 
-      class="nav-link nav-next"
+    <NuxtLink
+      v-if="nextArticle"
+      :to="nextArticle.path"
+      class="nav-card nav-next"
     >
-      <div class="nav-label">
-        <span>下一篇</span>
-        <Icon name="i-lucide-chevron-right" class="nav-icon" />
-      </div>
-      <div class="nav-title">{{ nextArticle.title }}</div>
-      <div v-if="nextArticle.description" class="nav-description">
-        {{ truncate(nextArticle.description, 60) }}
+      <div class="nav-content">
+        <div class="nav-label">
+          <span>下一篇</span>
+          <UIcon name="i-lucide-chevron-right" class="nav-icon" />
+        </div>
+        <div class="nav-title">{{ nextArticle.title }}</div>
+        <div v-if="nextArticle.description" class="nav-description">
+          {{ truncate(nextArticle.description, 60) }}
+        </div>
       </div>
     </NuxtLink>
   </nav>
@@ -60,47 +64,55 @@ const truncate = (text, length) => {
 .article-navigation {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-lg);
-  margin: var(--space-3xl) 0;
-  padding: var(--space-2xl) 0;
+  gap: 1.5rem;
+  margin: 3rem 0;
+  padding: 2rem 0;
   border-top: 1px solid var(--border-light);
 }
 
-.nav-link {
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-lg);
-  border-radius: var(--radius-lg);
+.nav-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 2rem;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-light);
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
-  text-decoration: none;
-  transition: all var(--duration-normal);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--card-shadow),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
-.nav-link::before {
+.nav-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(112, 26, 69, 0.05) 0%,
-    rgba(157, 23, 77, 0.03) 100%
+  background: linear-gradient(135deg,
+    rgba(180, 151, 215, 0.08) 0%,
+    rgba(194, 169, 228, 0.05) 100%
   );
   opacity: 0;
-  transition: opacity var(--duration-normal);
+  transition: opacity 0.3s;
 }
 
-.nav-link:hover {
-  border-color: var(--primary);
+.nav-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-lg), 0 0 24px rgba(180, 151, 215, 0.3);
 }
 
-.nav-link:hover::before {
+.nav-card:hover::before {
   opacity: 1;
+}
+
+.nav-content {
+  position: relative;
+  z-index: 1;
 }
 
 .nav-prev {
@@ -114,11 +126,11 @@ const truncate = (text, length) => {
 .nav-label {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--text-sm);
+  gap: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -134,10 +146,10 @@ const truncate = (text, length) => {
 .nav-icon {
   width: 1rem;
   height: 1rem;
-  transition: transform var(--duration-fast);
+  transition: transform 0.2s ease;
 }
 
-.nav-link:hover .nav-icon {
+.nav-card:hover .nav-icon {
   transform: translateX(0);
 }
 
@@ -150,21 +162,18 @@ const truncate = (text, length) => {
 }
 
 .nav-title {
-  font-size: var(--text-lg);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--space-xs);
+  margin-bottom: 0.5rem;
   line-height: 1.4;
-  position: relative;
-  z-index: 1;
 }
 
 .nav-description {
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  position: relative;
-  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -172,8 +181,8 @@ const truncate = (text, length) => {
     grid-template-columns: 1fr;
   }
   
-  .nav-link {
-    padding: var(--space-md);
+  .nav-card {
+    padding: 1.5rem;
   }
 }
 </style>

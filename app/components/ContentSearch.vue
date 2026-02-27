@@ -1,7 +1,7 @@
 <template>
   <div class="content-search">
     <div class="search-input-wrapper">
-      <Icon name="lucide:search" class="search-icon" />
+      <UIcon name="i-lucide-search" class="search-icon" />
       <input
         v-model="searchQuery"
         type="text"
@@ -9,26 +9,34 @@
         class="search-input"
         @focus="showResults = true"
       />
-      <button
+      <UButton
         v-if="searchQuery"
-        @click="clearSearch"
+        color="neutral"
+        variant="ghost"
+        icon="i-lucide-x"
+        size="xs"
         class="clear-btn"
-        aria-label="清除搜索"
-      >
-        <Icon name="lucide:x" />
-      </button>
+        @click="clearSearch"
+      />
     </div>
 
     <!-- 搜索结果 -->
     <Transition name="results">
-      <div v-if="showResults && searchQuery && searchResults.length > 0" class="search-results">
+      <div
+        v-if="showResults && searchQuery && searchResults.length > 0"
+        class="search-results"
+      >
         <div class="results-header">
           <span class="results-count">找到 {{ searchResults.length }} 个结果</span>
-          <button @click="showResults = false" class="close-results">
-            <Icon name="lucide:x" />
-          </button>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-x"
+            size="xs"
+            @click="showResults = false"
+          />
         </div>
-        
+
         <div class="results-list">
           <NuxtLink
             v-for="result in searchResults.slice(0, 10)"
@@ -42,7 +50,7 @@
               {{ truncate(result.content, 120) }}
             </div>
             <div class="result-meta">
-              <Icon name="lucide:file-text" class="meta-icon" />
+              <UIcon name="i-lucide-file-text" class="meta-icon" />
               <span>{{ result.id }}</span>
             </div>
           </NuxtLink>
@@ -53,7 +61,7 @@
     <!-- 无结果 -->
     <Transition name="results">
       <div v-if="showResults && searchQuery && searchResults.length === 0" class="no-results">
-        <Icon name="lucide:search-x" class="no-results-icon" />
+        <UIcon name="i-lucide-search-x" class="no-results-icon" />
         <p>未找到匹配的内容</p>
       </div>
     </Transition>
@@ -150,8 +158,8 @@ onMounted(() => {
 
 .search-input-wrapper:focus-within {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-glow),
-              var(--card-shadow);
+  box-shadow: 0 0 0 3px rgba(180, 151, 215, 0.2),
+              var(--shadow-md);
 }
 
 .search-icon {
@@ -160,6 +168,7 @@ onMounted(() => {
   color: var(--text-secondary);
   opacity: 0.6;
   font-size: 1.25rem;
+  pointer-events: none;
 }
 
 .search-input {
@@ -180,23 +189,7 @@ onMounted(() => {
 
 .clear-btn {
   position: absolute;
-  right: 0.75rem;
-  background: var(--bg-secondary);
-  border: none;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s;
-}
-
-.clear-btn:hover {
-  background: var(--border-light);
-  color: var(--text-primary);
+  right: 0.5rem;
 }
 
 /* 搜索结果 */
@@ -237,25 +230,6 @@ onMounted(() => {
   color: var(--text-secondary);
 }
 
-.close-results {
-  background: transparent;
-  border: none;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-secondary);
-  border-radius: var(--radius-sm);
-  transition: all 0.2s;
-}
-
-.close-results:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-}
-
 .results-list {
   padding: 0.5rem;
 }
@@ -271,8 +245,11 @@ onMounted(() => {
 }
 
 .result-item:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-light);
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.12), 
+    rgba(194, 169, 228, 0.08)
+  );
+  border-color: var(--primary);
   transform: translateX(4px);
 }
 
