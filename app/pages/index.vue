@@ -1,42 +1,42 @@
 <template>
   <div class="home">
+    <!-- 精确的网格背景 -->
+    <div class="grid-overlay"></div>
+    
+    <!-- 朦胧的紫色流体背景 -->
     <div class="flux-bg">
       <div class="blob blob-1"></div>
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
       <div class="mist-overlay"></div>
     </div>
 
+    <!-- 精确的头部导航 -->
     <header class="header">
-      <div class="container">
-        <h1 class="logo">Violet Flux</h1>
+      <div class="container header-inner">
+        <div class="logo-wrapper">
+          <div class="logo-glow"></div>
+          <h1 class="logo">Violet Flux</h1>
+        </div>
         <nav class="nav">
-          <NuxtLink to="/blog">Blog</NuxtLink>
-          <NuxtLink to="/about">About</NuxtLink>
-          <button @click="toggleDark()" class="theme-toggle">
-            <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
+          <NuxtLink to="/blog" class="nav-link">
+            <span class="nav-text">Blog</span>
+            <span class="nav-underline"></span>
+          </NuxtLink>
+          <NuxtLink to="/about" class="nav-link">
+            <span class="nav-text">About</span>
+            <span class="nav-underline"></span>
+          </NuxtLink>
+          <button @click="toggleDark()" class="theme-toggle" aria-label="Toggle theme">
+            <div class="toggle-bg"></div>
+            <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="toggle-icon" />
           </button>
         </nav>
       </div>
     </header>
 
-    <main class="hero-section">
-      <div class="container hero-container">
-        <div class="hero-content">
-          <div class="badge pulse">Nuxt 4 • MathJax v4</div>
-          <h1 class="title">
-            <span class="text-gradient">Violet Flux</span>
-          </h1>
-          <p class="subtitle">
-            A digital garden where precision meets aesthetics. Exploring code, 
-            mathematics, and the flow of digital creativity.
-          </p>
-          <div class="cta-group">
-            <NuxtLink to="/blog" class="btn btn-primary">
-              Explore Library
-              <Icon name="lucide:arrow-right" class="btn-icon" />
-            </NuxtLink>
-            <NuxtLink to="/about" class="btn btn-secondary">Our Story</NuxtLink>
+    <!-- 主要内容区 -->
           </div>
         </div>
 
