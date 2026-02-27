@@ -8,26 +8,22 @@
 .cwd-comments-container,
 .cwd-comments-container[data-theme="light"],
 .cwd-comments-container[data-theme="dark"] {
-  /* Colors - Overriding internal variables with Violet Flux palette */
-  --cwd-primary: #701a45 !important;
-  /* Wine/Plum primary */
-  --cwd-primary-hover: #9d174d !important;
-  /* Slightly brighter accent */
+  /* Colors - Violet Flux 紫色调色板 */
+  --cwd-primary: #b497d7 !important;
+  --cwd-primary-hover: #c2a9e4 !important;
 
-  --cwd-text: #1a0210 !important;
-  --cwd-text-secondary: #6b5161 !important;
+  --cwd-text: #2d1b3d !important;
+  --cwd-text-secondary: #6b5578 !important;
 
-  /* Make main backgrounds transparent/semi-transparent for glass effect */
-  --cwd-bg: rgba(255, 255, 255, 0.4) !important;
-  --cwd-bg-input: rgba(255, 255, 255, 0.3) !important;
+  /* 毛玻璃效果背景 */
+  --cwd-bg: rgba(250, 248, 252, 0.7) !important;
+  --cwd-bg-input: rgba(243, 238, 248, 0.6) !important;
   --cwd-bg-secondary: transparent !important;
-  /* No secondary bg, let glass shine */
-  --cwd-bg-reply: rgba(112, 26, 69, 0.05) !important;
-  --cwd-bg-hover: rgba(112, 26, 69, 0.05) !important;
+  --cwd-bg-reply: rgba(180, 151, 215, 0.1) !important;
+  --cwd-bg-hover: rgba(180, 151, 215, 0.1) !important;
 
-  --cwd-border: rgba(112, 26, 69, 0.12) !important;
-  --cwd-border-light: rgba(112, 26, 69, 0.08) !important;
-  /* Lighter border */
+  --cwd-border: rgba(180, 151, 215, 0.2) !important;
+  --cwd-border-light: rgba(180, 151, 215, 0.15) !important;
   --cwd-radius: 16px !important;
 
   font-family: 'Geist Sans', system-ui, sans-serif !important;
@@ -35,23 +31,17 @@
 
 /* Dark Mode Overrides */
 .cwd-comments-container[data-theme="dark"] {
-  --cwd-primary: #9d174d !important;
-  /* Consistent wine tone */
-  --cwd-primary-hover: #d946ef !important;
-  /* Bright accent for hover */
-  --cwd-text: #fce7f3 !important;
-  /* Softer lavender-white */
-  --cwd-text-secondary: #a27b91 !important;
-  /* Sophisticated muted plum */
+  --cwd-primary: #c2a9e4 !important;
+  --cwd-primary-hover: #d4c0ed !important;
+  --cwd-text: #e8dff0 !important;
+  --cwd-text-secondary: #b8a5c9 !important;
 
-  --cwd-bg: rgba(255, 255, 255, 0.03) !important;
-  /* Glass bg var from theme */
-  --cwd-bg-input: rgba(0, 0, 0, 0.2) !important;
+  --cwd-bg: rgba(26, 15, 33, 0.8) !important;
+  --cwd-bg-input: rgba(45, 27, 61, 0.4) !important;
   --cwd-bg-secondary: transparent !important;
-  --cwd-bg-reply: rgba(157, 23, 77, 0.1) !important;
-  --cwd-bg-hover: rgba(157, 23, 77, 0.1) !important;
-  --cwd-border: rgba(255, 255, 255, 0.1) !important;
-  /* Glass border var */
+  --cwd-bg-reply: rgba(194, 169, 228, 0.1) !important;
+  --cwd-bg-hover: rgba(194, 169, 228, 0.1) !important;
+  --cwd-border: rgba(194, 169, 228, 0.2) !important;
 }
 
 
@@ -70,16 +60,14 @@
 /* Light Mode Variables - More Transparent */
 .cwd-comments-container,
 .cwd-comments-container[data-theme="light"] {
-  --cwd-bg: rgba(255, 255, 255, 0.3) !important;
-  /* Semi-transparent white */
-  --cwd-bg-input: rgba(255, 255, 255, 0.4) !important;
+  --cwd-bg: rgba(250, 248, 252, 0.7) !important;
+  --cwd-bg-input: rgba(243, 238, 248, 0.6) !important;
 }
 
 /* Dark Mode Variables - More Transparent */
 .cwd-comments-container[data-theme="dark"] {
-  --cwd-bg: rgba(10, 10, 10, 0.3) !important;
-  /* Semi-transparent dark */
-  --cwd-bg-input: rgba(0, 0, 0, 0.2) !important;
+  --cwd-bg: rgba(26, 15, 33, 0.8) !important;
+  --cwd-bg-input: rgba(45, 27, 61, 0.4) !important;
 }
 
 /* Remove excessive internal borders and backgrounds */
@@ -129,10 +117,8 @@
 .cwd-form-field textarea:focus,
 .cwd-reply-textarea:focus {
   border-color: var(--cwd-primary) !important;
-  box-shadow: 0 0 0 2px rgba(157, 23, 77, 0.2) !important;
-  /* Glow */
-  background-color: rgba(157, 23, 77, 0.05) !important;
-  /* Slight tint */
+  box-shadow: 0 0 0 3px rgba(194, 169, 228, 0.15) !important;
+  background-color: rgba(194, 169, 228, 0.05) !important;
 }
 
 /* Buttons - Minimalist */
@@ -149,12 +135,12 @@
 .cwd-btn-primary {
   background: var(--cwd-primary) !important;
   color: #fff !important;
-  box-shadow: 0 4px 14px rgba(112, 26, 69, 0.3);
+  box-shadow: 0 4px 14px rgba(180, 151, 215, 0.3);
 }
 
 .cwd-btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(112, 26, 69, 0.5);
+  box-shadow: 0 6px 20px rgba(180, 151, 215, 0.4);
 }
 
 .cwd-btn-secondary {
@@ -196,7 +182,7 @@
 }
 
 .cwd-comment-content code {
-  background: rgba(157, 23, 77, 0.15) !important;
+  background: rgba(194, 169, 228, 0.15) !important;
   color: var(--cwd-primary) !important;
   padding: 2px 6px !important;
   border-radius: 4px !important;
