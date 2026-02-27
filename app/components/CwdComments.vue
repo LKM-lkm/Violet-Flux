@@ -72,8 +72,41 @@ watch(() => props.slug, (newSlug) => {
 <style scoped>
 .cwd-comments-container {
   margin-top: 4rem;
-  padding-top: 2rem;
+  padding: 3rem;
   border-top: 1px solid var(--border-light);
-  min-height: 200px; /* Prevent layout shift */
+  background: linear-gradient(135deg,
+    rgba(250, 248, 252, 0.5) 0%,
+    rgba(243, 238, 248, 0.3) 100%
+  );
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 24px rgba(180, 151, 215, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cwd-comments-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    #b497d7 0%, 
+    #c2a9e4 50%, 
+    #b497d7 100%
+  );
+  box-shadow: 0 0 12px rgba(180, 151, 215, 0.6);
+}
+
+/* 暗色模式 */
+:root.dark .cwd-comments-container {
+  background: linear-gradient(135deg,
+    rgba(26, 15, 33, 0.5) 0%,
+    rgba(45, 27, 61, 0.3) 100%
+  );
 }
 </style>

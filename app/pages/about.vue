@@ -119,12 +119,17 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: var(--primary);
+  background: radial-gradient(circle, #b497d7, #a682cf);
   animation: float 20s infinite alternate linear;
 }
 
 .blob-1 { top: -10%; right: -5%; }
-.blob-2 { bottom: -10%; left: -5%; background: var(--accent); animation-delay: -10s; }
+.blob-2 { 
+  bottom: -10%; 
+  left: -5%; 
+  background: radial-gradient(circle, #c2a9e4, #b497d7);
+  animation-delay: -10s; 
+}
 
 @keyframes float {
   from { transform: translate(0,0) rotate(0); }
@@ -241,7 +246,12 @@ import { isDark, toggleDark } from '~/composables/useTheme'
   text-decoration: none;
   transition: all 0.2s;
 }
-.social-btn:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+.social-btn:hover { 
+  background: linear-gradient(135deg, #b497d7, #a682cf);
+  color: white; 
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(180, 151, 215, 0.4);
+}
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
 .tag { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-secondary); padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-light); }
