@@ -40,41 +40,14 @@ const props = defineProps({
   }
 })
 
-// 获取所有博客文章
-const { data: articles } = await useAsyncData('all-blog-articles', async () => {
-  const all = await queryCollection('content')
-    .where('path', 'startsWith', '/blog')
-    .all()
-  
-  // 按路径或日期排序
-  return all.sort((a, b) => {
-    // 如果有日期，按日期排序
-    if (a.date && b.date) {
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
-    }
-    // 否则按路径排序
-    return a.path.localeCompare(b.path)
-  })
-})
+// 使用官方推荐的 queryCollectionItemSurroundings
+const { data: surround } = await useAsyncData(
+  `surround-${props.currentPath}`,
+  () => queryCollectionItemSurroundings('content', props.currentPath)
+)
 
-// 找到当前文章的索引
-const currentIndex = computed(() => {
-  if (!articles.value) return -1
-  return articles.value.findIndex(a => a.path === props.currentPath)
-})
-
-// 上一篇和下一篇
-const prevArticle = computed(() => {
-  if (currentIndex.value <= 0) return null
-  return articles.value[currentIndex.value - 1]
-})
-
-const nextArticle = computed(() => {
-  if (!articles.value || currentIndex.value < 0 || currentIndex.value >= articles.value.length - 1) {
-    return null
-  }
-  return articles.value[currentIndex.value + 1]
-})
+const prevArticle = computed(() => surround.value?.[0] || null)
+const nextArticle = computed(() => surround.value?.[1] || null)
 
 // 截断文本
 const truncate = (text, length) => {

@@ -59,9 +59,9 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 - **大写希腊字母**: \(\Gamma, \Delta, \Theta, \Lambda, \Xi, \Pi, \Sigma, \Phi, \Psi, \Omega\)
 - **求和 (Summation)**:
 
-\[
+\\[
 \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}
-\]
+\\]
 
 - **积分 (Integral)**:
 
@@ -139,20 +139,20 @@ n/2,      & \text{if } n \text{ is even} \\
 
 ### 麦克斯韦方程组
 
-\[
+$$
 \begin{aligned}
 \nabla \cdot \mathbf{E} &= \frac{\rho}{\epsilon_0} \\
 \nabla \cdot \mathbf{B} &= 0 \\
 \nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
 \nabla \times \mathbf{B} &= \mu_0 \mathbf{J} + \mu_0 \epsilon_0 \frac{\partial \mathbf{E}}{\partial t}
 \end{aligned}
-\]
+$$
 
 ### 薛定谔方程
 
-\[
+$$
 i\hbar \frac{\partial}{\partial t} \Psi(\mathbf{r}, t) = \left[ -\frac{\hbar^2}{2m} \nabla^2 + V(\mathbf{r}, t) \right] \Psi(\mathbf{r}, t)
-\]
+$$
 
 ## 5. 字体与样式测试
 

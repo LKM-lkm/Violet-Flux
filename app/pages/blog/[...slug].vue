@@ -236,9 +236,20 @@ const updateActiveHeading = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', updateActiveHeading)
-  if (window.MathJax?.typesetPromise) {
-    setTimeout(() => window.MathJax.typesetPromise(), 1000)
+  
+  // 使用插件渲染 MathJax
+  const { $renderMathJax } = useNuxtApp()
+  if ($renderMathJax) {
+    nextTick(() => {
+      $renderMathJax()
+    })
+    
+    // 延迟再次渲染确保 DOM 完全加载
+    setTimeout(() => {
+      $renderMathJax()
+    }, 1000)
   }
+  
   setTimeout(updateActiveHeading, 600)
   
   // 处理 GitHub Alert - 客户端转换

@@ -78,10 +78,7 @@
         </div>
 
         <div class="search-box-wrapper">
-          <div class="search-box glass-card">
-            <Icon name="lucide:search" class="search-icon" />
-            <input v-model="search" type="text" placeholder="Search archive..." class="search-input" />
-          </div>
+          <ContentSearch />
         </div>
         
         <div v-if="filteredArticles?.length" class="article-grid">
@@ -95,7 +92,7 @@
                 <p v-if="article.description" class="card-desc">{{ article.description }}</p>
                 
                 <div class="card-footer">
-                  <div class="tags-group" v-if="getTags(article).length">
+                  <div class="tags-group">
                     <span v-for="tag in getTags(article)" :key="tag" class="tag-chip">#{{ tag }}</span>
                   </div>
                   <div class="read-more">
@@ -548,6 +545,10 @@ const filteredArticles = computed(() => {
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow),
               inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 .blog-card:hover {
@@ -557,8 +558,24 @@ const filteredArticles = computed(() => {
               inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.card-link { text-decoration: none; color: inherit; display: block; height: 100%; }
-.card-inner { padding: 2.5rem; display: flex; flex-direction: column; height: 100%; }
+.card-link { 
+  text-decoration: none; 
+  color: inherit; 
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  width: 100%;
+}
+
+.card-inner { 
+  padding: 2.5rem; 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  min-height: 100%;
+  flex: 1;
+  position: relative;
+}
 
 .card-meta { margin-bottom: 1.5rem; }
 .meta-folder {
@@ -592,19 +609,24 @@ const filteredArticles = computed(() => {
 
 .card-footer {
   margin-top: auto;
-  display: flex;
+  display: flex !important;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  flex-wrap: nowrap;
+  padding-top: 1rem;
+  border-top: 1px solid transparent;
 }
 
 .tags-group {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
   flex: 1;
   min-width: 0;
+  max-width: calc(100% - 80px);
+  overflow: visible;
 }
 
 .tag-chip {
@@ -616,6 +638,8 @@ const filteredArticles = computed(() => {
   border-radius: 0.5rem;
   white-space: nowrap;
   flex-shrink: 0;
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .read-more {
@@ -628,6 +652,9 @@ const filteredArticles = computed(() => {
   opacity: 0;
   transform: translateX(-10px);
   transition: all 0.3s;
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 60px;
 }
 
 .blog-card:hover .read-more { opacity: 1; transform: translateX(0); }

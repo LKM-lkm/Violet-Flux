@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/icon',
   ],
+  
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
@@ -102,6 +103,7 @@ export default defineNuxtConfig({
       markdown: {
         remarkPlugins: {
           'remark-gfm': {},
+          'remark-mdc': {},  // 显式启用 MDC 语法
           'remark-wiki-link': {
             hrefTemplate: (permalink: string) => `/blog/${permalink}`,
             aliasDivider: '|'

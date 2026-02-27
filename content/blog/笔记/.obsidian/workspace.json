@@ -89,8 +89,7 @@
               "title": "书签"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -200,12 +199,13 @@
   },
   "active": "ac55cddccd6f610c",
   "lastOpenFiles": [
-    "Mine/🌐网络技巧/assets/new.png",
+    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
+    "未命名.base",
     "Mine/🌐网络技巧/Great Firewall.md",
+    "Mine/🌐网络技巧/assets/new.png",
     "Mine/🌐网络技巧/assets",
     "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
     "Mine/📝MathJax/VitePress 集成 MathJax v4.md",
-    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
     "Mine/⬇️资源下载/如何下载无损电子版教材？.md",
     "Mine/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
     "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",
@@ -231,7 +231,6 @@
     "✍️ 文档工程/图表即代码（CaC）图表绘制.md",
     "Obsidian官方文档",
     "✍️ 文档工程/API 文档系统.md",
-    "未命名.base",
     "未命名.canvas",
     "2025-08-20.md",
     "Mine/⬇️资源下载/assets/Pasted image 20250702161703.png",

@@ -1,9 +1,13 @@
 <template>
-  <NuxtRouteAnnouncer />
-  <NuxtPage />
+  <UApp>
+    <NuxtRouteAnnouncer />
+    <NuxtPage />
+  </UApp>
 </template>
 
 <style>
+@import "tailwindcss";
+@import "@nuxt/ui";
 @import './assets/design-system.css';
 
 @font-face {
