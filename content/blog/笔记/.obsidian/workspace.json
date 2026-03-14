@@ -48,9 +48,37 @@
               "icon": "lucide-file",
               "title": "访问Google Gemini报错"
             }
+          },
+          {
+            "id": "23d2f2d837a7488b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Mine/📃文字字体/开源字体嵌入CDN.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "开源字体嵌入CDN"
+            }
+          },
+          {
+            "id": "61f576e071753c1d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Mine/📃文字字体/如何一键抓取网页所有的字体样式与下载链接？.md",
+                "mode": "preview",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "如何一键抓取网页所有的字体样式与下载链接？"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -211,19 +239,23 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "67bc03b522344b20",
+  "active": "ac63568be97b5b9d",
   "lastOpenFiles": [
+    "Mine/📝MathJax/VitePress 集成 MathJax v4.md",
+    "Mine/📃文字字体/如何一键抓取网页所有的字体样式与下载链接？.md",
+    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
+    "assets/Pasted image 20260308111351.png",
+    "assets",
+    "Mine/📃文字字体/开源字体嵌入CDN.md",
     "Mine/🌐网络技巧/assets/Pasted image 20260303141920.png",
     "Mine/🌐网络技巧/assets/Pasted image 20260303141723.png",
     "Mine/📝示例/Callout 示例.md",
     "Mine/🌐网络技巧/访问Google Gemini报错.md",
     "Mine/🌐网络技巧/Great Firewall.md",
-    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
     "未命名.base",
     "Mine/🌐网络技巧/assets/new.png",
     "Mine/🌐网络技巧/assets",
     "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
-    "Mine/📝MathJax/VitePress 集成 MathJax v4.md",
     "Mine/⬇️资源下载/如何下载无损电子版教材？.md",
     "Mine/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
     "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",
@@ -241,19 +273,15 @@
     "index.md",
     "Mine/📃文字字体/Symbol字体对照表.md",
     "📔我的/📃文字字体/VitePress 优雅集成 MathJax v4：打造专业级数学公式显示.md",
-    "Mine/📃文字字体/开源字体嵌入CDN.md",
     "外部链接.md",
     "Obsidian官方文档/基本格式语法.md",
     "Obsidian官方文档/嵌入网页.md",
     "Obsidian官方文档/高级格式语法.md",
     "✍️ 文档工程/图表即代码（CaC）图表绘制.md",
     "Obsidian官方文档",
-    "✍️ 文档工程/API 文档系统.md",
     "未命名.canvas",
     "Mine/⬇️资源下载/assets/Pasted image 20250702161703.png",
     "Mine/⬇️资源下载/assets/Pasted image 20250702161912.png",
-    "📔我的/🖥程序运行/assets/9.png",
-    "📔我的/🖥程序运行/assets/8.png",
     "Mine/📃文字字体"
   ]
 }
