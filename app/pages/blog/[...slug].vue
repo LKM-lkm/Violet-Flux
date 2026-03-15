@@ -159,6 +159,10 @@ const { data: article } = await useAsyncData(`article-v22-${route.path}`, async 
   const cleanRoute = normalize(route.path)
   const relativeRoute = cleanRoute.replace(/^blog\//, '')
 
+  if (cleanRoute === 'blog' || cleanRoute === '') {
+    return null
+  }
+
   let found = all.find(item => {
     const itemId = item.id.replace(/\.md$/, '').normalize('NFC')
     return itemId === relativeRoute || itemId === cleanRoute

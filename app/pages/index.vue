@@ -798,7 +798,7 @@ onMounted(() => {
 .btn {
   position: relative;
   padding: 1.125rem 2.5rem;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-weight: 700;
   text-decoration: none;
   font-size: 1rem;
