@@ -300,10 +300,13 @@ const filteredArticles = computed(() => {
   box-shadow: var(--shadow-xl),
               inset 0 1px 0 rgba(255, 255, 255, 0.1),
               0 0 20px rgba(180, 151, 215, 0.15);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+.sidebar::-webkit-scrollbar { 
+  display: none; 
+}
 
 .section-title {
   font-size: 0.75rem;

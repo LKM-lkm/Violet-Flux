@@ -62,7 +62,6 @@ const currentYear = new Date().getFullYear();
   position: relative;
   background: var(--bg-primary);
   color: var(--text-primary);
-  overflow-x: hidden;
 }
 
 .page-wrapper {
@@ -175,9 +174,10 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   border-bottom: 1px solid var(--border-light);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 50;
+  z-index: 999;
   flex-shrink: 0;
-  position: relative;
+  position: sticky;
+  top: 0;
   width: 100%;
 }
 
