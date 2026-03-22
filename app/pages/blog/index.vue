@@ -1,26 +1,5 @@
 <template>
   <div class="blog-layout">
-    <!-- Fluid background consistent with home/about -->
-    <div class="flux-bg">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
-      <div class="noise-overlay"></div>
-    </div>
-
-    <header class="header">
-      <div class="container header-container">
-        <h1 class="logo">Violet Flux</h1>
-        <nav class="nav">
-          <NuxtLink to="/">Home</NuxtLink>
-          <NuxtLink to="/blog" class="nav-active">Blog</NuxtLink>
-          <NuxtLink to="/about">About</NuxtLink>
-          <button @click="toggleDark()" class="theme-toggle">
-            <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
-          </button>
-        </nav>
-      </div>
-    </header>
 
     <div class="container blog-container">
       <!-- Sidebar for Tree Navigation and Tags -->
@@ -76,10 +55,14 @@
               </span>
             </template>
           </div>
-        </div>
 
-        <div class="search-box-wrapper">
-          <ContentSearch />
+          <!-- Search Box integrated into Content Header -->
+          <div class="search-box-wrapper">
+            <div class="search-box">
+              <Icon name="lucide:search" class="search-icon" />
+              <input type="text" v-model="search" placeholder="Search knowledge base..." class="search-input" />
+            </div>
+          </div>
         </div>
         
         <div v-if="filteredArticles?.length" class="article-grid">
@@ -122,6 +105,7 @@
 </template>
 
 <script setup>
+definePageMeta({ layout: 'default' })
 import { isDark, toggleDark } from '~/composables/useTheme'
 const search = ref('')
 const selectedPath = ref('')
@@ -284,135 +268,12 @@ const filteredArticles = computed(() => {
 
 <style scoped>
 .blog-layout {
-  min-height: 100vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
-  color: var(--text-primary);
   position: relative;
-}
-
-/* FLUX BACKGROUND */
-.flux-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  filter: blur(100px);
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-.flux-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(var(--border-light) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.2;
-}
-
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  animation: blob-float 20s infinite alternate ease-in-out;
-}
-
-.blob-1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #b497d7, #a682cf);
-  top: -10%;
-  right: -5%;
-  opacity: 0.3;
-}
-
-.blob-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #c2a9e4, #b497d7);
-  bottom: -5%;
-  left: 5%;
-  opacity: 0.25;
-  animation-delay: -10s;
-}
-
-.blob-3 {
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, #9163c0, #7743a3);
-  top: 40%;
-  left: 50%;
-  opacity: 0.2;
-  animation: blob-float 25s infinite alternate ease-in-out;
-  animation-delay: -5s;
-}
-
-@keyframes blob-float {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(30px, -40px) scale(1.05); }
-  100% { transform: translate(0, 0) scale(1); }
-}
-
-.noise-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-  opacity: 0.05;
   z-index: 1;
 }
-
-/* HEADER */
-.header {
-  height: 80px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border-light);
-  backdrop-filter: blur(15px);
-  z-index: 100;
-  position: sticky;
-  top: 0;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.nav { display: flex; gap: 2.5rem; align-items: center; }
-.nav a { 
-  font-size: 0.9375rem; 
-  color: var(--text-secondary); 
-  text-decoration: none; 
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.nav a:hover, .nav-active { color: var(--text-primary); }
-
-.theme-toggle {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary);
-  transition: transform 0.2s;
-}
-.theme-toggle:hover { transform: scale(1.1); }
 
 /* LAYOUT */
 .blog-container {
@@ -485,21 +346,39 @@ const filteredArticles = computed(() => {
 
 /* SEARCH & CONTENT HEADER */
 .content { min-width: 0; }
+
 .content-header {
+  position: sticky;
+  top: 80px; /* Right below the main global header */
+  z-index: 50;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 4rem;
-  gap: 2rem;
+  align-items: center;
+  padding: 1.5rem 0;
+  margin-bottom: 2rem;
+  margin-top: -1.5rem; /* Counteract padding if needed */
+  background: var(--bg-primary); /* Solid background to obscure scrolling cards */
+  box-shadow: 0 10px 30px -10px var(--bg-primary); /* Blend bottom edge */
+}
+
+/* For dark themes or glass effects, add some blur */
+.content-header::before {
+  content: '';
+  position: absolute;
+  inset: -20px -20px -10px -20px;
+  background: radial-gradient(ellipse at top, var(--bg-primary) 60%, transparent);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .path-display {
   display: flex;
   align-items: center;
-  font-family: 'Bricolage Grotesque';
-  font-size: 2.5rem;
+  font-family: 'Bricolage Grotesque', sans-serif !important;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.03em;
+  z-index: 2;
 }
 
 .root-label { cursor: pointer; transition: opacity 0.2s; }
@@ -509,14 +388,21 @@ const filteredArticles = computed(() => {
   display: flex;
   align-items: center;
   color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 1.5rem;
-  opacity: 0.6;
+  font-weight: 600;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  opacity: 0.8;
 }
 
 .chevron-sm { font-size: 1.25rem; margin: 0 0.75rem; opacity: 0.3; }
 
+.search-box-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  z-index: 2;
+}
+
 .search-box {
+  pointer-events: auto;
   position: relative;
   width: 320px;
   padding: 0;
@@ -587,6 +473,9 @@ const filteredArticles = computed(() => {
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -650,6 +539,7 @@ const filteredArticles = computed(() => {
   margin-bottom: 2.5rem;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -788,43 +678,4 @@ const filteredArticles = computed(() => {
 }
 </style>
 
-<style scoped>
-.search-box-wrapper {
-  position: sticky;
-  top: 100px;
-  z-index: 50;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2rem;
-  margin-top: -5rem;
-  pointer-events: none;
-}
 
-.search-box {
-  pointer-events: auto;
-  position: relative;
-  width: 320px;
-  border-radius: 0.8rem;
-  overflow: hidden;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  opacity: 0.5;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 1.25rem 1rem 3.25rem;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.9375rem;
-  outline: none;
-}
-</style>

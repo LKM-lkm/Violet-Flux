@@ -80,28 +80,40 @@ const resolvedSrc = computed(() => {
   }
   
   // Join segments for the final path - use public directory path
+  // Use a more robust segment encoding approach
   const pathParts = baseSegments.length > 0 
-    ? ['/_blog_assets', ...baseSegments.filter(s => s), cleanSrc]
-    : ['/_blog_assets', cleanSrc]
+    ? ['_blog_assets', ...baseSegments, cleanSrc]
+    : ['_blog_assets', cleanSrc]
   
-  const fullPath = pathParts.filter(s => s).join('/').replace(/\/+/g, '/')
+  // Create final path by joining and then encoding each segment specifically
+  // This avoids double encoding while ensuring non-ASCII characters and spaces are handled
+  const fullPath = '/' + pathParts
+    .filter(Boolean)
+    .join('/')
+    .replace(/\/+/g, '/')
+    .split('/')
+    .filter(Boolean)
+    .map(segment => {
+      // Use NFC normalization to handle Unicode consistently (essential for macOS/Windows/Linux compatibility)
+      try {
+        const normalized = decodeURIComponent(segment).normalize('NFC')
+        return encodeURIComponent(normalized)
+      } catch (e) {
+        return encodeURIComponent(segment.normalize('NFC'))
+      }
+    })
+    .join('/')
   
   // Debug log - always log in development
   if (import.meta.dev) {
-    console.log('ProseImg Debug:', {
+    console.log('ProseImg V3 Debug:', {
       original: props.src,
-      routePath: currentPath,
-      segments: segments,
-      baseSegments: baseSegments,
-      cleanSrc: cleanSrc,
-      pathParts: pathParts,
       fullPath: fullPath,
-      encoded: encodeURI(fullPath)
+      segments: pathParts
     })
   }
   
-  // Encode the final URI for Chinese characters and spaces
-  return encodeURI(fullPath)
+  return fullPath
 })
 </script>
 

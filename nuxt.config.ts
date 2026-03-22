@@ -76,14 +76,6 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    publicAssets: [
-      {
-        baseURL: '/_blog_assets',
-        dir: './content/blog',
-        maxAge: 60 * 60 * 24 * 7,
-        fallthrough: true
-      }
-    ],
     prerender: {
       crawlLinks: true,
       routes: ['/', '/blog'],
