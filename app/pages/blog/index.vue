@@ -56,7 +56,7 @@
             </template>
           </div>
 
-          <!-- Search Box integrated into Content Header -->
+          <!-- Search Box -->
           <div class="search-box-wrapper">
             <div class="search-box">
               <Icon name="lucide:search" class="search-icon" />
@@ -65,28 +65,30 @@
           </div>
         </div>
         
-        <div v-if="filteredArticles?.length" class="article-grid">
-          <article v-for="article in filteredArticles" :key="article.path" class="blog-card glass-card">
-            <NuxtLink :to="article.path" class="card-link">
-              <div class="card-inner">
-                <div class="card-meta">
-                  <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
-                </div>
-                <h2 class="card-title">{{ article.title || getFileName(article.displayPath) }}</h2>
-                <p v-if="article.description" class="card-desc">{{ article.description }}</p>
-                
-                <div class="card-footer">
-                  <div class="tags-group">
-                    <span v-for="tag in getTags(article)" :key="tag" class="tag-chip">#{{ tag }}</span>
+        <div v-if="filteredArticles?.length">
+          <TransitionGroup name="article-list" tag="div" class="article-grid">
+            <article v-for="article in filteredArticles" :key="article.path" class="blog-card glass-card">
+              <NuxtLink :to="article.path" class="card-link">
+                <div class="card-inner">
+                  <div class="card-meta">
+                    <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
                   </div>
-                  <div class="read-more">
-                    Read
-                    <Icon name="lucide:arrow-up-right" class="arrow-icon" />
+                  <h2 class="card-title">{{ article.title || getFileName(article.displayPath) }}</h2>
+                  <p v-if="article.description" class="card-desc">{{ article.description }}</p>
+                  
+                  <div class="card-footer">
+                    <div class="tags-group">
+                      <span v-for="tag in getTags(article)" :key="tag" class="tag-chip">#{{ tag }}</span>
+                    </div>
+                    <div class="read-more">
+                      Read
+                      <Icon name="lucide:arrow-up-right" class="arrow-icon" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </NuxtLink>
-          </article>
+              </NuxtLink>
+            </article>
+          </TransitionGroup>
         </div>
         
         <div v-else class="empty-boundary">
@@ -352,36 +354,39 @@ const filteredArticles = computed(() => {
 
 .content-header {
   position: sticky;
-  top: 80px; /* Right below the main global header */
+  top: 90px; /* Slight offset to make it float below the main navigation */
   z-index: 50;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 0;
-  margin-bottom: 2rem;
-  margin-top: -1.5rem; /* Counteract padding if needed */
-  background: var(--bg-primary); /* Solid background to obscure scrolling cards */
-  box-shadow: 0 10px 30px -10px var(--bg-primary); /* Blend bottom edge */
-}
-
-/* For dark themes or glass effects, add some blur */
-.content-header::before {
-  content: '';
-  position: absolute;
-  inset: -20px -20px -10px -20px;
-  background: radial-gradient(ellipse at top, var(--bg-primary) 60%, transparent);
-  z-index: -1;
-  pointer-events: none;
+  gap: 2rem;
+  
+  /* Adjust width so the edges don't align with the content grid below */
+  margin: 0 1.5rem 3rem 1.5rem;
+  padding: 1rem 1.8rem;
+  
+  /* Independent floating glass card */
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem; /* Fully rounded on all corners */
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 10px 40px rgba(180, 151, 215, 0.08);
 }
 
 .path-display {
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* allow wrapping on smaller screens */
+  gap: 0.5rem;
   font-family: 'Bricolage Grotesque', sans-serif !important;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem); /* Scaled down slightly to fit the card gracefully */
   font-weight: 800;
   letter-spacing: -0.03em;
-  z-index: 2;
+  color: var(--text-primary);
+  line-height: 1.1;
 }
 
 .root-label { cursor: pointer; transition: opacity 0.2s; }
@@ -392,16 +397,14 @@ const filteredArticles = computed(() => {
   align-items: center;
   color: var(--text-secondary);
   font-weight: 600;
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-  opacity: 0.8;
 }
 
-.chevron-sm { font-size: 1.25rem; margin: 0 0.75rem; opacity: 0.3; }
+.chevron-sm { font-size: clamp(1.2rem, 2vw, 2rem); margin: 0 0.25rem; opacity: 0.3; }
 
 .search-box-wrapper {
   display: flex;
   justify-content: flex-end;
-  z-index: 2;
+  flex-shrink: 0; /* prevent search box from getting crushed */
 }
 
 .search-box {
@@ -415,8 +418,15 @@ const filteredArticles = computed(() => {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--card-shadow),
+  box-shadow: var(--shadow-sm),
               inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(180, 151, 215, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .search-icon {
@@ -425,7 +435,11 @@ const filteredArticles = computed(() => {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
-  opacity: 0.5;
+  transition: color 0.3s ease;
+}
+
+.search-box:focus-within .search-icon {
+  color: var(--primary);
 }
 
 .search-input {
@@ -439,11 +453,34 @@ const filteredArticles = computed(() => {
   outline: none;
 }
 
-/* CARDS */
+/* CARDS ANIMATION & GRID */
 .article-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 2.5rem;
+  position: relative;
+}
+
+/* Vue Transition Group Classes */
+.article-list-move, /* apply transition to moving elements */
+.article-list-enter-active,
+.article-list-leave-active {
+  transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.article-list-enter-from,
+.article-list-leave-to {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.article-list-leave-active {
+  position: absolute;
+  /* give it the same width as grid columns minus gap */
+  width: calc(100% - 2.5rem); 
+  z-index: 0;
 }
 
 .blog-card {
@@ -460,8 +497,10 @@ const filteredArticles = computed(() => {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  z-index: 1; /* keep above leaving items */
 }
 
+/* ... keep other styles the same ... */
 .blog-card::before {
   content: '';
   position: absolute;
@@ -663,11 +702,6 @@ const filteredArticles = computed(() => {
   cursor: pointer;
 }
 
-/* UTILS */
-/* Using global .glass-card */
-
-
-
 @media (max-width: 1200px) {
   .blog-container { grid-template-columns: 1fr; }
   .sidebar { display: none; }
@@ -675,10 +709,9 @@ const filteredArticles = computed(() => {
 }
 
 @media (max-width: 768px) {
-  .content-header { flex-direction: column; align-items: stretch; }
-  .search-box-wrapper { width: 100%; position: static; margin-bottom: 2rem; }
+  .content-header { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+  .search-box-wrapper { width: 100%; justify-content: stretch; }
+  .search-box { width: 100%; }
   .article-grid { grid-template-columns: 1fr; }
 }
 </style>
-
-
