@@ -45,7 +45,7 @@
       </aside>
 
       <main class="content">
-        <div class="content-header">
+        <LiquidGlass class="content-header" :radius="24" :blur="0" :glass-thickness="12" :bezel-width="40">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
@@ -63,7 +63,7 @@
               <input type="text" v-model="search" placeholder="Search knowledge base..." class="search-input" />
             </div>
           </div>
-        </div>
+        </LiquidGlass>
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
