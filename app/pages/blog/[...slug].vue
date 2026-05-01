@@ -269,11 +269,81 @@ onMounted(() => {
       })
     }
     
+    // 处理图片尺寸和对齐
+    const processImages = () => {
+      const images = document.querySelectorAll('.article-body img')
+      if (images.length === 0) return
+
+      images.forEach(img => {
+        const alt = img.getAttribute('alt')?.trim() || img.alt?.trim()
+        if (alt && /^\d+$/.test(alt)) {
+          // 1. 强制设置宽度
+          img.style.setProperty('width', alt + 'px', 'important')
+          img.style.setProperty('max-width', '100%', 'important')
+          img.style.setProperty('display', 'inline-block', 'important')
+          img.style.setProperty('vertical-align', 'middle', 'important')
+          img.setAttribute('alt', '')
+          
+          // 2. 向上处理容器对齐
+          let parent = img.parentElement
+          while (parent && !parent.classList.contains('article-body')) {
+            parent.style.setProperty('text-align', 'left', 'important')
+            
+            // 如果段落内容基本只有图片（或者是我们要隐藏的数字），则允许行内排列
+            if (parent.tagName === 'P' || parent.tagName === 'DIV') {
+              const text = parent.textContent.trim()
+              if (text === '' || text === alt) {
+                parent.style.setProperty('display', 'inline-block', 'important')
+                parent.style.setProperty('vertical-align', 'middle', 'important')
+                parent.style.setProperty('margin-right', '1rem', 'important')
+              } else {
+                parent.style.setProperty('display', 'block', 'important')
+              }
+            }
+            parent = parent.parentElement
+          }
+          
+          // 3. 递归查找并隐藏数字标题
+          const hideNumeric = (el) => {
+            if (!el) return false
+            if (el.textContent.trim() === alt) {
+              el.style.setProperty('display', 'none', 'important')
+              return true
+            }
+            return false
+          }
+
+          // 检查同级元素
+          let nextSib = img.nextElementSibling
+          while (nextSib) {
+            if (hideNumeric(nextSib)) break
+            nextSib = nextSib.nextElementSibling
+          }
+
+          // 检查父级的同级元素
+          let p = img.parentElement
+          while (p && !p.classList.contains('article-body')) {
+            let nextP = p.nextElementSibling
+            if (hideNumeric(nextP)) break
+            p = p.parentElement
+          }
+        }
+      })
+    }
+
     // 立即处理
     processAlerts()
+    processImages()
     
-    // 监听内容变化（如果有动态加载）
-    const observer = new MutationObserver(processAlerts)
+    // 启动一个短期定时器，确保动态内容也被处理
+    const timer = setInterval(processImages, 300)
+    setTimeout(() => clearInterval(timer), 8000)
+    
+    // 监听内容变化
+    const observer = new MutationObserver(() => {
+      processAlerts()
+      processImages()
+    })
     const articleBody = document.querySelector('.article-body')
     if (articleBody) {
       observer.observe(articleBody, { childList: true, subtree: true })
@@ -757,18 +827,34 @@ watch(() => route.path, () => {
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg),
-              0 0 40px var(--primary-glow);
-  margin: var(--space-xl) auto;
-  display: block;
+  box-shadow: var(--shadow-md),
+              0 0 30px var(--primary-glow);
+  margin: 0.5rem 0;
+  display: inline-block;
   border: 1px solid var(--border-light);
   transition: all var(--duration-normal);
+  vertical-align: middle;
 }
 
 .article-body :deep(img:hover) {
   transform: scale(1.02);
-  box-shadow: var(--shadow-2xl),
-              0 0 60px var(--primary-glow);
+  box-shadow: var(--shadow-lg),
+              0 0 50px var(--primary-glow);
+}
+
+/* 优化图片下方的文字（如标题/描述）间距 */
+.article-body :deep(p:has(img)),
+.article-body :deep(li:has(img)),
+.article-body :deep(div:has(img)) {
+  margin-bottom: 0.25rem;
+  text-align: left !important;
+}
+
+.article-body :deep(p:has(img) + p) {
+  margin-top: 0;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  text-align: left !important; 
 }
 
 .article-body :deep(table) {

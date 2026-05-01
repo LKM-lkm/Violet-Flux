@@ -45,13 +45,13 @@
       </aside>
 
       <main class="content">
-        <LiquidGlass class="content-header" :radius="24" :blur="0" :glass-thickness="12" :bezel-width="40">
+        <div class="content-header">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
-              <span v-for="(p, i) in selectedPath.replace('/blog', '').split('/').filter(Boolean)" :key="i" class="path-crumb">
+              <span v-for="(p, i) in selectedPath.replace('/blog', '').split('/').filter(Boolean).filter(s => s !== 'content' && s !== 'blog')" :key="i" class="path-crumb">
                 <Icon name="lucide:chevron-right" class="chevron-sm" />
-                {{ p }}
+                {{ decodeURIComponent(p) }}
               </span>
             </template>
           </div>
@@ -63,7 +63,7 @@
               <input type="text" v-model="search" placeholder="Search knowledge base..." class="search-input" />
             </div>
           </div>
-        </LiquidGlass>
+        </div>
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
@@ -154,14 +154,20 @@ const folderTree = computed(() => {
     if (parts[0] !== 'blog') return
     
     let currentLevel = tree
-    let currentFullPath = '/blog'
+    let currentFullPath = ''
     
-    for (let i = 1; i < parts.length - 1; i++) {
+    for (let i = 0; i < parts.length - 1; i++) {
       const segment = parts[i]
       currentFullPath += '/' + segment
-      let folder = currentLevel.find(f => f.name === segment)
+      
+      if (segment === 'blog' || segment === 'content') {
+        continue
+      }
+      
+      const decodedName = decodeURIComponent(segment)
+      let folder = currentLevel.find(f => f.name === decodedName)
       if (!folder) {
-        folder = { name: segment, path: currentFullPath, children: [] }
+        folder = { name: decodedName, path: currentFullPath, children: [] }
         currentLevel.push(folder)
       }
       currentLevel = folder.children

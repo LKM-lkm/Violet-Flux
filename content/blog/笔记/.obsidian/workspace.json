@@ -55,12 +55,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
-                "mode": "preview",
+                "file": "Mine/折纸/Affinity 折り図制作/2. 文件参数.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1. 软件下载"
+              "title": "2. 文件参数"
             }
           }
         ],
@@ -225,8 +225,13 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "23d2f2d837a7488b",
+  "active": "ac63568be97b5b9d",
   "lastOpenFiles": [
+    "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
+    "Mine/折纸/Affinity 折り図制作/2. 文件参数.md",
+    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
+    "Mine/折纸/Affinity 折り図制作/assets/DM_20260501215710_001.png",
+    "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501215443.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501121026.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501121006.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120521.png",
@@ -234,7 +239,6 @@
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120057.png",
     "未命名.base",
     "Mine/𝄞Sibelius/Sibelius2024下载运行教程.md",
-    "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501105627.png",
     "Mine/折纸/Affinity 折り図制作/assets",
     "Mine/折纸/Affinity 折り図制作",
@@ -242,15 +246,12 @@
     "Mine/📃文字字体/如何一键抓取网页所有的字体样式与下载链接？.md",
     "Mine/折纸",
     "Mine/📝MathJax/VitePress 集成 MathJax v4.md",
-    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
     "assets/Pasted image 20260308111351.png",
     "assets",
     "Mine/🌐网络技巧/assets/Pasted image 20260303141920.png",
-    "Mine/🌐网络技巧/assets/Pasted image 20260303141723.png",
     "Mine/📝示例/Callout 示例.md",
     "Mine/🌐网络技巧/访问Google Gemini报错.md",
     "Mine/🌐网络技巧/Great Firewall.md",
-    "Mine/🌐网络技巧/assets/new.png",
     "Mine/🌐网络技巧/assets",
     "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
     "Mine/⬇️资源下载/如何下载无损电子版教材？.md",
@@ -263,7 +264,6 @@
     "📔我的/🖥程序运行/如何使用 Git 交互式 rebase 删除历史提交.md",
     "Clippings/IP Address Lookup  IPv4  IPv6 - IP.SB.md",
     "Clippings",
-    "📔我的/🖥程序运行/assets/6.png",
     "index.md",
     "Mine/📃文字字体/Symbol字体对照表.md",
     "📔我的/📃文字字体/VitePress 优雅集成 MathJax v4：打造专业级数学公式显示.md",
