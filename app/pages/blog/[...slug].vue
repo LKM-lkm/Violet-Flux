@@ -50,7 +50,7 @@
                 返回文章列表
               </NuxtLink>
             </div>
-            <h1 class="article-title">{{ article.stem }}</h1>
+            <h1 class="article-title">{{ decodeURIComponent(article.path.split('/').pop() || '') }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
               <span v-for="tag in getTags(article)" :key="tag" class="tag-label">
                 #{{ tag }}
@@ -155,8 +155,8 @@ const { data: article } = await useAsyncData(`article-v22-${route.path}`, async 
 
 // 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
 useSeoMeta({
-  title: () => article.value?.stem || article.value?.title || 'Loading...',
-  ogTitle: () => article.value?.stem || article.value?.title,
+  title: () => decodeURIComponent(article.value?.path.split('/').pop() || '') || 'Loading...',
+  ogTitle: () => decodeURIComponent(article.value?.path.split('/').pop() || ''),
   description: () => article.value?.description
 })
 
@@ -539,14 +539,7 @@ watch(() => route.path, () => {
   margin-bottom: var(--space-lg);
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, 
-    var(--text-primary) 0%,
-    #b497d7 50%,
-    #9163c0 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
   position: relative;
 }
 
@@ -581,8 +574,8 @@ watch(() => route.path, () => {
     rgba(180, 151, 215, 0.1), 
     rgba(194, 169, 228, 0.15)
   );
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: 50px;
   border: 1px solid var(--border-light);
   backdrop-filter: blur(8px);
   transition: all var(--duration-fast);
@@ -631,7 +624,7 @@ watch(() => route.path, () => {
 .article-body :deep(h4) {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--text-primary);
+  color: #111; /* 更加中性的黑色 */
   margin-top: var(--space-3xl);
   margin-bottom: var(--space-lg);
   scroll-margin-top: 100px;
@@ -660,7 +653,7 @@ watch(() => route.path, () => {
 
 .article-body :deep(p) {
   margin-bottom: var(--space-lg);
-  color: var(--text-primary);
+  color: #333; /* 正文也使用更中性的深色 */
 }
 
 .article-body :deep(a) {
@@ -1089,6 +1082,22 @@ watch(() => route.path, () => {
   .toc-wrapper {
     padding: var(--space-md);
   }
+}
+
+/* 暗色模式中性色适配 */
+:root.dark .article-body :deep(h1),
+:root.dark .article-body :deep(h2),
+:root.dark .article-body :deep(h3),
+:root.dark .article-body :deep(h4) {
+  color: var(--text-primary);
+}
+
+:root.dark .article-body :deep(p) {
+  color: var(--text-secondary);
+}
+
+:root.dark .article-title {
+  color: var(--text-primary);
 }
 
 @media (max-width: 640px) {

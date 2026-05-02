@@ -73,7 +73,7 @@
                   <div class="card-meta">
                     <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
                   </div>
-                  <h2 class="card-title">{{ article.stem || getFileName(article.displayPath) }}</h2>
+                  <h2 class="card-title">{{ getFileName(article.displayPath) }}</h2>
                   <p v-if="article.description" class="card-desc">{{ article.description }}</p>
                   
                   <div class="card-footer">
@@ -206,16 +206,26 @@ const resetFilters = () => {
 
 const getBreadcrumbs = (path) => {
   if (!path) return 'General'
-  const parts = path.split('/').filter(Boolean)
-  if (parts.length <= 2) return 'General'
-  return parts.slice(1, -1).join(' / ')
+  // 过滤掉冗余的路径段，如 blog, content 等
+  const parts = path.split('/')
+    .filter(Boolean)
+    .filter(p => {
+      const low = p.toLowerCase()
+      return low !== 'blog' && low !== 'content'
+    })
+  
+  if (parts.length <= 1) return 'General'
+  // 返回除最后一个（标题）之外的所有部分
+  return parts.slice(0, -1).join(' / ')
 }
 
 const getFileName = (path) => {
   if (!path) return 'Untitled'
   const parts = path.split('/').filter(Boolean)
   let name = parts[parts.length - 1] || 'Untitled'
-  return name.charAt(0).toUpperCase() + name.slice(1)
+  // 确保去掉可能残留的 .md 后缀并清理编码
+  name = decodeURIComponent(name).replace(/\.md$/, '')
+  return name
 }
 
 const getTags = (article) => {

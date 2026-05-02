@@ -6,13 +6,34 @@
       :title="title" 
       class="prose-img"
       loading="lazy"
+      @click="toggleExpand"
     />
     <!-- 只在 alt 不是文件名时显示说明 -->
     <span v-if="alt && !isFileName(alt)" class="image-caption">{{ alt }}</span>
+
+    <!-- 放大查看详情 -->
+    <Teleport to="body">
+      <Transition name="lightbox-fade">
+        <div v-if="isExpanded" class="lightbox-overlay" @click="toggleExpand">
+          <div class="lightbox-container" @click.stop>
+            <div class="lightbox-content-wrapper glass-card">
+              <img :src="resolvedSrc" :alt="alt" class="lightbox-img" />
+              <div v-if="alt && !isFileName(alt)" class="lightbox-caption">
+                {{ alt }}
+              </div>
+              <button class="lightbox-close" @click="toggleExpand" aria-label="关闭">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import { useScrollLock, useEventListener } from '@vueuse/core'
 const props = defineProps({
   src: {
     type: String,
@@ -29,6 +50,24 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const isExpanded = ref(false)
+
+// 响应式锁定滚动
+const isLocked = useScrollLock(import.meta.client ? document.body : null)
+
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
+  isLocked.value = isExpanded.value
+}
+
+// 监听 ESC 键关闭
+if (import.meta.client) {
+  useEventListener(window, 'keydown', (e) => {
+    if (e.key === 'Escape' && isExpanded.value) {
+      toggleExpand()
+    }
+  })
+}
 
 // 检查 alt 是否看起来像文件名
 const isFileName = (text) => {
@@ -131,24 +170,140 @@ const resolvedSrc = computed(() => {
   border-radius: 1.5rem;
   box-shadow: 0 25px 50px -12px var(--shadow-lg);
   border: 1px solid var(--border-light);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: zoom-in;
 }
 
 .prose-img:hover {
-  transform: scale(1.01);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 35px 60px -12px var(--shadow-xl);
 }
 
 .image-caption {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-size: 0.875rem;
   color: var(--text-secondary);
-  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   text-align: center;
+  opacity: 0.8;
+}
+
+/* Lightbox Styles */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 5, 15, 0.85);
+  backdrop-filter: blur(12px) saturate(160%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 2rem;
+}
+
+.lightbox-container {
+  max-width: 90vw;
+  max-height: 90vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content-wrapper {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 2rem;
+  overflow: hidden;
+  position: relative;
+  background: var(--glass-bg);
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.lightbox-caption {
+  margin-top: 1.5rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+/* Animations */
+.lightbox-fade-enter-active,
+.lightbox-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lightbox-fade-enter-from,
+.lightbox-fade-leave-to {
+  opacity: 0;
+}
+
+.lightbox-fade-enter-active .lightbox-content-wrapper {
+  animation: zoom-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lightbox-fade-leave-active .lightbox-content-wrapper {
+  animation: zoom-out 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+
+@keyframes zoom-in {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes zoom-out {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.95); opacity: 0; }
 }
 
 /* Dark mode adjustment for excessive brightness */
 :root.dark .prose-img {
-  opacity: 0.9;
-  filter: brightness(0.9) contrast(1.1);
+  opacity: 0.95;
+  filter: brightness(0.9) contrast(1.05);
+}
+
+:root.dark .prose-img:hover {
+  filter: brightness(1) contrast(1);
+  opacity: 1;
 }
 </style>

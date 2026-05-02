@@ -131,10 +131,25 @@ onMounted(() => {
 <style scoped>
 .ai-summary {
   margin: 2rem 0 3rem;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem 2.5rem;
   position: relative;
   overflow: hidden;
-  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light);
+  background: var(--glass-bg);
+  box-shadow: var(--shadow-lg), 
+              0 0 20px rgba(180, 151, 215, 0.05);
+}
+
+.ai-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
+  box-shadow: 2px 0 10px var(--primary-glow);
 }
 
 .summary-header {
