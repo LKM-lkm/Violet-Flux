@@ -12,7 +12,7 @@
         class="article-card"
       >
         <div class="card-header">
-          <h4 class="card-title">{{ article.title }}</h4>
+          <h4 class="card-title">{{ article.stem || article.title }}</h4>
           <div v-if="article.tags?.length" class="card-tags">
             <span 
               v-for="tag in article.tags.slice(0, 2)" 

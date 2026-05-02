@@ -50,7 +50,7 @@
                 返回文章列表
               </NuxtLink>
             </div>
-            <h1 class="article-title">{{ article.title }}</h1>
+            <h1 class="article-title">{{ article.stem }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
               <span v-for="tag in getTags(article)" :key="tag" class="tag-label">
                 #{{ tag }}
@@ -151,6 +151,13 @@ const { data: article } = await useAsyncData(`article-v22-${route.path}`, async 
   }
 
   return found || null
+})
+
+// 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
+useSeoMeta({
+  title: () => article.value?.stem || article.value?.title || 'Loading...',
+  ogTitle: () => article.value?.stem || article.value?.title,
+  description: () => article.value?.description
 })
 
 const tocLinks = computed(() => {
@@ -630,6 +637,11 @@ watch(() => route.path, () => {
   scroll-margin-top: 100px;
   letter-spacing: -0.02em;
   line-height: 1.3;
+}
+
+/* 隐藏正文中的第一个一级标题，因为它已经显示在头部了 */
+.article-body :deep(h1:first-child) {
+  display: none;
 }
 
 .article-body :deep(h2) {

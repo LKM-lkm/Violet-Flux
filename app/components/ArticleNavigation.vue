@@ -10,7 +10,7 @@
           <UIcon name="i-lucide-chevron-left" class="nav-icon" />
           <span>上一篇</span>
         </div>
-        <div class="nav-title">{{ prevArticle.title }}</div>
+        <div class="nav-title">{{ prevArticle.stem || prevArticle.title }}</div>
         <div v-if="prevArticle.description" class="nav-description">
           {{ truncate(prevArticle.description, 60) }}
         </div>
@@ -27,7 +27,7 @@
           <span>下一篇</span>
           <UIcon name="i-lucide-chevron-right" class="nav-icon" />
         </div>
-        <div class="nav-title">{{ nextArticle.title }}</div>
+        <div class="nav-title">{{ nextArticle.stem || nextArticle.title }}</div>
         <div v-if="nextArticle.description" class="nav-description">
           {{ truncate(nextArticle.description, 60) }}
         </div>

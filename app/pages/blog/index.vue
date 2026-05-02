@@ -73,7 +73,7 @@
                   <div class="card-meta">
                     <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
                   </div>
-                  <h2 class="card-title">{{ article.title || getFileName(article.displayPath) }}</h2>
+                  <h2 class="card-title">{{ article.stem || getFileName(article.displayPath) }}</h2>
                   <p v-if="article.description" class="card-desc">{{ article.description }}</p>
                   
                   <div class="card-footer">
@@ -249,6 +249,7 @@ const filteredArticles = computed(() => {
       // 检查文章路径是否在匹配的搜索结果中
       const articleId = article.id || article.path.replace('/blog/', '')
       return matchingPaths.has(articleId) ||
+        (article.stem && String(article.stem).toLowerCase().includes(searchLower)) ||
         (article.title && String(article.title).toLowerCase().includes(searchLower)) ||
         (article.description && String(article.description).toLowerCase().includes(searchLower))
     })
