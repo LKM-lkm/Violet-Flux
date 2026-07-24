@@ -29,6 +29,10 @@ export default defineNuxtConfig({
       ],
       script: [
         {
+          src: '/liquid-glass.js',
+          defer: true,
+        },
+        {
           innerHTML: `
             window.MathJax = {
               loader: { 

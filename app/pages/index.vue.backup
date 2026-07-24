@@ -28,15 +28,13 @@
           </p>
           
           <div class="cta-group animate-fade-in-up" style="animation-delay: 0.4s">
-            <NuxtLink to="/blog" class="btn premium-btn-primary">
-              <span class="btn-shimmer"></span>
+            <NuxtLink to="/blog" class="btn premium-btn-primary glass-btn">
               <span class="btn-content">
                 <span>Explore Library</span>
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
             </NuxtLink>
-            <NuxtLink to="/about" class="btn premium-btn-secondary">
-              <span class="btn-outline"></span>
+            <NuxtLink to="/about" class="btn premium-btn-secondary glass-btn">
               <span class="btn-content">
                 <span>Our Story</span>
               </span>
@@ -46,7 +44,7 @@
           <!-- Feature Cards / Bento Grid -->
           <div class="features-grid animate-fade-in-up" style="animation-delay: 0.5s">
             <!-- Card 1 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <div class="glass-card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -56,10 +54,10 @@
                 <h3 class="card-title">Lightning Fast</h3>
                 <p class="card-desc">Zero runtime overhead. Every interaction feels instantaneous and fluid.</p>
               </div>
-            </LiquidGlass>
+            </div>
 
             <!-- Card 2 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <div class="glass-card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -69,10 +67,10 @@
                 <h3 class="card-title">Precision Design</h3>
                 <p class="card-desc">Crafted with meticulous attention to typography, spacing, and micro-interactions.</p>
               </div>
-            </LiquidGlass>
+            </div>
 
             <!-- Card 3 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <div class="glass-card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -82,7 +80,7 @@
                 <h3 class="card-title">Deep Architecture</h3>
                 <p class="card-desc">Built on a solid foundation, ensuring lasting performance and flawless scalability.</p>
               </div>
-            </LiquidGlass>
+            </div>
           </div>
         </div>
       </div>
@@ -351,17 +349,20 @@ html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
 
 .glass-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: 28px;
   padding: 3rem 2.5rem;
   text-align: left;
   overflow: hidden;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.6s ease;
   box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5);
+  transform: translateZ(0);
 }
 
 html.dark .glass-card, [data-theme='dark'] .glass-card {
-  background: rgba(25, 20, 35, 0.25);
+  background: rgba(25, 20, 35, 0.5);
   box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
@@ -390,23 +391,6 @@ html.dark .glass-card:hover, [data-theme='dark'] .glass-card:hover {
 
 .glass-card:hover .card-border {
   background: linear-gradient(135deg, var(--primary), rgba(180, 151, 215, 0.2) 60%, transparent);
-}
-
-.card-glow {
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(180, 151, 215, 0.3), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.7s ease;
-  pointer-events: none;
-}
-
-.glass-card:hover .card-glow {
-  opacity: 1;
 }
 
 .card-content {

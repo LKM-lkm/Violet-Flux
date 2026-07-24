@@ -41,8 +41,9 @@ export default {
         return new Response("Missing content", { status: 400 });
       }
 
-      // 2. Call Cloudflare AI (using Llama 3)
-      const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+      // 2. Call Cloudflare AI (using Qwen 1.5)
+      // 您也可以换成 "@cf/meta/llama-3.1-8b-instruct"
+      const response = await env.AI.run("@cf/qwen/qwen1.5-14b-chat", {
         messages: [
           { 
             role: "system", 

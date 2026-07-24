@@ -89,6 +89,8 @@ const currentYear = new Date().getFullYear();
   z-index: 0;
   pointer-events: none;
   background-color: var(--bg-primary);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .ambient-orb {
@@ -155,13 +157,14 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   position: fixed;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(180, 151, 215, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 151, 215, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(180, 151, 215, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 151, 215, 0.25) 1px, transparent 1px);
   background-size: 50px 50px;
   z-index: 0;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
-  mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+  transform: translateZ(0);
 }
 
 /* =========================================
