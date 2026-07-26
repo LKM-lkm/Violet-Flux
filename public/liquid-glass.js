@@ -27,7 +27,7 @@
     const isSafari = /Safari/.test(ua) && !/Chrome|Chromium|Edg/.test(ua);
     const isFirefox = /Firefox/.test(ua);
     if (isSafari || isFirefox) return false;
-    if (!CSS.supports("backdrop-filter", "blur(1px)") && !CSS.supports("-webkit-backdrop-filter", "blur(1px)")) return false;
+    if (!CSS.supports("backdrop-filter", "url(#lg)")) return false;
     try {
       const c = document.createElement("canvas");
       c.width = c.height = 4;
@@ -39,12 +39,13 @@
   })();
 
   function ensureDefs() {
-    if (svgDefs && document.body.contains(svgDefs.ownerSVGElement)) return svgDefs;
+    if (svgDefs) return svgDefs;
     const svg = document.createElementNS(SVG_NS, "svg");
-    svg.setAttribute("width", "1");
-    svg.setAttribute("height", "1");
+    // width/height 0 keeps it renderable (display:none would break feImage)
+    svg.setAttribute("width", "0");
+    svg.setAttribute("height", "0");
     svg.setAttribute("aria-hidden", "true");
-    svg.style.cssText = "position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;";
+    svg.style.position = "absolute";
     svgDefs = document.createElementNS(SVG_NS, "defs");
     svg.appendChild(svgDefs);
     document.body.appendChild(svg);
@@ -179,10 +180,7 @@
       opts
     );
 
-    console.log('[LiquidGlass] Supported check:', supported);
-
     if (!supported) {
-      console.warn('[LiquidGlass] Unsupported browser/feature, applying fallback');
       const frosted = "blur(" + o.fallbackBlur + "px) saturate(" + o.saturate + ")";
       el.style.backdropFilter = frosted;
       el.style.webkitBackdropFilter = frosted;
@@ -201,25 +199,16 @@
     function refresh() {
       const w = el.offsetWidth;
       const h = el.offsetHeight;
-      console.log('[LiquidGlass] Refresh called for #' + id, { width: w, height: h, radius: o.radius });
-      if (!w || !h) {
-        console.warn('[LiquidGlass] Zero width or height, skipping map generation for #' + id);
-        return;
-      }
+      if (!w || !h) return;
       const radius = resolveRadius(el, w, h, o.radius);
-      const mapUri = makeMap(w, h, radius, o.border, o.mapBlur);
-      parts.feImage.setAttribute("href", mapUri);
-      parts.feImage.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", mapUri);
+      parts.feImage.setAttribute("href", makeMap(w, h, radius, o.border, o.mapBlur));
       parts.feImage.setAttribute("width", w);
       parts.feImage.setAttribute("height", h);
-      console.log('[LiquidGlass] Map updated successfully for #' + id);
     }
 
     refresh();
-    const filterVal = "url(#" + id + ") blur(" + o.blur + "px) saturate(" + o.saturate + ")";
-    el.style.backdropFilter = filterVal;
-    el.style.webkitBackdropFilter = filterVal;
-    console.log('[LiquidGlass] Applied inline backdropFilter:', filterVal, 'to element:', el);
+    el.style.backdropFilter =
+      "url(#" + id + ") blur(" + o.blur + "px) saturate(" + o.saturate + ")";
 
     let timer = null;
     const ro = new ResizeObserver(function () {

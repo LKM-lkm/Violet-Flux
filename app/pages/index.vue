@@ -35,18 +35,18 @@
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
             </NuxtLink>
-            <NuxtLink to="/about" class="btn premium-btn-secondary">
+            <LiquidGlass as="a" href="/about" class="btn premium-btn-secondary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="0" :saturate="1.5">
               <span class="btn-outline"></span>
               <span class="btn-content">
                 <span>Our Story</span>
               </span>
-            </NuxtLink>
+            </LiquidGlass>
           </div>
 
           <!-- Feature Cards / Bento Grid -->
           <div class="features-grid animate-fade-in-up" style="animation-delay: 0.5s">
             <!-- Card 1 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -59,7 +59,7 @@
             </LiquidGlass>
 
             <!-- Card 2 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -72,7 +72,7 @@
             </LiquidGlass>
 
             <!-- Card 3 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -91,69 +91,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-
 definePageMeta({ layout: 'default' })
-
-onMounted(() => {
-  setTimeout(() => {
-    if (!window.liquidGlass) {
-      console.error('❌ liquidGlass script not loaded')
-      return
-    }
-
-    console.log('🔍 Browser Detection:')
-    const ua = navigator.userAgent
-    console.log(`  User-Agent: ${ua.substring(0, 100)}...`)
-    const isSafari = /Safari/.test(ua) && !/Chrome|Chromium|Edg/.test(ua)
-    const isFirefox = /Firefox/.test(ua)
-    console.log(`  Safari: ${isSafari}, Firefox: ${isFirefox}`)
-    console.log(`  CSS.supports('backdrop-filter', 'blur(1px)'): ${CSS.supports('backdrop-filter', 'blur(1px)')}`)
-    console.log(`  CSS.supports('-webkit-backdrop-filter', 'blur(1px)'): ${CSS.supports('-webkit-backdrop-filter', 'blur(1px)')}`)
-
-    // Run the support test
-    if (window.svgFilterTest) {
-      const svgSupported = window.svgFilterTest()
-      console.log(`SVG Filter Test Result: ${svgSupported ? '✅' : '❌'}`)
-    }
-
-    const cards = document.querySelectorAll('.glass-card')
-    console.log(`\n📍 Found ${cards.length} glass cards\n`)
-    
-    cards.forEach((card, index) => {
-      try {
-        console.log(`Applying to Card ${index + 1}...`)
-        const result = window.liquidGlass(card, {
-          scale: -160,
-          chroma: 4,
-          border: 0.02,
-          mapBlur: 6,
-          blur: 2,
-          saturate: 1.5
-        })
-        
-        // Immediate check
-        const inlineStyle = card.style.backdropFilter
-        console.log(`  ✓ Applied: ${result.supported ? '✅ SVG' : '⚠️ Fallback'}`)
-        console.log(`  Style set: ${inlineStyle ? '✅' : '❌'}`)
-        console.log(`  Inline: ${inlineStyle}`)
-        
-        // Delayed check to see computed style
-        setTimeout(() => {
-          const computed = getComputedStyle(card)
-          const backdropFilter = computed.backdropFilter || computed.webkitBackdropFilter || 'none'
-          console.log(`  Computed: ${backdropFilter}`)
-          
-          // Check SVG in DOM
-          const svgFilters = document.querySelectorAll('svg defs filter')
-          console.log(`  SVG filters in DOM: ${svgFilters.length}`)
-        }, 50)
-      } catch (error) {
-        console.error(`Card ${index + 1} failed:`, error.message)
-      }
-    })
-  }, 2000)
-})
 </script>
 
 <style scoped>
@@ -333,6 +271,16 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
   border-color: rgba(255,255,255,0.4);
 }
 
+html.dark .premium-btn-primary, [data-theme='dark'] .premium-btn-primary {
+  background-color: #6b4192;
+  box-shadow: 0 20px 40px -10px rgba(107, 65, 146, 0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+html.dark .premium-btn-primary:hover, [data-theme='dark'] .premium-btn-primary:hover {
+  background-color: #7a4ba3;
+  box-shadow: 0 30px 50px -10px rgba(107, 65, 146, 0.8), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
 .btn-shimmer {
   position: absolute;
   top: 0;
@@ -349,16 +297,25 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
 }
 
 .premium-btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.06));
   color: var(--text-primary);
   border: 1px solid rgba(180, 151, 215, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05),
+    inset 0 1px 1px rgba(255,255,255,0.4),
+    inset 0 0 0 1px rgba(255,255,255,0.1);
+  text-decoration: none;
+  cursor: pointer;
 }
 
 html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
-  background: rgba(20, 15, 30, 0.4);
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.4),
+    rgba(30, 22, 45, 0.2));
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3),
+    inset 0 1px 1px rgba(255,255,255,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 
 .btn-outline {
@@ -411,18 +368,31 @@ html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
 
 .glass-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.2);
   border-radius: 28px;
   padding: 3rem 2.5rem;
   text-align: left;
   overflow: hidden;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.6s ease;
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+  /* 原版库推荐的 material dressing：微妙色调 + 镜面高光 + 玻璃边框 */
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08));
+  box-shadow:
+    0 24px 60px -12px rgba(145, 99, 192, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -8px 20px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 html.dark .glass-card, [data-theme='dark'] .glass-card {
-  background: rgba(25, 20, 35, 0.25);
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
+  box-shadow:
+    0 24px 60px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 -8px 20px rgba(255, 255, 255, 0.02),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .card-border {
@@ -526,6 +496,14 @@ html.dark .glass-card:hover, [data-theme='dark'] .glass-card:hover {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* 关键修复：包含 backdrop-filter 玻璃组件的容器不能有任何 CSS animation，
+   否则 Chrome 会创建持久合成层，阻断子元素 backdrop-filter 采样页面背景。 */
+.features-grid.animate-fade-in-up,
+.cta-group.animate-fade-in-up {
+  animation: none;
+  opacity: 1;
 }
 
 /* Responsive Adjustments */

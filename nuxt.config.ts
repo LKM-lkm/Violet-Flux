@@ -34,40 +34,6 @@ export default defineNuxtConfig({
         },
         {
           innerHTML: `
-            // Test SVG filter support before liquid-glass runs
-            window.svgFilterTest = () => {
-              const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              svg.setAttribute('width', '0');
-              svg.setAttribute('height', '0');
-              const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-              const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-              filter.setAttribute('id', 'test-filter');
-              const flood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
-              flood.setAttribute('flood-color', 'red');
-              filter.appendChild(flood);
-              defs.appendChild(filter);
-              svg.appendChild(defs);
-              document.body.appendChild(svg);
-              
-              const el = document.createElement('div');
-              el.style.cssText = 'position:fixed;top:-9999px;width:10px;height:10px;background:blue;backdrop-filter:url(#test-filter);';
-              document.body.appendChild(el);
-              
-              const computed = getComputedStyle(el).backdropFilter;
-              const works = computed && computed.indexOf('url(') !== -1;
-              
-              document.body.removeChild(el);
-              document.body.removeChild(svg);
-              
-              console.log('SVG filter support test:', works ? '✅ SUPPORTED' : '❌ NOT SUPPORTED');
-              console.log('Computed backdrop-filter:', computed);
-              return works;
-            };
-          `.trim(),
-          type: 'text/javascript'
-        },
-        {
-          innerHTML: `
             window.MathJax = {
               loader: { 
                 load: ['[tex]/ams', '[tex]/newcommand', '[tex]/configmacros'] 

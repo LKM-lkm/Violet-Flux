@@ -50,7 +50,7 @@
                 返回文章列表
               </NuxtLink>
             </div>
-            <h1 class="article-title">{{ decodeURIComponent(article.path.split('/').pop() || '') }}</h1>
+            <h1 class="article-title">{{ articleTitle }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
               <span v-for="tag in getTags(article)" :key="tag" class="tag-label">
                 #{{ tag }}
@@ -154,9 +154,21 @@ const { data: article } = await useAsyncData(`article-v22-${route.path}`, async 
 })
 
 // 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
+const articleTitle = computed(() => {
+  if (!article.value) return ''
+  // 优先从 id 提取（与博客列表页 getFileName 逻辑一致）
+  const source = article.value.id || article.value.path || ''
+  const name = source.replace(/\.md$/, '').split('/').pop() || ''
+  try {
+    return decodeURIComponent(name)
+  } catch {
+    return name
+  }
+})
+
 useSeoMeta({
-  title: () => decodeURIComponent(article.value?.path.split('/').pop() || '') || 'Loading...',
-  ogTitle: () => decodeURIComponent(article.value?.path.split('/').pop() || ''),
+  title: () => articleTitle.value || 'Loading...',
+  ogTitle: () => articleTitle.value,
   description: () => article.value?.description
 })
 
@@ -399,6 +411,13 @@ watch(() => route.path, () => {
   height: fit-content;
   max-height: calc(100vh - 70px - var(--space-2xl));
   overflow-y: auto;
+  background: transparent;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .toc-wrapper {
@@ -548,11 +567,11 @@ watch(() => route.path, () => {
   position: absolute;
   bottom: -8px;
   left: 0;
-  width: 140px;
+  width: min(320px, 60%);
   height: 3px;
   background: linear-gradient(90deg, 
     #b497d7 0%,
-    #c2a9e4 50%,
+    #c2a9e4 40%,
     transparent 100%
   );
   border-radius: var(--radius-sm);

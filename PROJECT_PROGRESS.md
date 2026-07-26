@@ -2,7 +2,7 @@
 
 > 📚 完整的项目工作进程文档，汇总所有已完成的任务和技术方案
 
-**最后更新**: 2026 年 7 月 21 日  
+**最后更新**: 2026 年 7 月 25 日  
 **项目状态**: 🚀 完成大部分核心功能
 
 ---
@@ -177,6 +177,45 @@
 
 ---
 
+### ✅ 任务 11: Liquid Glass 液态玻璃折射效果集成与修复
+
+**问题**：主页三张卡片应用 liquid-glass 库后始终呈现透明玻璃状，无折射效果
+
+**排查过程**:
+1. 确认 `backdrop-filter: url(#svg-filter)` 在 Chrome 148 中语法支持 ✅
+2. 确认 `feImage + data URI` 位移贴图在 backdrop-filter 中可用 ✅
+3. 对比固定定位元素 vs 页面内卡片 → 固定元素有折射，卡片没有
+4. 检查祖先链 → 发现合成层触发器
+
+**根本原因**:
+- `.features-grid` 的 CSS `animation`（即使仅 opacity）让 Chrome 创建持久合成层
+- 合成层内部的 `backdrop-filter` 无法采样到层外的页面背景
+- `.ambient-background` 的 `transform: translateZ(0)` + `will-change` 同样创建独立合成层
+
+**解决方案**:
+- 完全移除 `.features-grid` 的动画（`animation: none; opacity: 1;`）
+- 移除 `.ambient-background` 的 `transform`/`will-change`
+- 使用原版 GitHub liquid-glass.js（`CSS.supports("backdrop-filter", "url(#lg)")` 检测）
+- LiquidGlass.vue 添加 `requestAnimationFrame` 确保布局完成后再应用
+- 清理 nuxt.config.ts 中的调试脚本
+
+**关键教训**:
+- `getComputedStyle` 返回正确值 ≠ 效果实际渲染
+- 任何 CSS animation（包括 opacity-only）都触发合成层提升
+- 调试方法：先用 `position: fixed` 元素验证滤镜本身是否可用，再检查祖先链
+
+**相关文件**:
+- `public/liquid-glass.js` — 原版液态玻璃库
+- `app/components/LiquidGlass.vue` — Vue 包装组件
+- `app/pages/index.vue` — 首页（移除 .features-grid 动画）
+- `app/layouts/default.vue` — 布局（移除背景层 transform）
+- `LIQUID_GLASS_SETUP.md` — 设置指南（新增合成层限制章节）
+- `LIQUID_GLASS_FIX_JOURNEY.md` — 完整修复博客文章
+
+**影响**: 主页卡片现在在 Chrome/Edge 中呈现真实的边缘折射 + 色差棱镜效果
+
+---
+
 ## 核心功能
 
 ### 📝 内容管理
@@ -202,6 +241,14 @@
 - 紫色主题
 - 毛玻璃效果
 - 响应式断点
+
+### 🔮 液态玻璃折射
+
+**功能**:
+- Apple 风格液态玻璃折射效果（SVG feDisplacementMap）
+- RGB 通道分离色差棱镜边缘
+- 自动降级为磨砂模糊（Safari/Firefox）
+- 详见 `LIQUID_GLASS_SETUP.md`
 
 ### 💬 评论系统
 
@@ -243,6 +290,7 @@
 | 库 | 版本 | 用途 |
 |----|------|------|
 | MathJax | 4.1.1 | 公式渲染 |
+| liquid-glass | 最新 | 液态玻璃折射 |
 | GSAP | 3.14 | 动画库 |
 
 ### 其他
@@ -279,6 +327,8 @@
 |------|------|
 | `README.md` | 项目介绍和快速开始 |
 | `PROJECT_PROGRESS.md` | 📋 **本文件 - 工作进程总结** |
+| `LIQUID_GLASS_SETUP.md` | 🔮 液态玻璃效果设置指南 |
+| `LIQUID_GLASS_FIX_JOURNEY.md` | 📝 液态玻璃修复博客文章 |
 
 ---
 
@@ -415,6 +465,7 @@ Violet Flux/
 - ✅ 智能导航系统
 - ✅ 评论集成
 - ✅ 主页重新设计
+- ✅ 液态玻璃折射效果
 - ✅ 响应式设计
 
 ### 📋 待完成
@@ -431,7 +482,7 @@ Violet Flux/
 
 ---
 
-**项目由 Kiro AI Assistant 维护**  
-**最后更新**: 2026-07-11  
-**版本**: 1.0  
+**项目由 Likem 维护**  
+**最后更新**: 2026-07-25  
+**版本**: 1.1  
 **状态**: 🚀 活跃开发中

@@ -44,8 +44,10 @@ const displayedText = ref('')
 const fullText = ref('')
 const isTyping = ref(false)
 
-// For demonstration, you would replace this with your Cloudflare Worker URL
-const WORKER_URL = 'https://violet-flux-summery.likem.cc.cd'
+// 使用本地代理接口避免 CORS 问题（服务端转发到 Cloudflare Worker）
+// 静态部署时回退到直接调用 Worker（需 Worker 配置 CORS）
+const PROXY_URL = '/api/ai-summary'
+const DIRECT_URL = 'https://violet-flux-summery.likem.cc.cd'
 
 const generateSummary = async () => {
   if (status.value !== 'idle') return
@@ -77,13 +79,24 @@ const generateSummary = async () => {
       rawText = props.content.substring(0, 3000)
     }
 
-    // Call Cloudflare Worker
+    // Call Cloudflare Worker (优先走代理，失败后直连)
     console.log('Requesting AI summary for:', props.articleId)
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: rawText }) 
-    });
+    let response
+    try {
+      response = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: rawText })
+      })
+    } catch (proxyErr) {
+      // 代理不可用（静态部署），回退直连 Worker
+      console.warn('Proxy unavailable, trying direct:', proxyErr.message)
+      response = await fetch(DIRECT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: rawText })
+      })
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

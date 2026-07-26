@@ -210,6 +210,51 @@ const glass = useLiquidGlass(myCard, { scale: -120, blur: 4 })
 }
 ```
 
+## 🚨 关键限制：合成层与 backdrop-filter
+
+> **这是最重要的注意事项。** 违反此规则会导致液态玻璃效果完全失效（卡片呈现透明状，背景网格线不弯曲）。
+
+### 规则：玻璃卡片的祖先元素不能创建合成层
+
+以下 CSS 属性会在元素上创建独立合成层（compositing layer），**阻断子元素 `backdrop-filter` 对外部背景的采样**：
+
+| 属性 | 说明 |
+|------|------|
+| `transform`（非 none） | 包括 `translateY(0)`、`translateZ(0)` |
+| `will-change: transform/opacity` | 性能提示 |
+| `animation`（任何活跃动画） | **包括 opacity-only 动画！** |
+| `filter`（非 none） | 视觉效果 |
+| `isolation: isolate` | 堆叠上下文隔离 |
+| `contain: paint/layout` | 性能 containment |
+
+### 本项目的具体处理
+
+```css
+/* ✅ .features-grid 必须移除动画（即使只是 opacity 动画） */
+.features-grid.animate-fade-in-up {
+  animation: none;
+  opacity: 1;
+}
+
+/* ✅ .ambient-background 不能使用 transform/will-change */
+.ambient-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* 禁止: transform, will-change, filter */
+}
+```
+
+### 为什么 opacity 动画也不行？
+
+Chrome 对任何活跃的 CSS animation 都会提升元素到独立合成层（GPU 加速优化）。即使动画已完成（`forwards` 填充模式），合成层可能仍然保持，导致 backdrop-filter 采样到空白内容。
+
+### 如果确实需要入场动画
+
+- 方案 A：移除容器动画（本项目采用）
+- 方案 B：动画完成后通过 JS 移除 `animation` 属性
+- 方案 C：将 backdrop-filter 元素移出动画容器
+
 ## 🔍 调试技巧
 
 如果液态玻璃效果不显示：
@@ -234,7 +279,34 @@ const glass = useLiquidGlass(myCard, { scale: -120, blur: 4 })
    console.log(el.offsetWidth, el.offsetHeight) // 必须有实际尺寸
    ```
 
-5. **手动刷新**
+5. **检查祖先合成层（最常见的失败原因）**
+   ```js
+   // 在控制台运行，检查卡片祖先链是否有合成层触发器
+   let el = document.querySelector('.glass-card');
+   while (el = el.parentElement) {
+     const cs = getComputedStyle(el);
+     if (cs.transform !== 'none' || cs.willChange !== 'auto' ||
+         cs.animationName !== 'none' || cs.isolation !== 'auto') {
+       console.warn('⚠️ 合成层触发器:', el.className, {
+         transform: cs.transform,
+         willChange: cs.willChange,
+         animation: cs.animationName,
+         isolation: cs.isolation
+       });
+     }
+   }
+   ```
+
+6. **快速验证滤镜是否可用**
+   ```js
+   // 创建固定定位测试元素，排除祖先干扰
+   const t = document.createElement('div');
+   t.style.cssText = 'position:fixed;top:50%;left:50%;width:200px;height:200px;z-index:99999;border:2px solid red;backdrop-filter:url(#lg-filter-1) blur(2px);';
+   document.body.appendChild(t);
+   // 如果此元素有折射但卡片没有 → 确认是祖先合成层问题
+   ```
+
+7. **手动刷新**
    ```js
    glass.refresh() // 在尺寸变化后手动刷新
    ```

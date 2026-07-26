@@ -69,8 +69,8 @@ const currentYear = new Date().getFullYear();
   flex: 1;
   display: flex;
   flex-direction: column;
-  z-index: 10; /* 恢复正常层级 */
   position: relative;
+  z-index: 1;
 }
 
 /* =========================================
@@ -84,7 +84,7 @@ const currentYear = new Date().getFullYear();
     linear-gradient(90deg, rgba(180, 151, 215, 0.15) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0; /* 必须在玻璃卡片之下，backdrop-filter 才能采样到网格 */
   /* 使用渐变遮罩实现边缘淡出效果 */
   mask-image: 
     radial-gradient(ellipse 80% 60% at center, black 20%, rgba(0,0,0,0.8) 50%, transparent 80%),
@@ -110,11 +110,11 @@ const currentYear = new Date().getFullYear();
   position: fixed;
   inset: 0;
   overflow: hidden;
-  z-index: 0; /* 降回最底层 */
+  z-index: 0;
   pointer-events: none;
   background-color: var(--bg-primary);
-  transform: translateZ(0);
-  will-change: transform;
+  /* 注意：不能在此元素上使用 transform/will-change/filter，
+     否则会创建独立合成层，导致子元素的 backdrop-filter 无法采样到背景 */
 }
 
 .ambient-orb {
@@ -123,7 +123,6 @@ const currentYear = new Date().getFullYear();
   filter: blur(120px);
   opacity: 0.35;
   animation: orb-float 20s infinite alternate ease-in-out;
-  transform: translateZ(0); /* Hardware accel */
 }
 
 html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
@@ -223,7 +222,7 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   padding: 3rem 0;
   border-top: 1px solid rgba(180, 151, 215, 0.1);
   position: relative;
-  z-index: 10;
+  z-index: 1;
   background: transparent;
   flex-shrink: 0;
 }

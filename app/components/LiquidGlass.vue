@@ -2,7 +2,6 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 interface Props {
-  /** HTML tag or component for the wrapper element. Defaults to 'div'. */
   as?: string;
   scale?: number;
   chroma?: number;
@@ -28,44 +27,53 @@ const props = withDefaults(defineProps<Props>(), {
 
 const containerRef = ref<HTMLElement | null>(null);
 let glassInstance: { supported: boolean; refresh: () => void; destroy: () => void } | null = null;
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+let rafId: number | null = null;
 
+/**
+ * 原版库 Framework usage:
+ *   useEffect(() => {
+ *     const glass = liquidGlass(ref.current);
+ *     return () => glass.destroy();
+ *   }, []);
+ *
+ * 关键改进：等待脚本加载 + rAF 确保布局已渲染
+ */
 onMounted(() => {
-  // 严格按照原版 Framework usage:
-  //   const glass = liquidGlass(ref.current);
-  //   return () => glass.destroy();
-  if (typeof window === 'undefined' || typeof (window as any).liquidGlass !== 'function') {
-    // 脚本尚未加载，等待 load 事件
-    const onLoad = () => {
-      applyGlass();
-      window.removeEventListener('load', onLoad);
-    };
-    if (document.readyState === 'complete') {
-      // 脚本已在 defer 模式下加载完毕但 liquidGlass 未注册 — 短暂等待
-      setTimeout(applyGlass, 100);
-    } else {
-      window.addEventListener('load', onLoad);
-    }
-    return;
+  if (typeof window !== 'undefined' && typeof (window as any).liquidGlass === 'function') {
+    scheduleApply();
+  } else {
+    // defer 脚本可能尚未执行，轮询等待
+    let attempts = 0;
+    pollTimer = setInterval(() => {
+      attempts++;
+      if (typeof (window as any).liquidGlass === 'function') {
+        clearInterval(pollTimer!);
+        pollTimer = null;
+        scheduleApply();
+      } else if (attempts >= 50) {
+        clearInterval(pollTimer!);
+        pollTimer = null;
+      }
+    }, 100);
   }
-  applyGlass();
 });
 
+/** 等待下一帧渲染完成后再应用，确保元素已有布局尺寸 */
+function scheduleApply() {
+  rafId = requestAnimationFrame(() => {
+    rafId = null;
+    applyGlass();
+  });
+}
+
 function applyGlass() {
-  console.log('[LiquidGlass Vue] applyGlass called, containerRef:', containerRef.value);
-  if (!containerRef.value) {
-    console.warn('[LiquidGlass Vue] containerRef is null');
-    return;
-  }
+  const el = containerRef.value;
+  if (!el) return;
+  // 确保元素有实际尺寸
+  if (!el.offsetWidth || !el.offsetHeight) return;
 
-  // 获取真实 DOM 元素（兼容 Vue 组件实例与原生 DOM）
-  const el: HTMLElement = (containerRef.value as any).$el ?? containerRef.value;
-  console.log('[LiquidGlass Vue] Resolved target element:', el);
-  if (!(el instanceof HTMLElement)) {
-    console.warn('[LiquidGlass Vue] Target element is not an HTMLElement:', el);
-    return;
-  }
-
-  const opts: Record<string, number | null | undefined> = {
+  glassInstance = (window as any).liquidGlass(el, {
     scale: props.scale,
     chroma: props.chroma,
     border: props.border,
@@ -73,13 +81,19 @@ function applyGlass() {
     blur: props.blur,
     saturate: props.saturate,
     fallbackBlur: props.fallbackBlur,
-  };
-  if (props.radius != null) opts.radius = props.radius;
-
-  glassInstance = (window as any).liquidGlass(el, opts);
+    ...(props.radius != null ? { radius: props.radius } : {}),
+  });
 }
 
 onBeforeUnmount(() => {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
   if (glassInstance) {
     glassInstance.destroy();
     glassInstance = null;

@@ -45,7 +45,7 @@
       </aside>
 
       <main class="content">
-        <div class="content-header">
+        <LiquidGlass class="content-header" :scale="-80" :chroma="3" :border="0.04" :mapBlur="8" :blur="3" :saturate="1.5">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
@@ -63,7 +63,7 @@
               <input type="text" v-model="search" placeholder="Search knowledge base..." class="search-input" />
             </div>
           </div>
-        </div>
+        </LiquidGlass>
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
@@ -382,10 +382,8 @@ const filteredArticles = computed(() => {
   margin: 0 1.5rem 3rem 1.5rem;
   padding: 1rem 1.8rem;
   
-  /* Independent floating glass card */
+  /* Independent floating glass card — LiquidGlass 组件提供 backdrop-filter */
   background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 1px solid var(--glass-border);
   border-radius: 1.5rem; /* Fully rounded on all corners */
   box-shadow: var(--shadow-xl),
