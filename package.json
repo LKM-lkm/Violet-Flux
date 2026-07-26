@@ -10,6 +10,7 @@
     "convert-latex": "node scripts/convert-to-standard-latex.mjs"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.4",
     "@nuxt/content": "^3.15.2",
     "@nuxt/icon": "^2.3.1",
     "@nuxt/ui": "^4.10.0",

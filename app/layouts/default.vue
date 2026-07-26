@@ -80,20 +80,34 @@ const currentYear = new Date().getFullYear();
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(180, 151, 215, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 151, 215, 0.15) 1px, transparent 1px);
-  background-size: 50px 50px;
+    linear-gradient(rgba(180, 151, 215, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 151, 215, 0.22) 1px, transparent 1px),
+    radial-gradient(circle 1px at center, rgba(180, 151, 215, 0.35) 0%, transparent 100%);
+  background-size: 50px 50px, 50px 50px, 50px 50px;
   pointer-events: none;
-  z-index: 0; /* 必须在玻璃卡片之下，backdrop-filter 才能采样到网格 */
-  /* 使用渐变遮罩实现边缘淡出效果 */
+  z-index: 0;
+  animation: grid-breathe 8s ease-in-out infinite;
   mask-image: 
-    radial-gradient(ellipse 80% 60% at center, black 20%, rgba(0,0,0,0.8) 50%, transparent 80%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    radial-gradient(ellipse 70% 50% at center, black 15%, rgba(0,0,0,0.85) 40%, transparent 75%),
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
   -webkit-mask-image: 
-    radial-gradient(ellipse 80% 60% at center, black 20%, rgba(0,0,0,0.8) 50%, transparent 80%),
-    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    radial-gradient(ellipse 70% 50% at center, black 15%, rgba(0,0,0,0.85) 40%, transparent 75%),
+    linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
   mask-composite: intersect;
   -webkit-mask-composite: source-in;
+}
+
+@keyframes grid-breathe {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* 暗色主题下网格更柔和 */
+html.dark .content-grid, [data-theme='dark'] .content-grid {
+  background-image: 
+    linear-gradient(rgba(180, 151, 215, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 151, 215, 0.12) 1px, transparent 1px),
+    radial-gradient(circle 1px at center, rgba(180, 151, 215, 0.2) 0%, transparent 100%);
 }
 
 .container {

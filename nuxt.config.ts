@@ -102,11 +102,12 @@ export default defineNuxtConfig({
   content: {
     // 使用 Node.js 原生 SQLite
     database: {
-      type: 'sqlite',
-      filename: '.data/content.db'
+      type: 'libsql',
+      url: 'file:.data/content.db'
     },
-    experimental: {
-      nativeSqlite: true
+    _localDatabase: {
+      type: 'libsql',
+      url: 'file:.data/local.db'
     },
     build: {
       markdown: {
