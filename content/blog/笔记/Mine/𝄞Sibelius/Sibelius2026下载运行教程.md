@@ -4,11 +4,11 @@ tags:
   - 音乐
 ---
 
-# Sibelius2024下载运行教程
+# Sibelius2026下载运行教程
 
 # 下载官方安装包
-1. [Sibelius中文网站下载安装助手](https://cpv1.mairuan.com/download/sibelius.exe)
-2. [Sibelius Ultimate网站直接下载](https://cdn.avid.com/Sibelius/Sibelius/2025.4/L0UY6DG4/Sibelius_2025.4_Win.zip)
+1. [Sibelius中文网站下载安装助手](https://sibelius.mairuan.com/xiazai.html))
+2. [Sibelius Ultimate网站直接下载](https://www.sibeliusultimate.com/?page_id=18890))
 
 # 运行（充值试用）
 Sibelius下载后默认开始30天试用，如果没有激活，那么会有试用到期的风险。因此，在完成Sibelius的下载后，我们需要通过技术手段延长试用期。索性，Sibelius的试用期计时是通过本地文件记录的。

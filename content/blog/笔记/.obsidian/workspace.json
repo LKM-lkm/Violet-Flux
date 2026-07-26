@@ -55,12 +55,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mine/𝄞Sibelius/Sibelius2024下载运行教程.md",
-                "mode": "source",
-                "source": false
+                "file": "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
+                "mode": "preview",
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "Sibelius2024下载运行教程"
+              "title": "MathJax LaTeX 综合测试页面"
+            }
+          },
+          {
+            "id": "1ffd0fad787baa9e",
+            "type": "leaf",
+            "state": {
+              "type": "webviewer",
+              "state": {
+                "url": "https://sibelius.mairuan.com/xiazai.html",
+                "title": "Sibelius（西贝柳斯）中文版下载-Sibelius中文官网",
+                "mode": "blank"
+              },
+              "icon": "globe-2",
+              "title": "Sibelius（西贝柳斯）中文版下载-Sibelius中文官网"
             }
           }
         ],
@@ -227,6 +241,11 @@
   },
   "active": "23d2f2d837a7488b",
   "lastOpenFiles": [
+    "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
+    "Mine/𝄞Sibelius/Sibelius2026下载运行教程.md",
+    "Mine/🌐网络技巧/IPDB.md",
+    "Mine/🌐网络技巧/Great Firewall.md",
+    "Mine/🌐网络技巧/访问Google Gemini报错.md",
     "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
     "Mine/折纸/Affinity 折り図制作/2. 文件参数.md",
     "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
@@ -238,7 +257,6 @@
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120325.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120057.png",
     "未命名.base",
-    "Mine/𝄞Sibelius/Sibelius2024下载运行教程.md",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501105627.png",
     "Mine/折纸/Affinity 折り図制作/assets",
     "Mine/折纸/Affinity 折り図制作",
@@ -250,10 +268,7 @@
     "assets",
     "Mine/🌐网络技巧/assets/Pasted image 20260303141920.png",
     "Mine/📝示例/Callout 示例.md",
-    "Mine/🌐网络技巧/访问Google Gemini报错.md",
-    "Mine/🌐网络技巧/Great Firewall.md",
     "Mine/🌐网络技巧/assets",
-    "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
     "Mine/⬇️资源下载/如何下载无损电子版教材？.md",
     "Mine/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
     "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",
@@ -269,7 +284,6 @@
     "📔我的/📃文字字体/VitePress 优雅集成 MathJax v4：打造专业级数学公式显示.md",
     "外部链接.md",
     "Obsidian官方文档/基本格式语法.md",
-    "Obsidian官方文档/嵌入网页.md",
     "Obsidian官方文档",
     "未命名.canvas",
     "Mine/📃文字字体"

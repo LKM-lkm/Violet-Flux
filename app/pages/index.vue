@@ -91,8 +91,69 @@
 </template>
 
 <script setup>
-// Page logic removed since global elements are in layout
-definePageMeta({ layout: 'default' });
+import { onMounted } from 'vue'
+
+definePageMeta({ layout: 'default' })
+
+onMounted(() => {
+  setTimeout(() => {
+    if (!window.liquidGlass) {
+      console.error('❌ liquidGlass script not loaded')
+      return
+    }
+
+    console.log('🔍 Browser Detection:')
+    const ua = navigator.userAgent
+    console.log(`  User-Agent: ${ua.substring(0, 100)}...`)
+    const isSafari = /Safari/.test(ua) && !/Chrome|Chromium|Edg/.test(ua)
+    const isFirefox = /Firefox/.test(ua)
+    console.log(`  Safari: ${isSafari}, Firefox: ${isFirefox}`)
+    console.log(`  CSS.supports('backdrop-filter', 'blur(1px)'): ${CSS.supports('backdrop-filter', 'blur(1px)')}`)
+    console.log(`  CSS.supports('-webkit-backdrop-filter', 'blur(1px)'): ${CSS.supports('-webkit-backdrop-filter', 'blur(1px)')}`)
+
+    // Run the support test
+    if (window.svgFilterTest) {
+      const svgSupported = window.svgFilterTest()
+      console.log(`SVG Filter Test Result: ${svgSupported ? '✅' : '❌'}`)
+    }
+
+    const cards = document.querySelectorAll('.glass-card')
+    console.log(`\n📍 Found ${cards.length} glass cards\n`)
+    
+    cards.forEach((card, index) => {
+      try {
+        console.log(`Applying to Card ${index + 1}...`)
+        const result = window.liquidGlass(card, {
+          scale: -160,
+          chroma: 4,
+          border: 0.02,
+          mapBlur: 6,
+          blur: 2,
+          saturate: 1.5
+        })
+        
+        // Immediate check
+        const inlineStyle = card.style.backdropFilter
+        console.log(`  ✓ Applied: ${result.supported ? '✅ SVG' : '⚠️ Fallback'}`)
+        console.log(`  Style set: ${inlineStyle ? '✅' : '❌'}`)
+        console.log(`  Inline: ${inlineStyle}`)
+        
+        // Delayed check to see computed style
+        setTimeout(() => {
+          const computed = getComputedStyle(card)
+          const backdropFilter = computed.backdropFilter || computed.webkitBackdropFilter || 'none'
+          console.log(`  Computed: ${backdropFilter}`)
+          
+          // Check SVG in DOM
+          const svgFilters = document.querySelectorAll('svg defs filter')
+          console.log(`  SVG filters in DOM: ${svgFilters.length}`)
+        }, 50)
+      } catch (error) {
+        console.error(`Card ${index + 1} failed:`, error.message)
+      }
+    })
+  }, 2000)
+})
 </script>
 
 <style scoped>
@@ -112,7 +173,6 @@ definePageMeta({ layout: 'default' });
   padding-top: 5rem;
   padding-bottom: 6rem;
   position: relative;
-  z-index: 10;
 }
 
 .hero-container {
@@ -357,7 +417,7 @@ html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
   text-align: left;
   overflow: hidden;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.6s ease;
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
 }
 
 html.dark .glass-card, [data-theme='dark'] .glass-card {

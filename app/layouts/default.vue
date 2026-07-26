@@ -7,7 +7,6 @@
       <div class="ambient-orb orb-3"></div>
       <div class="noise-overlay"></div>
     </div>
-    <div class="premium-grid"></div>
 
     <!-- Global Header -->
     <header class="header">
@@ -26,6 +25,8 @@
 
     <!-- Page Content Slot -->
     <div class="page-wrapper">
+      <!-- 内容区域的网格背景 -->
+      <div class="content-grid"></div>
       <slot />
     </div>
 
@@ -68,8 +69,31 @@ const currentYear = new Date().getFullYear();
   flex: 1;
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  z-index: 10; /* 恢复正常层级 */
   position: relative;
+}
+
+/* =========================================
+   内容区域网格 - 跟随内容滚动
+   ========================================= */
+.content-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(180, 151, 215, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 151, 215, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 1;
+  /* 使用渐变遮罩实现边缘淡出效果 */
+  mask-image: 
+    radial-gradient(ellipse 80% 60% at center, black 20%, rgba(0,0,0,0.8) 50%, transparent 80%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: 
+    radial-gradient(ellipse 80% 60% at center, black 20%, rgba(0,0,0,0.8) 50%, transparent 80%),
+    linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 .container {
@@ -86,7 +110,7 @@ const currentYear = new Date().getFullYear();
   position: fixed;
   inset: 0;
   overflow: hidden;
-  z-index: 0;
+  z-index: 0; /* 降回最底层 */
   pointer-events: none;
   background-color: var(--bg-primary);
   transform: translateZ(0);
@@ -148,23 +172,6 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   opacity: 0.04;
   mix-blend-mode: overlay;
   pointer-events: none;
-}
-
-/* =========================================
-   Masked Premium Grid
-   ========================================= */
-.premium-grid {
-  position: fixed;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(180, 151, 215, 0.25) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 151, 215, 0.25) 1px, transparent 1px);
-  background-size: 50px 50px;
-  z-index: 0;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
-  transform: translateZ(0);
 }
 
 /* =========================================
