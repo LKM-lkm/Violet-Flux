@@ -10,7 +10,7 @@
           <UIcon name="i-lucide-chevron-left" class="nav-icon" />
           <span>上一篇</span>
         </div>
-        <div class="nav-title">{{ prevArticle.stem || prevArticle.title }}</div>
+        <div class="nav-title">{{ getFileName(prevArticle) }}</div>
         <div v-if="prevArticle.description" class="nav-description">
           {{ truncate(prevArticle.description, 60) }}
         </div>
@@ -27,7 +27,7 @@
           <span>下一篇</span>
           <UIcon name="i-lucide-chevron-right" class="nav-icon" />
         </div>
-        <div class="nav-title">{{ nextArticle.stem || nextArticle.title }}</div>
+        <div class="nav-title">{{ getFileName(nextArticle) }}</div>
         <div v-if="nextArticle.description" class="nav-description">
           {{ truncate(nextArticle.description, 60) }}
         </div>
@@ -52,6 +52,20 @@ const { data: surround } = await useAsyncData(
 
 const prevArticle = computed(() => surround.value?.[0] || null)
 const nextArticle = computed(() => surround.value?.[1] || null)
+
+// 从路径中提取文件名
+const getFileName = (item) => {
+  if (!item) return ''
+  const path = item.stem || item.path || ''
+  const parts = path.split('/').filter(Boolean)
+  let name = parts[parts.length - 1] || ''
+  try {
+    name = decodeURIComponent(name).replace(/\.md$/, '')
+  } catch {
+    name = name.replace(/\.md$/, '')
+  }
+  return name || item.title || 'Untitled'
+}
 
 // 截断文本
 const truncate = (text, length) => {

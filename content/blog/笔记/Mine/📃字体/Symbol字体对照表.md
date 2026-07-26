@@ -69,7 +69,7 @@ Symbol字体最大的特点是将标准键盘字符映射到各种专业符号�
 .symbol-table .symbol-col {
   font-size: 1.5em;
   text-align: center;
-  color: var(--primary, #b497d7);
+  color: inherit;
 }
 .symbol-table .desc-col {
   color: var(--text-secondary, #6b5578);

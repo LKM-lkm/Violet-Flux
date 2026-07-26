@@ -105,6 +105,7 @@ export default defineNuxtConfig({
     search: { enabled: false },
     build: {
       markdown: {
+        contentHeading: false,
         remarkPlugins: {
           'remark-gfm': {},
           'remark-mdc': {},  // 显式启用 MDC 语法

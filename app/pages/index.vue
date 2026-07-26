@@ -28,13 +28,12 @@
           </p>
           
           <div class="cta-group animate-fade-in-up" style="animation-delay: 0.4s">
-            <NuxtLink to="/blog" class="btn premium-btn-primary">
-              <span class="btn-shimmer"></span>
+            <LiquidGlass as="a" href="/blog" class="btn premium-btn-primary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
               <span class="btn-content">
                 <span>Explore Library</span>
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
-            </NuxtLink>
+            </LiquidGlass>
             <LiquidGlass as="a" href="/about" class="btn premium-btn-secondary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
               <span class="btn-outline"></span>
               <span class="btn-content">
@@ -259,26 +258,27 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
 }
 
 .premium-btn-primary {
-  background-color: var(--primary);
+  background: linear-gradient(135deg, rgba(180, 151, 215, 0.35), rgba(145, 99, 192, 0.25));
   color: white;
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 20px 40px -10px rgba(145, 99, 192, 0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 20px 40px -10px rgba(145, 99, 192, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .premium-btn-primary:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 30px 50px -10px rgba(145, 99, 192, 0.7), inset 0 1px 0 rgba(255,255,255,0.5);
-  border-color: rgba(255,255,255,0.4);
+  background: linear-gradient(135deg, rgba(180, 151, 215, 0.45), rgba(145, 99, 192, 0.35));
+  box-shadow: 0 30px 50px -10px rgba(145, 99, 192, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.25);
 }
 
 html.dark .premium-btn-primary, [data-theme='dark'] .premium-btn-primary {
-  background-color: #6b4192;
-  box-shadow: 0 20px 40px -10px rgba(107, 65, 146, 0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+  background: linear-gradient(135deg, rgba(107, 65, 146, 0.3), rgba(80, 50, 120, 0.2));
+  box-shadow: 0 20px 40px -10px rgba(107, 65, 146, 0.25), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 html.dark .premium-btn-primary:hover, [data-theme='dark'] .premium-btn-primary:hover {
-  background-color: #7a4ba3;
-  box-shadow: 0 30px 50px -10px rgba(107, 65, 146, 0.8), inset 0 1px 0 rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, rgba(107, 65, 146, 0.4), rgba(80, 50, 120, 0.3));
+  box-shadow: 0 30px 50px -10px rgba(107, 65, 146, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .btn-shimmer {

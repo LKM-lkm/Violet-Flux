@@ -103,43 +103,43 @@
 
 /* === Dark Mode === */
 :root.dark {
-  --bg: #1a0f21;
-  --text: #e8dff0;
-  --text-muted: #b8a5c9;
-  --border: rgba(194, 169, 228, 0.25);
-  --primary: #c2a9e4;
-  --primary-hover: #d4c0ed;
-  --primary-glow: rgba(194, 169, 228, 0.4);
-  --primary-light: rgba(194, 169, 228, 0.15);
-  --secondary: #b497d7;
-  --accent: #d4c0ed;
-  --glass-bg: rgba(26, 15, 33, 0.8);
-  --glass-border: rgba(194, 169, 228, 0.15);
-  --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6);
-  
+  --bg: #161018;
+  --text: #d8d0e0;
+  --text-muted: #9a8aab;
+  --border: rgba(160, 140, 180, 0.2);
+  --primary: #a890c0;
+  --primary-hover: #b8a4d0;
+  --primary-glow: rgba(168, 144, 192, 0.3);
+  --primary-light: rgba(168, 144, 192, 0.1);
+  --secondary: #9a84b8;
+  --accent: #b8a4d0;
+  --glass-bg: rgba(22, 16, 24, 0.85);
+  --glass-border: rgba(160, 140, 180, 0.12);
+  --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+
   /* === 保留的系统变量 === */
-  --bg-primary: #1a0f21;
-  --bg-secondary: #2d1b3d;
-  --bg-tertiary: #3d2a4d;
-  
-  --text-primary: #e8dff0;
-  --text-secondary: #b8a5c9;
-  --text-tertiary: #8a7299;
-  
-  --border-light: rgba(194, 169, 228, 0.2);
-  --border-medium: rgba(194, 169, 228, 0.3);
-  --border-strong: rgba(194, 169, 228, 0.4);
-  
+  --bg-primary: #161018;
+  --bg-secondary: #1e1624;
+  --bg-tertiary: #28202e;
+
+  --text-primary: #d8d0e0;
+  --text-secondary: #9a8aab;
+  --text-tertiary: #706078;
+
+  --border-light: rgba(160, 140, 180, 0.12);
+  --border-medium: rgba(160, 140, 180, 0.2);
+  --border-strong: rgba(160, 140, 180, 0.3);
+
   /* === 代码块专用 === */
-  --code-bg: #2d1b3d;
-  --code-text: #e8dff0;
-  
+  --code-bg: #1e1624;
+  --code-text: #d8d0e0;
+
   /* === 阴影系统 === */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.7);
-  --shadow-2xl: 0 20px 48px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-2xl: 0 20px 48px rgba(0, 0, 0, 0.5);
 }
 
 /* === 全局样式 === */

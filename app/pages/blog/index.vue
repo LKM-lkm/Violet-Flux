@@ -67,7 +67,7 @@
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
-            <article v-for="article in filteredArticles" :key="article.path" class="blog-card glass-card">
+            <LiquidGlass v-for="article in filteredArticles" :key="article.path" as="article" class="blog-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <NuxtLink :to="article.path" class="card-link">
                 <div class="card-inner">
                   <div class="card-meta">
@@ -75,7 +75,7 @@
                   </div>
                   <h2 class="card-title">{{ getFileName(article.displayPath) }}</h2>
                   <p v-if="article.description" class="card-desc">{{ article.description }}</p>
-                  
+
                   <div class="card-footer">
                     <div class="tags-group">
                       <span v-for="tag in getTags(article)" :key="tag" class="tag-chip">#{{ tag }}</span>
@@ -87,7 +87,7 @@
                   </div>
                 </div>
               </NuxtLink>
-            </article>
+            </LiquidGlass>
           </TransitionGroup>
         </div>
         
@@ -130,7 +130,7 @@ const { data: articles } = await useAsyncData('blog-articles-v4-premium', async 
       let cleanId = item.id.replace(/\.md$/, '')
       let finalPath = '/blog/' + cleanId
       finalPath = finalPath.replace(/\/+/g, '/')
-      
+
       return {
         ...item,
         path: encodeURI(finalPath),
@@ -141,6 +141,11 @@ const { data: articles } = await useAsyncData('blog-articles-v4-premium', async 
       const segments = item.path.split('/')
       if (segments.some(s => s.startsWith('.') && s.length > 1)) return false
       return true
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.mtime || a.meta?.mtime || 0).getTime()
+      const dateB = new Date(b.mtime || b.meta?.mtime || 0).getTime()
+      return dateB - dateA
     })
 })
 
@@ -335,11 +340,11 @@ const filteredArticles = computed(() => {
 
 html.dark .sidebar, [data-theme='dark'] .sidebar {
   background: linear-gradient(180deg,
-    rgba(30, 22, 45, 0.35),
-    rgba(30, 22, 45, 0.18));
+    rgba(22, 16, 24, 0.4),
+    rgba(22, 16, 24, 0.2));
   box-shadow: var(--shadow-xl),
-              inset 0 1px 1px rgba(255, 255, 255, 0.08),
-              0 0 20px rgba(180, 151, 215, 0.1);
+              inset 0 1px 1px rgba(255, 255, 255, 0.06),
+              0 0 20px rgba(168, 144, 192, 0.08);
 }
 
 .section-title {
@@ -517,9 +522,9 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   padding: 0;
   border-radius: 1.2rem;
   transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08));
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-md),
               inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -527,7 +532,15 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  z-index: 1; /* keep above leaving items */
+  z-index: 1;
+}
+
+:root.dark .blog-card {
+  background: linear-gradient(180deg,
+    rgba(22, 16, 24, 0.4),
+    rgba(22, 16, 24, 0.2));
+  box-shadow: var(--shadow-md),
+              inset 0 1px 1px rgba(255, 255, 255, 0.04);
 }
 
 /* ... keep other styles the same ... */

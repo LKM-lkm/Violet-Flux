@@ -673,7 +673,7 @@ watch(() => route.path, () => {
 .article-body :deep(h4) {
   font-family: var(--font-display);
   font-weight: 700;
-  color: #111; /* 更加中性的黑色 */
+  color: #111;
   margin-top: var(--space-3xl);
   margin-bottom: var(--space-lg);
   scroll-margin-top: 100px;
@@ -681,15 +681,13 @@ watch(() => route.path, () => {
   line-height: 1.3;
 }
 
-/* 隐藏正文中的第一个一级标题，因为它已经显示在头部了 */
-.article-body :deep(h1:first-child) {
-  display: none;
+.article-body :deep(h1) {
+  font-size: var(--text-5xl);
+  margin-top: 0;
 }
 
 .article-body :deep(h2) {
   font-size: var(--text-4xl);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid var(--border-light);
 }
 
 .article-body :deep(h3) {
@@ -1133,20 +1131,15 @@ watch(() => route.path, () => {
   }
 }
 
-/* 暗色模式中性色适配 */
 :root.dark .article-body :deep(h1),
 :root.dark .article-body :deep(h2),
 :root.dark .article-body :deep(h3),
 :root.dark .article-body :deep(h4) {
-  color: var(--text-primary);
+  color: #e8dff0;
 }
 
 :root.dark .article-body :deep(p) {
-  color: var(--text-secondary);
-}
-
-:root.dark .article-title {
-  color: var(--text-primary);
+  color: #b8a5c9;
 }
 
 @media (max-width: 640px) {

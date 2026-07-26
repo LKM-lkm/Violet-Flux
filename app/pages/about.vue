@@ -7,27 +7,27 @@
 
     <div class="profile-grid">
       <!-- Author Side (Assume 'Likem' is the persona) -->
-      <LiquidGlass as="aside" class="author-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+      <LiquidGlass as="aside" class="author-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
         <div class="avatar-wrapper">
            <img src="https://avatars.githubusercontent.com/u/183704833?v=4" alt="Likem" class="avatar-img" />
         </div>
         <h2 class="author-name">Likem</h2>
-        <p class="author-title">Digital Architect & Pianist</p>
+        <p class="author-title">Digital Architect & Student</p>
         <div class="social-links">
-          <a href="#" class="social-btn"><Icon name="lucide:github" /></a>
+          <a href="https://github.com/LKM-lkm?tab=repositories" target="_blank" class="social-btn"><Icon name="lucide:github" /></a>
           <a href="#" class="social-btn"><Icon name="lucide:twitter" /></a>
           <a href="#" class="social-btn"><Icon name="lucide:mail" /></a>
         </div>
         <div class="author-tags">
           <span class="tag">#Blogger</span>
           <span class="tag">#Composer</span>
-          <span class="tag">#NuxtExpert</span>
+          <span class="tag">#Designer</span>
         </div>
       </LiquidGlass>
 
       <!-- Content Side (The Story) -->
       <div class="main-story">
-        <LiquidGlass class="story-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+        <LiquidGlass class="story-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
           <h3>The Vision</h3>
           <p>
             Violet Flux was born from a desire to create a sanctuary for thought. In a world of fast content, 
@@ -37,7 +37,7 @@
           </p>
         </LiquidGlass>
 
-        <LiquidGlass class="tech-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+        <LiquidGlass class="tech-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
           <h3>The Tech Stack</h3>
           <div class="tech-grid">
             <div class="tech-item">
@@ -117,12 +117,12 @@ definePageMeta({ layout: 'default' })
 :root.dark .story-card,
 :root.dark .tech-card {
   background: linear-gradient(180deg,
-    rgba(30, 22, 45, 0.35),
-    rgba(30, 22, 45, 0.18));
+    rgba(22, 16, 24, 0.4),
+    rgba(22, 16, 24, 0.2));
   box-shadow: var(--card-shadow),
-              inset 0 1px 1px rgba(255, 255, 255, 0.08),
+              inset 0 1px 1px rgba(255, 255, 255, 0.06),
               inset 0 -8px 20px rgba(255, 255, 255, 0.02),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+              inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .author-card {
@@ -148,24 +148,56 @@ definePageMeta({ layout: 'default' })
 .author-name { font-family: 'Bricolage Grotesque', sans-serif !important; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
 .author-title { color: var(--text-secondary); font-size: 1rem; margin-bottom: 1.5rem; }
 
-.social-links { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
+.social-links { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; }
 .social-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(180, 151, 215, 0.12), rgba(180, 151, 215, 0.04));
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: all 0.2s;
+  border: 1px solid rgba(180, 151, 215, 0.15);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  font-size: 1.15rem;
 }
-.social-btn:hover { 
-  background: linear-gradient(135deg, #b497d7, #a682cf);
-  color: white; 
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(180, 151, 215, 0.4);
+.social-btn:hover {
+  color: var(--primary);
+  transform: translateY(-4px) scale(1.05);
+  border-color: rgba(180, 151, 215, 0.3);
+  background: linear-gradient(135deg, rgba(180, 151, 215, 0.18), rgba(180, 151, 215, 0.08));
+  box-shadow: 
+    0 12px 28px -6px rgba(180, 151, 215, 0.2),
+    0 0 0 1px rgba(180, 151, 215, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.social-btn :deep(svg),
+.social-btn :deep(i) {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+.social-btn:hover :deep(svg),
+.social-btn:hover :deep(i) {
+  transform: scale(1.1);
+}
+
+:root.dark .social-btn {
+  background: linear-gradient(135deg, rgba(30, 22, 45, 0.4), rgba(30, 22, 45, 0.2));
+  border-color: rgba(180, 151, 215, 0.1);
+}
+:root.dark .social-btn:hover {
+  color: var(--primary);
+  background: linear-gradient(135deg, rgba(180, 151, 215, 0.12), rgba(180, 151, 215, 0.06));
+  border-color: rgba(180, 151, 215, 0.2);
+  box-shadow: 
+    0 12px 28px -6px rgba(107, 65, 146, 0.2),
+    0 0 0 1px rgba(180, 151, 215, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
