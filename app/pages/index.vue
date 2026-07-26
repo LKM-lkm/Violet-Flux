@@ -35,7 +35,7 @@
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
             </NuxtLink>
-            <LiquidGlass as="a" href="/about" class="btn premium-btn-secondary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="0" :saturate="1.5">
+            <LiquidGlass as="a" href="/about" class="btn premium-btn-secondary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
               <span class="btn-outline"></span>
               <span class="btn-content">
                 <span>Our Story</span>

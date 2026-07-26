@@ -13,26 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "📔我的/🌐网络技巧/Great Firewall.md",
-                "mode": "source",
-                "source": true
-              },
-              "icon": "lucide-file",
-              "title": "Great Firewall"
-            }
-          },
-          {
-            "id": "ac55cddccd6f610c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Mine/📝示例/Callout 示例.md",
+                "file": "音乐/𝄞Sibelius/Sibelius2026下载运行教程.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Callout 示例"
+              "title": "Sibelius2026下载运行教程"
+            }
+          },
+          {
+            "id": "8a3cdf5ad41acca7",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "音乐/𝄞Sibelius/日式浄書的参数注意事项.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "日式浄書的参数注意事项"
             }
           },
           {
@@ -41,44 +41,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Mine/🌐网络技巧/访问Google Gemini报错.md",
+                "file": "Mine/📃字体/Symbol字体对照表.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "访问Google Gemini报错"
-            }
-          },
-          {
-            "id": "23d2f2d837a7488b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
-                "mode": "preview",
-                "source": true
-              },
-              "icon": "lucide-file",
-              "title": "MathJax LaTeX 综合测试页面"
-            }
-          },
-          {
-            "id": "1ffd0fad787baa9e",
-            "type": "leaf",
-            "state": {
-              "type": "webviewer",
-              "state": {
-                "url": "https://sibelius.mairuan.com/xiazai.html",
-                "title": "Sibelius（西贝柳斯）中文版下载-Sibelius中文官网",
-                "mode": "blank"
-              },
-              "icon": "globe-2",
-              "title": "Sibelius（西贝柳斯）中文版下载-Sibelius中文官网"
+              "title": "Symbol字体对照表"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -239,40 +211,45 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "23d2f2d837a7488b",
+  "active": "67bc03b522344b20",
   "lastOpenFiles": [
+    "Mine/🌐网络/访问Google Gemini报错.md",
+    "Mine/📝示例/Callout 示例.md",
+    "音乐/𝄞Sibelius/日式浄書的参数注意事项.md",
+    "音乐/𝄞Sibelius/assets/18b431d7ea825e69b355094b0517f75a.png",
+    "音乐/𝄞Sibelius/assets/999994c71c66deb6a9d41677b1a3f099.png",
+    "音乐/𝄞Sibelius/assets/4e8259d67eb0a0c02290c3c5b17ebed9.png",
+    "音乐/𝄞Sibelius/assets/ce1e993664ab1bea9e11f1757be9ad3d.png",
+    "音乐/𝄞Sibelius/assets",
+    "音乐/𝄞Sibelius/Sibelius2026下载运行教程.md",
+    "音乐/𝄞Sibelius/浄書",
+    "未命名.md",
+    "音乐",
+    "未命名.base",
+    "Mine/MathJax/MathJax LaTeX 综合测试页面.md",
     "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
-    "Mine/𝄞Sibelius/Sibelius2026下载运行教程.md",
-    "Mine/🌐网络技巧/IPDB.md",
-    "Mine/🌐网络技巧/Great Firewall.md",
-    "Mine/🌐网络技巧/访问Google Gemini报错.md",
+    "Mine/🌐网络/IPDB.md",
+    "Mine/🌐网络/Great Firewall.md",
     "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
     "Mine/折纸/Affinity 折り図制作/2. 文件参数.md",
-    "Mine/📝MathJax/MathJax LaTeX 综合测试页面.md",
     "Mine/折纸/Affinity 折り図制作/assets/DM_20260501215710_001.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501215443.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501121026.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501121006.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120521.png",
     "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120325.png",
-    "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501120057.png",
-    "未命名.base",
-    "Mine/折纸/Affinity 折り図制作/assets/Pasted image 20260501105627.png",
     "Mine/折纸/Affinity 折り図制作/assets",
     "Mine/折纸/Affinity 折り図制作",
-    "Mine/📃文字字体/开源字体嵌入CDN.md",
-    "Mine/📃文字字体/如何一键抓取网页所有的字体样式与下载链接？.md",
+    "Mine/📃字体/开源字体嵌入CDN.md",
+    "Mine/📃字体/如何一键抓取网页所有的字体样式与下载链接？.md",
     "Mine/折纸",
-    "Mine/📝MathJax/VitePress 集成 MathJax v4.md",
-    "assets/Pasted image 20260308111351.png",
+    "Mine/MathJax/VitePress 集成 MathJax v4.md",
     "assets",
-    "Mine/🌐网络技巧/assets/Pasted image 20260303141920.png",
-    "Mine/📝示例/Callout 示例.md",
-    "Mine/🌐网络技巧/assets",
-    "Mine/⬇️资源下载/如何下载无损电子版教材？.md",
+    "Mine/🌐网络/assets",
+    "Mine/⬇️资源/如何下载无损电子版教材？.md",
     "Mine/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
     "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",
-    "🎼乐谱发布/夢の星空.md",
+    "音乐/🎼乐谱发布/夢の星空.md",
     "📔我的/MathJax LaTeX 综合测试页面.md",
     "📔我的/🖥程序运行/Windows系统下删除时：你需要来自 Administrator 的权限才能对此文件夹进行更改.md",
     "📔我的/🖥程序运行/有趣的小技巧.md",
@@ -280,12 +257,7 @@
     "Clippings/IP Address Lookup  IPv4  IPv6 - IP.SB.md",
     "Clippings",
     "index.md",
-    "Mine/📃文字字体/Symbol字体对照表.md",
-    "📔我的/📃文字字体/VitePress 优雅集成 MathJax v4：打造专业级数学公式显示.md",
-    "外部链接.md",
-    "Obsidian官方文档/基本格式语法.md",
-    "Obsidian官方文档",
-    "未命名.canvas",
-    "Mine/📃文字字体"
+    "Mine/📃字体/Symbol字体对照表.md",
+    "未命名.canvas"
   ]
 }

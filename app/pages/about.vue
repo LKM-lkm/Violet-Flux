@@ -7,7 +7,7 @@
 
     <div class="profile-grid">
       <!-- Author Side (Assume 'Likem' is the persona) -->
-      <aside class="author-card glass-card">
+      <LiquidGlass as="aside" class="author-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
         <div class="avatar-wrapper">
            <img src="https://avatars.githubusercontent.com/u/183704833?v=4" alt="Likem" class="avatar-img" />
         </div>
@@ -23,11 +23,11 @@
           <span class="tag">#Composer</span>
           <span class="tag">#NuxtExpert</span>
         </div>
-      </aside>
+      </LiquidGlass>
 
       <!-- Content Side (The Story) -->
       <div class="main-story">
-        <div class="glass-card story-card">
+        <LiquidGlass class="story-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
           <h3>The Vision</h3>
           <p>
             Violet Flux was born from a desire to create a sanctuary for thought. In a world of fast content, 
@@ -35,9 +35,9 @@
             <strong>MathJax v4</strong> brings equations to life and <strong>Nuxt 4</strong> ensures 
             instantaneous transitions.
           </p>
-        </div>
+        </LiquidGlass>
 
-        <div class="glass-card tech-card">
+        <LiquidGlass class="tech-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
           <h3>The Tech Stack</h3>
           <div class="tech-grid">
             <div class="tech-item">
@@ -57,7 +57,7 @@
               <span>Glassmorphism</span>
             </div>
           </div>
-        </div>
+        </LiquidGlass>
       </div>
     </div>
   </main>
@@ -97,15 +97,32 @@ definePageMeta({ layout: 'default' })
   align-items: start;
 }
 
-.glass-card {
+.author-card,
+.story-card,
+.tech-card {
   border-radius: 1.2rem;
   padding: 2.5rem;
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08));
   border: 1px solid var(--glass-border);
   box-shadow: var(--card-shadow),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+              inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -8px 20px rgba(255, 255, 255, 0.06),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+:root.dark .author-card,
+:root.dark .story-card,
+:root.dark .tech-card {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
+  box-shadow: var(--card-shadow),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08),
+              inset 0 -8px 20px rgba(255, 255, 255, 0.02),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .author-card {

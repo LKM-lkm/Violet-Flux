@@ -3,7 +3,7 @@
 
     <div class="container blog-container">
       <!-- Sidebar for Tree Navigation and Tags -->
-      <aside class="sidebar glass-card">
+      <LiquidGlass as="aside" class="sidebar" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
         <div class="filter-section">
           <h3 class="section-title">Knowledge</h3>
           <nav class="tree-nav">
@@ -42,7 +42,7 @@
             </button>
           </div>
         </div>
-      </aside>
+      </LiquidGlass>
 
       <main class="content">
         <LiquidGlass class="content-header" :scale="-80" :chroma="3" :border="0.04" :mapBlur="8" :blur="3" :saturate="1.5">
@@ -292,6 +292,11 @@ const filteredArticles = computed(() => {
   flex-direction: column;
   position: relative;
   z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(180, 151, 215, 0.03) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(180, 151, 215, 0.02) 100%);
 }
 
 /* LAYOUT */
@@ -310,10 +315,11 @@ const filteredArticles = computed(() => {
   top: 8rem;
   height: fit-content;
   max-height: calc(100vh - 12rem);
+  overflow-x: hidden;
   overflow-y: auto;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl),
@@ -325,6 +331,15 @@ const filteredArticles = computed(() => {
 
 .sidebar::-webkit-scrollbar { 
   display: none; 
+}
+
+html.dark .sidebar, [data-theme='dark'] .sidebar {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08),
+              0 0 20px rgba(180, 151, 215, 0.1);
 }
 
 .section-title {

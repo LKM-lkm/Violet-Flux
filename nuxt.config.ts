@@ -9,6 +9,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
 
+  // 禁用尾部斜杠，防止 /blog 被重定向到 /blog/
+  router: {
+    trailingSlash: false,
+  },
+
   app: {
     head: {
       link: [
@@ -95,6 +100,14 @@ export default defineNuxtConfig({
   },
 
   content: {
+    // 使用 Node.js 原生 SQLite
+    database: {
+      type: 'sqlite',
+      filename: '.data/content.db'
+    },
+    experimental: {
+      nativeSqlite: true
+    },
     build: {
       markdown: {
         remarkPlugins: {

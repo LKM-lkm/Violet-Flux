@@ -11,7 +11,7 @@
       <!-- 侧边栏目录 -->
       <ClientOnly>
         <aside v-if="tocLinks.length" class="sidebar">
-          <div class="toc-wrapper glass-card">
+          <LiquidGlass class="toc-wrapper" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
             <div class="toc-header">
               <Icon name="lucide:list" class="toc-icon" />
               <span class="toc-title">目录</span>
@@ -36,7 +36,7 @@
                 </li>
               </ul>
             </nav>
-          </div>
+          </LiquidGlass>
         </aside>
       </ClientOnly>
 
@@ -101,6 +101,11 @@ const activeId = ref('')
 const indicatorOffset = ref(0)
 const mobileMenuOpen = ref(false)
 const route = useRoute()
+
+// 修复尾部斜杠问题：/blog/ 或 /blog// 应该重定向到 /blog
+if (route.path === '/blog/' || route.path === '/blog//') {
+  navigateTo('/blog', { redirectCode: 301 })
+}
 
 // 使用官方推荐的 queryCollectionItemSurroundings 获取上一页/下一页
 const { data: surround } = await useAsyncData(`surround-${route.path}`, () => {
@@ -423,9 +428,10 @@ watch(() => route.path, () => {
 .toc-wrapper {
   padding: var(--space-lg);
   position: relative;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl),
@@ -438,13 +444,21 @@ watch(() => route.path, () => {
   inset: 0;
   background: radial-gradient(
     circle at top right,
-    rgba(180, 151, 215, 0.08) 0%,
-    rgba(194, 169, 228, 0.05) 35%,
+    rgba(180, 151, 215, 0.06) 0%,
+    rgba(194, 169, 228, 0.03) 35%,
     transparent 65%
   );
-  opacity: 0.5;
   border-radius: var(--radius-xl);
   pointer-events: none;
+  z-index: 0;
+}
+
+:root.dark .toc-wrapper {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
 .toc-header {
@@ -517,6 +531,22 @@ watch(() => route.path, () => {
 /* === 主内容 === */
 .main-content {
   min-width: 0;
+  padding: var(--space-2xl);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+:root.dark .main-content {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.25),
+    rgba(30, 22, 45, 0.12));
+  box-shadow: var(--shadow-lg),
+              inset 0 1px 1px rgba(255, 255, 255, 0.06);
 }
 
 .main-content.no-sidebar {

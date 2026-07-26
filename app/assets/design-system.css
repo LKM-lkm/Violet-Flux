@@ -3,6 +3,21 @@
  * 统一的配色方案和设计变量
  */
 
+@theme {
+  --color-primary: #b497d7;
+  --color-primary-50: #faf8fc;
+  --color-primary-100: #f3eef8;
+  --color-primary-200: #ebe4f2;
+  --color-primary-300: #d4c0ed;
+  --color-primary-400: #c2a9e4;
+  --color-primary-500: #b497d7;
+  --color-primary-600: #a682cf;
+  --color-primary-700: #9163c0;
+  --color-primary-800: #7743a3;
+  --color-primary-900: #4c2c4f;
+  --color-primary-950: #2d1b3d;
+}
+
 :root {
   --bg: #faf8fc;
   --text: #2d1b3d;
