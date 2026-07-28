@@ -98,17 +98,11 @@ export default defineNuxtConfig({
       }
     }
   },
-
   content: {
-    // 使用 Node.js 原生 SQLite
-    database: {
-      type: 'libsql',
-      url: 'file:.data/content.db'
+    experimental: {
+      sqliteConnector: 'native'
     },
-    _localDatabase: {
-      type: 'libsql',
-      url: 'file:.data/local.db'
-    },
+    search: { enabled: false },
     build: {
       markdown: {
         remarkPlugins: {

@@ -1,6 +1,7 @@
 import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 
 export default defineContentConfig({
+  database: false,
   collections: {
     content: defineCollection({
       type: 'page',
