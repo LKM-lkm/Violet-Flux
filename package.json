@@ -26,6 +26,7 @@
     "markdown-it-github-alerts": "^1.0.1",
     "motion-v": "^2.3.0",
     "nuxt": "^4.4.8",
+    "oxc-parser": "0.147.0",
     "remark-math": "^6.0.0",
     "remark-wiki-link": "^2.0.1",
     "tailwindcss": "^4.3.3",

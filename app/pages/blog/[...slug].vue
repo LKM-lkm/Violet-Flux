@@ -1135,7 +1135,7 @@ watch(() => route.path, () => {
 :root.dark .article-body :deep(h2),
 :root.dark .article-body :deep(h3),
 :root.dark .article-body :deep(h4) {
-  color: #e8dff0;
+  color: #e0e0e0;
 }
 
 :root.dark .article-body :deep(p) {

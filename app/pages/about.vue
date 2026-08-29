@@ -14,7 +14,7 @@
         <h2 class="author-name">Likem</h2>
         <p class="author-title">Digital Architect & Student</p>
         <div class="social-links">
-          <a href="https://github.com/LKM-lkm?tab=repositories" target="_blank" class="social-btn"><Icon name="lucide:github" /></a>
+          <a href="#" class="social-btn"><Icon name="lucide:github" /></a>
           <a href="#" class="social-btn"><Icon name="lucide:twitter" /></a>
           <a href="#" class="social-btn"><Icon name="lucide:mail" /></a>
         </div>
@@ -117,12 +117,12 @@ definePageMeta({ layout: 'default' })
 :root.dark .story-card,
 :root.dark .tech-card {
   background: linear-gradient(180deg,
-    rgba(22, 16, 24, 0.4),
-    rgba(22, 16, 24, 0.2));
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
   box-shadow: var(--card-shadow),
-              inset 0 1px 1px rgba(255, 255, 255, 0.06),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08),
               inset 0 -8px 20px rgba(255, 255, 255, 0.02),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+              inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .author-card {
@@ -165,15 +165,26 @@ definePageMeta({ layout: 'default' })
   overflow: hidden;
   font-size: 1.15rem;
 }
+.social-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #b497d7, #9163c0, #7a4ba3);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
 .social-btn:hover {
-  color: var(--primary);
+  color: white;
   transform: translateY(-4px) scale(1.05);
-  border-color: rgba(180, 151, 215, 0.3);
-  background: linear-gradient(135deg, rgba(180, 151, 215, 0.18), rgba(180, 151, 215, 0.08));
+  border-color: transparent;
   box-shadow: 
-    0 12px 28px -6px rgba(180, 151, 215, 0.2),
-    0 0 0 1px rgba(180, 151, 215, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 12px 28px -6px rgba(180, 151, 215, 0.45),
+    0 0 0 1px rgba(180, 151, 215, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.social-btn:hover::before {
+  opacity: 1;
 }
 .social-btn :deep(svg),
 .social-btn :deep(i) {
@@ -191,13 +202,10 @@ definePageMeta({ layout: 'default' })
   border-color: rgba(180, 151, 215, 0.1);
 }
 :root.dark .social-btn:hover {
-  color: var(--primary);
-  background: linear-gradient(135deg, rgba(180, 151, 215, 0.12), rgba(180, 151, 215, 0.06));
-  border-color: rgba(180, 151, 215, 0.2);
   box-shadow: 
-    0 12px 28px -6px rgba(107, 65, 146, 0.2),
-    0 0 0 1px rgba(180, 151, 215, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 12px 28px -6px rgba(107, 65, 146, 0.5),
+    0 0 0 1px rgba(180, 151, 215, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
