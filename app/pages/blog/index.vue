@@ -45,7 +45,7 @@
       </LiquidGlass>
 
       <main class="content">
-        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="10" :blur="1" :saturate="1.5">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
@@ -112,11 +112,6 @@ import { isDark, toggleDark } from '~/composables/useTheme'
 const search = ref('')
 const selectedPath = ref('')
 const selectedTags = ref([])
-
-// 使用官方推荐的 queryCollectionNavigation
-const { data: navigation } = await useAsyncData('blog-navigation', () => 
-  queryCollectionNavigation('content')
-)
 
 // 使用官方推荐的 queryCollectionSearchSections 用于全文搜索
 const { data: searchSections } = await useAsyncData('blog-search-sections', () =>

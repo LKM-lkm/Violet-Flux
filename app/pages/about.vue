@@ -14,9 +14,9 @@
         <h2 class="author-name">Likem</h2>
         <p class="author-title">Digital Architect & Student</p>
         <div class="social-links">
-          <a href="#" class="social-btn"><Icon name="lucide:github" /></a>
-          <a href="#" class="social-btn"><Icon name="lucide:twitter" /></a>
-          <a href="#" class="social-btn"><Icon name="lucide:mail" /></a>
+          <a href="https://github.com/LKM-lkm" target="_blank" rel="noopener" class="social-btn"><Icon name="lucide:github" /></a>
+          <a href="https://x.com" target="_blank" rel="noopener" class="social-btn"><Icon name="lucide:twitter" /></a>
+          <a href="mailto:lkm836972@outlook.com" class="social-btn"><Icon name="lucide:mail" /></a>
         </div>
         <div class="author-tags">
           <span class="tag">#Blogger</span>
@@ -153,43 +153,25 @@ definePageMeta({ layout: 'default' })
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(180, 151, 215, 0.12), rgba(180, 151, 215, 0.04));
+  background: rgba(180, 151, 215, 0.1);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   border: 1px solid rgba(180, 151, 215, 0.15);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s ease;
   font-size: 1.15rem;
-}
-.social-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, #b497d7, #9163c0, #7a4ba3);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  cursor: pointer;
 }
 .social-btn:hover {
-  color: white;
-  transform: translateY(-4px) scale(1.05);
-  border-color: transparent;
-  box-shadow: 
-    0 12px 28px -6px rgba(180, 151, 215, 0.45),
-    0 0 0 1px rgba(180, 151, 215, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-.social-btn:hover::before {
-  opacity: 1;
+  background: rgba(180, 151, 215, 0.3);
+  color: var(--text-primary);
+  border-color: rgba(180, 151, 215, 0.35);
+  transform: translateY(-2px);
 }
 .social-btn :deep(svg),
 .social-btn :deep(i) {
-  position: relative;
-  z-index: 1;
   transition: transform 0.3s ease;
 }
 .social-btn:hover :deep(svg),
@@ -198,14 +180,12 @@ definePageMeta({ layout: 'default' })
 }
 
 :root.dark .social-btn {
-  background: linear-gradient(135deg, rgba(30, 22, 45, 0.4), rgba(30, 22, 45, 0.2));
-  border-color: rgba(180, 151, 215, 0.1);
+  background: rgba(168, 144, 192, 0.08);
+  border-color: rgba(168, 144, 192, 0.12);
 }
 :root.dark .social-btn:hover {
-  box-shadow: 
-    0 12px 28px -6px rgba(107, 65, 146, 0.5),
-    0 0 0 1px rgba(180, 151, 215, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: rgba(180, 151, 215, 0.25);
+  border-color: rgba(180, 151, 215, 0.3);
 }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }

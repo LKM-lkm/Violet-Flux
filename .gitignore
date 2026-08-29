@@ -25,3 +25,13 @@ logs
 !.env.example
 
 pnpm-lock.yaml
+
+# Obsidian
+**/.obsidian/
+
+# Debug scripts
+query_db.cjs
+query_db.js
+
+# MiMoCode
+.mimocode/

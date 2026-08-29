@@ -28,24 +28,24 @@
           </p>
           
           <div class="cta-group animate-fade-in-up" style="animation-delay: 0.4s">
-            <LiquidGlass as="a" href="/blog" class="btn premium-btn-primary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
+            <a href="/blog" class="btn premium-btn-primary">
               <span class="btn-content">
                 <span>Explore Library</span>
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
-            </LiquidGlass>
-            <LiquidGlass as="a" href="/about" class="btn premium-btn-secondary" :scale="-80" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
+            </a>
+            <a href="/about" class="btn premium-btn-secondary">
               <span class="btn-outline"></span>
               <span class="btn-content">
                 <span>Our Story</span>
               </span>
-            </LiquidGlass>
+            </a>
           </div>
 
           <!-- Feature Cards / Bento Grid -->
           <div class="features-grid animate-fade-in-up" style="animation-delay: 0.5s">
             <!-- Card 1 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -58,7 +58,7 @@
             </LiquidGlass>
 
             <!-- Card 2 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -71,7 +71,7 @@
             </LiquidGlass>
 
             <!-- Card 3 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -216,6 +216,13 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
   animation: shine-gradient 5s linear infinite;
 }
 
+html.dark .animated-gradient, [data-theme='dark'] .animated-gradient {
+  background: linear-gradient(to right, #c8b0e0, #a88cc8, #9878b8, #c8b0e0);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 @keyframes shine-gradient {
   to { background-position: 200% center; }
 }
@@ -233,6 +240,10 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
   color: var(--text-primary);
   font-weight: 500;
   text-shadow: 0 0 20px rgba(180, 151, 215, 0.3);
+}
+
+html.dark .text-glow, [data-theme='dark'] .text-glow {
+  text-shadow: 0 0 16px rgba(168, 144, 192, 0.15);
 }
 
 /* Premium Buttons */
@@ -258,7 +269,7 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
 }
 
 .premium-btn-primary {
-  background: linear-gradient(135deg, rgba(180, 151, 215, 0.35), rgba(145, 99, 192, 0.25));
+  background: linear-gradient(135deg, rgba(180, 151, 215, 1));
   color: white;
   border: 1px solid rgba(255,255,255,0.15);
   box-shadow: 0 20px 40px -10px rgba(145, 99, 192, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
@@ -266,18 +277,18 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
 
 .premium-btn-primary:hover {
   transform: translateY(-4px) scale(1.02);
-  background: linear-gradient(135deg, rgba(180, 151, 215, 0.45), rgba(145, 99, 192, 0.35));
+  background: linear-gradient(135deg, rgba(195, 170, 230, 1));
   box-shadow: 0 30px 50px -10px rgba(145, 99, 192, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
   border-color: rgba(255,255,255,0.25);
 }
 
 html.dark .premium-btn-primary, [data-theme='dark'] .premium-btn-primary {
-  background: linear-gradient(135deg, rgba(107, 65, 146, 0.3), rgba(80, 50, 120, 0.2));
+  background: linear-gradient(135deg, rgba(107, 65, 146, 1));
   box-shadow: 0 20px 40px -10px rgba(107, 65, 146, 0.25), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 html.dark .premium-btn-primary:hover, [data-theme='dark'] .premium-btn-primary:hover {
-  background: linear-gradient(135deg, rgba(107, 65, 146, 0.4), rgba(80, 50, 120, 0.3));
+  background: linear-gradient(135deg, rgba(120, 80, 165, 1));
   box-shadow: 0 30px 50px -10px rgba(107, 65, 146, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
