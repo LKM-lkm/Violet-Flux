@@ -18,6 +18,11 @@ export default defineNuxtConfig({
     head: {
       link: [
         {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.ico'
+        },
+        {
           rel: 'preload',
           href: '/Geist-Variable.woff2',
           as: 'font',

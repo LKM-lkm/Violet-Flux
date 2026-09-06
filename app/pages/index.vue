@@ -28,18 +28,18 @@
           </p>
           
           <div class="cta-group animate-fade-in-up" style="animation-delay: 0.4s">
-            <a href="/blog" class="btn premium-btn-primary">
+            <NuxtLink to="/blog" class="btn premium-btn-primary">
               <span class="btn-content">
                 <span>Explore Library</span>
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
-            </a>
-            <a href="/about" class="btn premium-btn-secondary">
+            </NuxtLink>
+            <NuxtLink to="/about" class="btn premium-btn-secondary">
               <span class="btn-outline"></span>
               <span class="btn-content">
                 <span>Our Story</span>
               </span>
-            </a>
+            </NuxtLink>
           </div>
 
           <!-- Feature Cards / Bento Grid -->
@@ -339,7 +339,7 @@ html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  opacity: 0;
+  opacity: 0.3;
   transition: opacity 0.4s ease;
 }
 
