@@ -1,6 +1,12 @@
 <template>
   <main class="container page-content">
     <section class="hero-simple">
+      <div class="header-meta">
+        <NuxtLink to="/" class="back-link">
+          <Icon name="lucide:chevron-left" />
+          Back to Home
+        </NuxtLink>
+      </div>
       <h1 class="title">The Philosopher behind the Flux</h1>
       <p class="subtitle">Merging mathematical precision with digital aesthetics.</p>
     </section>
@@ -75,7 +81,45 @@ definePageMeta({ layout: 'default' })
   flex: 1;
 }
 
-.hero-simple { text-align: center; margin-bottom: 5rem; }
+.header-meta {
+  margin-bottom: 1.5rem;
+  animation: about-enter 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s both;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: all var(--duration-fast);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.back-link:hover {
+  color: var(--primary);
+  background: var(--bg-secondary);
+}
+
+@keyframes about-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-simple { 
+  text-align: center; 
+  margin-bottom: 5rem;
+  animation: about-enter 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.15s both;
+}
 .hero-simple .title {
   font-family: var(--font-display);
   font-size: 4rem;

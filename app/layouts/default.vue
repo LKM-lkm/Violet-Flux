@@ -236,10 +236,65 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   align-items: center;
 }
 
-.logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; }
-.nav { display: flex; gap: 2rem; align-items: center; }
-.nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9375rem; transition: color 0.2s; padding: 0; }
-.nav a.router-link-active { color: var(--primary); font-weight: 600; }
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.logo-link:hover {
+  opacity: 0.7;
+}
+
+.logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; margin: 0; }
+.nav { display: flex; gap: 0.5rem; align-items: center; }
+
+.nav-link {
+  position: relative;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.625rem;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background: rgba(180, 151, 215, 0.06);
+}
+
+.nav-link.router-link-active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-link.router-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--primary-glow);
+  animation: indicator-in 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes indicator-in {
+  from { width: 0; opacity: 0; }
+  to { width: 20px; opacity: 1; }
+}
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-light);
+  margin: 0 0.5rem;
+}
 
 .theme-toggle {
   background: var(--bg-secondary);
@@ -253,6 +308,13 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   justify-content: center;
   color: var(--text-primary);
   outline: none;
+  transition: all 0.25s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(180, 151, 215, 0.1);
+  border-color: var(--border-medium);
+  transform: scale(1.05);
 }
 
 /* =========================================

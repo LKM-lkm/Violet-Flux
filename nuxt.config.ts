@@ -12,6 +12,13 @@ export default defineNuxtConfig({
   // 禁用尾部斜杠，防止 /blog 被重定向到 /blog/
   router: {
     trailingSlash: false,
+    options: {
+      scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) return savedPosition
+        if (to.hash) return { el: to.hash, behavior: 'smooth' }
+        return { top: 0, behavior: 'smooth' }
+      }
+    }
   },
 
   app: {

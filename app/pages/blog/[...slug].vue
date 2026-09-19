@@ -386,6 +386,26 @@ watch(() => route.path, () => {
 </script>
 
 <style scoped>
+/* === Page Entrance === */
+.article-header {
+  animation: article-enter 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s both;
+}
+
+.article-body {
+  animation: article-enter 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s both;
+}
+
+@keyframes article-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .blog-layout {
   min-height: 100vh;
   background: var(--bg-primary);
