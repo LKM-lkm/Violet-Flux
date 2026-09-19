@@ -1,29 +1,41 @@
 <template>
-  <div class="ai-summary glass-card" v-if="content">
-    <div class="summary-header">
-      <div class="ai-label">
-        <Icon name="lucide:sparkles" class="sparkle-icon" />
-        <span>VIOLET FLUX // AI SUMMARY</span>
+  <div v-if="content" class="ai-summary-wrapper">
+    <LiquidGlass class="ai-summary" :scale="-120" :chroma="5" :border="0.03" :mapBlur="10" :blur="2" :saturate="1.5">
+      <div class="card-glow"></div>
+      <div class="card-border"></div>
+      <div class="summary-content">
+        <div class="summary-header">
+          <div class="ai-label">
+            <div class="label-icon-wrapper">
+              <Icon name="lucide:sparkles" class="sparkle-icon" />
+            </div>
+            <span class="label-text">VIOLET FLUX // AI SUMMARY</span>
+          </div>
+          <div v-if="status === 'thinking'" class="thinking-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <div v-else-if="status === 'done'" class="done-badge">
+            <Icon name="lucide:check-circle" class="done-icon" />
+          </div>
+        </div>
+        
+        <div class="summary-body">
+          <p v-if="displayedText" class="text-content">
+            {{ displayedText }}
+            <span v-if="isTyping" class="type-cursor"></span>
+          </p>
+          <p v-else-if="status === 'thinking'" class="placeholder-text">
+            <span class="placeholder-glow">Synthesizing the digital essence...</span>
+          </p>
+          <p v-else-if="status === 'error'" class="error-text">
+            <Icon name="lucide:alert-triangle" class="error-icon" />
+            The flux was interrupted. Could not generate summary.
+          </p>
+        </div>
       </div>
-      <div v-if="status === 'thinking'" class="thinking-indicator">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-    </div>
-    
-    <div class="summary-body">
-      <p v-if="displayedText" class="text-content">
-        {{ displayedText }}
-        <span v-if="isTyping" class="type-cursor"></span>
-      </p>
-      <p v-else-if="status === 'thinking'" class="placeholder-text">
-        Synthesizing the digital essence...
-      </p>
-      <p v-else-if="status === 'error'" class="error-text">
-        The flux was interrupted. Could not generate summary.
-      </p>
-    </div>
+    </LiquidGlass>
   </div>
 </template>
 
@@ -142,50 +154,109 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.ai-summary-wrapper {
+  margin: 2.5rem 0 3rem;
+  position: relative;
+}
+
 .ai-summary {
-  margin: 2rem 0 3rem;
-  padding: 1.5rem 2.5rem;
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-xl);
-  border: 1px solid var(--border-light);
-  background: var(--glass-bg);
-  box-shadow: var(--shadow-lg), 
-              0 0 20px rgba(180, 151, 215, 0.05);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -8px 20px rgba(255, 255, 255, 0.06),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+              box-shadow 0.4s ease;
 }
 
-.ai-summary::before {
-  content: '';
+:root.dark .ai-summary {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.35),
+    rgba(30, 22, 45, 0.18));
+  box-shadow: var(--shadow-xl),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08),
+              inset 0 -8px 20px rgba(255, 255, 255, 0.02),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.ai-summary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2xl),
+              0 0 32px rgba(180, 151, 215, 0.12),
+              inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.card-glow {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 5px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--primary), var(--secondary));
-  box-shadow: 2px 0 10px var(--primary-glow);
+  top: -80px;
+  left: 20%;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(180, 151, 215, 0.15), transparent 70%);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.card-border {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(180, 151, 215, 0.35),
+    rgba(194, 169, 228, 0.15) 50%,
+    transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.summary-content {
+  position: relative;
+  z-index: 2;
+  padding: 1.75rem 2.5rem;
 }
 
 .summary-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .ai-label {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-family: 'Bricolage Grotesque';
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  color: var(--primary);
-  opacity: 0.8;
+  gap: 0.75rem;
+}
+
+.label-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg,
+    rgba(180, 151, 215, 0.15),
+    rgba(180, 151, 215, 0.05));
+  border: 1px solid rgba(180, 151, 215, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sparkle-icon {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: var(--primary);
+  filter: drop-shadow(0 2px 6px rgba(180, 151, 215, 0.4));
   animation: rotate-sparkle 4s infinite linear;
 }
 
@@ -194,9 +265,19 @@ onMounted(() => {
   to { transform: rotate(360deg); }
 }
 
+.label-text {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--primary);
+  opacity: 0.8;
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
 .thinking-indicator {
   display: flex;
-  gap: 4px;
+  gap: 5px;
 }
 
 .dot {
@@ -216,28 +297,61 @@ onMounted(() => {
   50% { transform: scale(1.2); opacity: 0.8; }
 }
 
+.done-badge {
+  display: flex;
+  align-items: center;
+}
+
+.done-icon {
+  font-size: 1rem;
+  color: var(--primary);
+  opacity: 0.6;
+}
+
 .summary-body {
   min-height: 3.5rem;
 }
 
 .text-content {
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 1.05rem;
+  line-height: 1.8;
   color: var(--text-primary);
   margin: 0;
+  letter-spacing: 0.01em;
+}
+
+:root.dark .text-content {
+  color: #d8d0e0;
 }
 
 .placeholder-text {
-  font-style: italic;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
   margin: 0;
 }
 
+.placeholder-glow {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  animation: placeholder-breathe 2s infinite ease-in-out;
+}
+
+@keyframes placeholder-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
 .error-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--primary);
   font-size: 0.9rem;
   margin: 0;
+}
+
+.error-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .type-cursor {
@@ -247,11 +361,18 @@ onMounted(() => {
   background: var(--primary);
   margin-left: 4px;
   vertical-align: middle;
+  box-shadow: 0 0 8px var(--primary-glow);
   animation: blink 0.8s infinite;
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@media (max-width: 768px) {
+  .summary-content {
+    padding: 1.25rem 1.5rem;
+  }
 }
 </style>

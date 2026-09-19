@@ -195,7 +195,7 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
 
 /* Premium Title Typography */
 .hero-content .title {
-  font-family: 'Bricolage Grotesque', sans-serif !important;
+  font-family: var(--font-display);
   font-size: clamp(3.5rem, 8vw, 6.5rem);
   line-height: 1.05;
   font-weight: 800;
@@ -477,7 +477,7 @@ html.dark .glass-card:hover, [data-theme='dark'] .glass-card:hover {
 }
 
 .card-title {
-  font-family: 'Bricolage Grotesque', sans-serif !important;
+  font-family: var(--font-display);
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 1rem;

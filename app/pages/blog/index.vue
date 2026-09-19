@@ -411,7 +411,7 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   align-items: center;
   flex-wrap: wrap; /* allow wrapping on smaller screens */
   gap: 0.5rem;
-  font-family: 'Bricolage Grotesque', sans-serif !important;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 2.5vw, 2rem); /* Scaled down slightly to fit the card gracefully */
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -604,7 +604,7 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
 }
 
 .card-title {
-  font-family: 'Bricolage Grotesque';
+  font-family: var(--font-display);
   font-size: 1.75rem;
   line-height: 1.1;
   font-weight: 800;
@@ -728,7 +728,7 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
 
 .empty-icon { font-size: 2.5rem; color: var(--text-secondary); opacity: 0.4; }
 
-.empty-content h3 { font-family: 'Bricolage Grotesque'; font-size: 1.5rem; margin-bottom: 1rem; }
+.empty-content h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 1rem; }
 .reset-btn {
   margin-top: 2rem;
   padding: 0.75rem 2rem;

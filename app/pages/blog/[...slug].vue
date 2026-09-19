@@ -673,7 +673,7 @@ watch(() => route.path, () => {
 .article-body :deep(h4) {
   font-family: var(--font-display);
   font-weight: 700;
-  color: #111;
+  color: var(--text-primary);
   margin-top: var(--space-3xl);
   margin-bottom: var(--space-lg);
   scroll-margin-top: 100px;
@@ -700,7 +700,7 @@ watch(() => route.path, () => {
 
 .article-body :deep(p) {
   margin-bottom: var(--space-lg);
-  color: #333; /* 正文也使用更中性的深色 */
+  color: var(--text-secondary);
 }
 
 .article-body :deep(a) {
@@ -1135,11 +1135,11 @@ watch(() => route.path, () => {
 :root.dark .article-body :deep(h2),
 :root.dark .article-body :deep(h3),
 :root.dark .article-body :deep(h4) {
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 :root.dark .article-body :deep(p) {
-  color: #b8a5c9;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 640px) {

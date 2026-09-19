@@ -11,11 +11,14 @@
     <!-- Global Header -->
     <header class="header">
       <div class="container header-container">
-        <h1 class="logo">Violet Flux</h1>
+        <NuxtLink to="/" class="logo-link">
+          <h1 class="logo">Violet Flux</h1>
+        </NuxtLink>
         <nav class="nav">
-          <NuxtLink to="/">Home</NuxtLink>
-          <NuxtLink to="/blog">Blog</NuxtLink>
-          <NuxtLink to="/about">About</NuxtLink>
+          <NuxtLink to="/" class="nav-link">Home</NuxtLink>
+          <NuxtLink to="/blog" class="nav-link">Blog</NuxtLink>
+          <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+          <div class="nav-divider"></div>
           <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
           </button>
@@ -27,7 +30,9 @@
     <div class="page-wrapper">
       <!-- 内容区域的网格背景 -->
       <div class="content-grid"></div>
-      <slot />
+      <Transition name="page-fade" mode="out-in">
+        <slot :key="$route.path" />
+      </Transition>
     </div>
 
     <!-- Global Footer -->
@@ -53,6 +58,27 @@ const currentYear = new Date().getFullYear();
 </script>
 
 <style scoped>
+/* =========================================
+   Page Transitions
+   ========================================= */
+:deep(.page-fade-enter-active) {
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+              transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+:deep(.page-fade-leave-active) {
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 1, 1);
+}
+
+:deep(.page-fade-enter-from) {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+:deep(.page-fade-leave-to) {
+  opacity: 0;
+}
+
 /* =========================================
    Base Layout
    ========================================= */
@@ -210,7 +236,7 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   align-items: center;
 }
 
-.logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; }
+.logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; }
 .nav { display: flex; gap: 2rem; align-items: center; }
 .nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9375rem; transition: color 0.2s; padding: 0; }
 .nav a.router-link-active { color: var(--primary); font-weight: 600; }

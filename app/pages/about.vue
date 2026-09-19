@@ -77,7 +77,7 @@ definePageMeta({ layout: 'default' })
 
 .hero-simple { text-align: center; margin-bottom: 5rem; }
 .hero-simple .title {
-  font-family: 'Bricolage Grotesque', sans-serif !important;
+  font-family: var(--font-display);
   font-size: 4rem;
   font-weight: 800;
   margin-bottom: 1rem;
@@ -145,7 +145,7 @@ definePageMeta({ layout: 'default' })
   border: 2px solid var(--bg-primary);
 }
 
-.author-name { font-family: 'Bricolage Grotesque', sans-serif !important; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+.author-name { font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
 .author-title { color: var(--text-secondary); font-size: 1rem; margin-bottom: 1.5rem; }
 
 .social-links { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; }
@@ -189,12 +189,23 @@ definePageMeta({ layout: 'default' })
 }
 
 .author-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
-.tag { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); background: var(--bg-secondary); padding: 0.25rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-light); }
+.tag { 
+  font-size: 0.75rem; 
+  font-weight: 700; 
+  color: var(--primary); 
+  background: linear-gradient(135deg, 
+    rgba(180, 151, 215, 0.1), 
+    rgba(194, 169, 228, 0.15)
+  ); 
+  padding: 0.3rem 0.75rem; 
+  border-radius: 0.5rem; 
+  border: 1px solid var(--border-light); 
+}
 
 /* STORY SIDE */
 .main-story { display: flex; flex-direction: column; gap: 2rem; }
 .story-card h3, .tech-card h3 { 
-  font-family: 'Bricolage Grotesque', sans-serif !important; 
+  font-family: var(--font-display); 
   font-size: 1.5rem; 
   font-weight: 700; 
   margin-bottom: 1.5rem; 

@@ -16,15 +16,17 @@
       <Transition name="lightbox-fade">
         <div v-if="isExpanded" class="lightbox-overlay" @click="toggleExpand">
           <div class="lightbox-container" @click.stop>
-            <div class="lightbox-content-wrapper glass-card">
-              <img :src="resolvedSrc" :alt="alt" class="lightbox-img" />
-              <div v-if="alt && !isFileName(alt)" class="lightbox-caption">
-                {{ alt }}
+            <LiquidGlass class="lightbox-glass" :scale="-140" :chroma="6" :border="0.04" :mapBlur="12" :blur="4" :saturate="1.8">
+              <div class="lightbox-content-wrapper">
+                <img :src="resolvedSrc" :alt="alt" class="lightbox-img" />
+                <div v-if="alt && !isFileName(alt)" class="lightbox-caption">
+                  {{ alt }}
+                </div>
               </div>
-              <button class="lightbox-close" @click="toggleExpand" aria-label="关闭">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
+            </LiquidGlass>
+            <button class="lightbox-close" @click="toggleExpand" aria-label="关闭">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
           </div>
         </div>
       </Transition>
@@ -196,8 +198,9 @@ const resolvedSrc = computed(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 5, 15, 0.85);
-  backdrop-filter: blur(12px) saturate(160%);
+  background: rgba(10, 5, 15, 0.8);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -216,23 +219,47 @@ const resolvedSrc = computed(() => {
   justify-content: center;
 }
 
+.lightbox-glass {
+  border-radius: 2rem;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.08));
+  border: 1px solid rgba(180, 151, 215, 0.25);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(180, 151, 215, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -8px 20px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+:root.dark .lightbox-glass {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.4),
+    rgba(30, 22, 45, 0.2));
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(168, 144, 192, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -8px 20px rgba(255, 255, 255, 0.02),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
 .lightbox-content-wrapper {
-  padding: 1rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 2rem;
-  overflow: hidden;
   position: relative;
-  background: var(--glass-bg);
 }
 
 .lightbox-img {
   max-width: 100%;
   max-height: 80vh;
   object-fit: contain;
-  border-radius: 1rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .lightbox-caption {
@@ -244,15 +271,21 @@ const resolvedSrc = computed(() => {
   padding: 0 1rem;
 }
 
+:root.dark .lightbox-caption {
+  color: #d8d0e0;
+}
+
 .lightbox-close {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 40px;
-  height: 40px;
+  top: -16px;
+  right: -16px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(180, 151, 215, 0.25);
   color: white;
   display: flex;
   align-items: center;
@@ -260,11 +293,27 @@ const resolvedSrc = computed(() => {
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+:root.dark .lightbox-close {
+  background: linear-gradient(180deg,
+    rgba(30, 22, 45, 0.5),
+    rgba(30, 22, 45, 0.3));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
 .lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
+  background: linear-gradient(180deg,
+    rgba(180, 151, 215, 0.4),
+    rgba(180, 151, 215, 0.2));
+  transform: rotate(90deg) scale(1.05);
+  box-shadow: 0 12px 32px rgba(180, 151, 215, 0.3),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 /* Animations */
@@ -278,11 +327,11 @@ const resolvedSrc = computed(() => {
   opacity: 0;
 }
 
-.lightbox-fade-enter-active .lightbox-content-wrapper {
+.lightbox-fade-enter-active .lightbox-glass {
   animation: zoom-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.lightbox-fade-leave-active .lightbox-content-wrapper {
+.lightbox-fade-leave-active .lightbox-glass {
   animation: zoom-out 0.3s cubic-bezier(0.4, 0, 1, 1);
 }
 
