@@ -3,7 +3,7 @@
  * 解决浏览器直接调用 Cloudflare Worker 时的 CORS 问题
  * 客户端调用 /api/ai-summary (同源)，服务端转发到 Worker
  */
-const WORKER_URL = 'https://violet-flux-summery.likem.cc.cd'
+const WORKER_URL = 'https://vfs.likem.cc.cd'
 
 export default defineEventHandler(async (event) => {
   try {

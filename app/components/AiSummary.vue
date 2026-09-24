@@ -59,7 +59,7 @@ const isTyping = ref(false)
 // 使用本地代理接口避免 CORS 问题（服务端转发到 Cloudflare Worker）
 // 静态部署时回退到直接调用 Worker（需 Worker 配置 CORS）
 const PROXY_URL = '/api/ai-summary'
-const DIRECT_URL = 'https://violet-flux-summery.likem.cc.cd'
+const DIRECT_URL = 'https://vfs.likem.cc.cd'
 
 const generateSummary = async () => {
   if (status.value !== 'idle') return
@@ -93,16 +93,25 @@ const generateSummary = async () => {
 
     // Call Cloudflare Worker (优先走代理，失败后直连)
     console.log('Requesting AI summary for:', props.articleId)
-    let response
+    let response = null
+
+    // 尝试代理
     try {
       response = await fetch(PROXY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: rawText })
       })
+      if (!response.ok) {
+        console.warn('Proxy returned', response.status, '- falling back to direct')
+        response = null
+      }
     } catch (proxyErr) {
-      // 代理不可用（静态部署），回退直连 Worker
-      console.warn('Proxy unavailable, trying direct:', proxyErr.message)
+      console.warn('Proxy unavailable:', proxyErr.message)
+    }
+
+    // 代理不可用或失败，直连 Worker
+    if (!response) {
       response = await fetch(DIRECT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -7,7 +7,7 @@
           Back to Home
         </NuxtLink>
       </div>
-      <h1 class="title">The Philosopher behind the Flux</h1>
+      <h1 class="title">The Architect behind the Flux</h1>
       <p class="subtitle">Merging mathematical precision with digital aesthetics.</p>
     </section>
 
