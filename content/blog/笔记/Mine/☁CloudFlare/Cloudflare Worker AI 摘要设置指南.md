@@ -7,7 +7,7 @@ tags:
 ## 1. 创建一个 Cloudflare Worker
 
 1. 登录你的 [Cloudflare Dashboard](https://dash.cloudflare.com/).
-2. 导航至 **Workers & Pages** > **Overview** > **Create application**。
+2. 导航至 **计算** > **Workers & Pages** > **创建应用程序**。
 3. 选择 **Create Worker**, 起一个名字 (e.g., `violet-flux-ai`), 然后点击**部署**。
 4. 点击 **Edit Code**.
 
