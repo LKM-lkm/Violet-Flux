@@ -30,9 +30,7 @@
     <div class="page-wrapper">
       <!-- 内容区域的网格背景 -->
       <div class="content-grid"></div>
-      <Transition name="page-fade" mode="out-in">
-        <slot :key="$route.path" />
-      </Transition>
+      <slot />
     </div>
 
     <!-- Global Footer -->
@@ -58,27 +56,6 @@ const currentYear = new Date().getFullYear();
 </script>
 
 <style scoped>
-/* =========================================
-   Page Transitions
-   ========================================= */
-:deep(.page-fade-enter-active) {
-  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
-              transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-:deep(.page-fade-leave-active) {
-  transition: opacity 0.25s cubic-bezier(0.4, 0, 1, 1);
-}
-
-:deep(.page-fade-enter-from) {
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-:deep(.page-fade-leave-to) {
-  opacity: 0;
-}
-
 /* =========================================
    Base Layout
    ========================================= */
