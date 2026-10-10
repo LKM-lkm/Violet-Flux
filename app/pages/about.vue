@@ -268,11 +268,21 @@ definePageMeta({ layout: 'default' })
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: var(--bg-secondary);
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(180, 151, 215, 0.06));
+  border: 1px solid var(--glass-border);
   border-radius: 1rem;
   font-weight: 600;
   font-size: 0.9375rem;
 }
+
+:root.dark .tech-item {
+  background: linear-gradient(135deg,
+    rgba(168, 144, 192, 0.12),
+    rgba(255, 255, 255, 0.02));
+}
+
 .tech-icon { color: var(--primary); width: 1.25rem; height: 1.25rem; }
 
 @media (max-width: 1024px) {

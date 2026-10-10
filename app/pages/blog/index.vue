@@ -45,7 +45,7 @@
       </LiquidGlass>
 
       <main class="content">
-        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
+        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="6" :blur="2" :saturate="1.5">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">

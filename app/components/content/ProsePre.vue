@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
 
 .language-text {
   flex-shrink: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.01em;
