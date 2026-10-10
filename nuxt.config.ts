@@ -4,12 +4,17 @@ let nextMathToken = 0
 
 function protectMathExpressions(markdown: string, expressions: Map<string, string>) {
   const protectText = (text: string) => text.replace(
-    /(`+)[\s\S]*?\1|\$\$[\s\S]*?\$\$|\\\\\([\s\S]*?\\\\\)|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
+    /(`+)[\s\S]*?\1|\$\$[\s\S]*?\$\$|\\\\\([\s\S]*?\\\\\)|\\\([\s\S]*?\\\)|\\\\\[[\s\S]*?\\\\\]|\\\[[\s\S]*?\\\]/g,
     (match) => {
       if (match.startsWith('`')) return match
 
       const token = `VioletFluxMathToken${nextMathToken++}End`
-      expressions.set(token, match)
+      const normalized = match
+        .replace(/^\\\\\(/, '\\(')
+        .replace(/\\\\\)$/, '\\)')
+        .replace(/^\\\\\[/, '\\[')
+        .replace(/\\\\\]$/, '\\]')
+      expressions.set(token, normalized)
       return token
     }
   )
@@ -146,8 +151,8 @@ export default defineNuxtConfig({
               tex: {
                 packages: ['base', 'ams', 'newcommand', 'configmacros'],
                 // 使用标准 LaTeX 定界符，避免与 MDC 语法冲突
-                inlineMath: [['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                inlineMath: [['\\\\(', '\\\\)']],
+                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
                 // 处理选项
                 processEscapes: true,       // 使用 \\$ 表示字面量美元符号
                 processEnvironments: true,  // 处理 \\begin{xxx}...\\end{xxx}
