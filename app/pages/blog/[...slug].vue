@@ -743,15 +743,19 @@ onUnmounted(() => {
 }
 
 .article-body :deep(code:not(pre code)) {
-  background: var(--bg-secondary);
-  padding: 0.2em 0.4em;
-  border-radius: var(--radius-sm);
-  font-size: 0.9em;
-  color: var(--link);
-  font-weight: 500;
+  /* 行内代码要"贴住"文字：竖向 padding 收到最小，去掉边框和投影。
+     原来 0.2em 竖向 padding + 1px 边框 + 投影，盒子比文字高一截，
+     在 1.8 的行距下相邻两行的盒子会挤在一起甚至碰到。 */
   font-family: var(--font-mono);
-  border: 1px solid var(--border-light);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--link);
+  background: var(--bg-secondary);
+  padding: 0.1em 0.35em;
+  border-radius: 0.3rem;
+  line-height: 1;
+  border: none;
+  box-shadow: none;
 }
 
 /* 代码块样式统一由 app/components/content/ProsePre.vue 负责。
