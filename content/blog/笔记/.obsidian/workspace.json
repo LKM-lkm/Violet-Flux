@@ -49,8 +49,7 @@
               "title": "日式浄書的参数注意事项"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -212,8 +211,9 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "76f5df7bb029a41c",
+  "active": "f261e36b293c6d7c",
   "lastOpenFiles": [
+    "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
     "音乐/𝄞Sibelius/Sibelius2026下载运行教程.md",
     "音乐/𝄞Sibelius/日式浄書的参数注意事项.md",
     "Mine/📃字体/Symbol字体对照表.md",
@@ -230,7 +230,6 @@
     "音乐",
     "未命名.base",
     "Mine/MathJax/MathJax LaTeX 综合测试页面.md",
-    "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
     "Mine/🌐网络/IPDB.md",
     "Mine/🌐网络/Great Firewall.md",
     "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
