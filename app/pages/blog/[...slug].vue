@@ -805,7 +805,9 @@ watch(() => route.path, () => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.article-body :deep(pre) {
+/* 代码块样式统一由 app/components/content/ProsePre.vue 负责。
+   这里只兜底 markdown 里直接书写的原生 <pre>，避免两处重复定义后互相用 !important 压制 */
+.article-body :deep(pre:not(.vf-code)) {
   background: var(--code-bg);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
@@ -815,13 +817,11 @@ watch(() => route.path, () => {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   line-height: 1.7;
-  box-shadow: var(--shadow-md),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  position: relative;
   white-space: pre; /* 保留换行和空格 */
+  position: relative;
 }
 
-.article-body :deep(pre code) {
+.article-body :deep(pre:not(.vf-code) code) {
   background: transparent;
   padding: 0;
   border: none;
@@ -829,41 +829,9 @@ watch(() => route.path, () => {
   font-weight: normal;
   display: block;
   color: var(--code-text);
-  white-space: pre; /* 保留换行和空格 */
+  white-space: pre;
   overflow-wrap: normal;
   word-break: normal;
-}
-
-/* Shiki 语法高亮样式 */
-.article-body :deep(pre code .line) {
-  display: block; /* 改为 block 确保换行 */
-  min-height: 1.5em;
-  line-height: 1.7;
-}
-
-/* 确保 Shiki 的 token 样式正常显示 */
-.article-body :deep(pre code span) {
-  font-family: inherit;
-}
-
-/* 如果没有高亮，至少保证可读性 */
-.article-body :deep(pre code:not([class*="language-"])) {
-  color: var(--code-text);
-}
-
-.article-body :deep(pre)::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--primary-glow),
-    transparent
-  );
 }
 
 .article-body :deep(ul),

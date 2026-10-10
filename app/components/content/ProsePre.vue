@@ -1,20 +1,26 @@
 <template>
   <div class="prose-pre-wrapper">
-    <div class="prose-pre-header" v-if="language || filename">
+    <div class="prose-pre-header">
       <div class="language-info">
-        <span v-if="language" class="language-text">{{ language }}</span>
-        <span v-if="filename" class="filename-text">{{ filename }}</span>
+        <span class="language-text">{{ displayLanguage }}</span>
+        <span v-if="filename" class="filename-text" :title="filename">{{ filename }}</span>
       </div>
-      <button @click="copy(code)" class="copy-btn">
-        <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" />
-        <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
+
+      <button
+        type="button"
+        class="copy-btn"
+        :class="{ 'is-copied': copied }"
+        :aria-label="copied ? '代码已复制' : '复制代码'"
+        :title="copied ? '已复制' : '复制代码'"
+        @click="copy"
+      >
+        <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="copy-icon" />
+        <span class="copy-text">{{ copied ? 'Copied' : 'Copy' }}</span>
       </button>
     </div>
+
     <div class="code-container">
-      <button v-if="!language && !filename" @click="copy(code)" class="floating-copy-btn">
-        <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-4 h-4" />
-      </button>
-      <pre :class="$props.class"><slot /></pre>
+      <pre :class="['vf-code', $props.class, { 'has-line-numbers': showLineNumbers }]"><slot /></pre>
     </div>
   </div>
 </template>
@@ -33,10 +39,12 @@ const props = defineProps({
     type: String,
     default: null
   },
+  // MDC 会把 ```js {1,3-5} 解析成行号数组，高亮由 Shiki 输出 .line.highlight，样式在本组件里
   highlights: {
     type: Array,
     default: () => []
   },
+  // 声明但不使用，避免它作为属性落到根元素上
   meta: {
     type: String,
     default: null
@@ -47,92 +55,281 @@ const props = defineProps({
   }
 })
 
+// 没有语言时也保持头部一致，避免出现“有头/无头”两种形态
+const displayLanguage = computed(() => (props.language || 'text').toUpperCase())
+
+// 超过 10 行才显示行号；Shiki 渲染前会 trimEnd，这里对齐同样的口径
+const showLineNumbers = computed(() => {
+  const raw = props.code
+  if (!raw) return false
+  return raw.replace(/\n+$/, '').split('\n').length > 10
+})
+
 const copied = ref(false)
-const copy = (text) => {
-  navigator.clipboard.writeText(text)
+let copiedTimer = null
+
+const fallbackCopy = (text) => {
+  // navigator.clipboard 在非 HTTPS 或旧浏览器下不可用
+  try {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.setAttribute('readonly', '')
+    textarea.style.position = 'fixed'
+    textarea.style.top = '-9999px'
+    document.body.appendChild(textarea)
+    textarea.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(textarea)
+    return ok
+  } catch {
+    return false
+  }
+}
+
+const copy = async () => {
+  const text = props.code || ''
+  if (!text) return
+
+  let ok = false
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text)
+      ok = true
+    }
+  } catch {
+    ok = false
+  }
+  if (!ok) ok = fallbackCopy(text)
+
+  // 复制失败时不要给出“已复制”的假反馈
+  if (!ok) {
+    console.warn('Failed to copy code to clipboard')
+    return
+  }
+
   copied.value = true
-  setTimeout(() => {
+  if (copiedTimer) clearTimeout(copiedTimer)
+  copiedTimer = setTimeout(() => {
     copied.value = false
+    copiedTimer = null
   }, 2000)
 }
+
+onBeforeUnmount(() => {
+  if (copiedTimer) clearTimeout(copiedTimer)
+  copiedTimer = null
+})
 </script>
 
 <style scoped>
+/* === 容器 === */
 .prose-pre-wrapper {
-  margin: 2rem 0;
-  border-radius: 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  overflow: hidden;
   position: relative;
+  margin: 2rem 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--code-bg);
+  box-shadow: var(--shadow-sm),
+              inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
 }
 
+/* === 头部：玻璃条 === */
 .prose-pre-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--bg-secondary);
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  background: var(--code-header-bg);
+  backdrop-filter: blur(8px) saturate(1.4);
+  -webkit-backdrop-filter: blur(8px) saturate(1.4);
   border-bottom: 1px solid var(--border-light);
-  font-size: 0.75rem;
-  font-family: sans-serif;
 }
 
 .language-info {
   display: flex;
+  align-items: center;
   gap: 0.75rem;
+  min-width: 0;
+}
+
+.language-text {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.05em;
   color: var(--primary);
 }
 
-.copy-btn, .floating-copy-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.4rem;
-  border: none;
-  background: transparent;
+/* 文件名保留原样大小写（原来被 language-info 的 uppercase 一起大写了） */
+.filename-text {
+  min-width: 0;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--border-medium);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.copy-btn:hover, .floating-copy-btn:hover {
-  background: var(--border-light);
-  color: var(--text-primary);
-}
-
-.floating-copy-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 10;
-  background: var(--bg-primary);
+/* === 复制按钮 === */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  padding: 0.3rem 0.7rem;
+  border-radius: 50px;
   border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
 }
 
+:root.dark .copy-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.copy-btn:hover {
+  color: var(--primary);
+  border-color: var(--border-strong);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.copy-btn.is-copied {
+  color: var(--primary);
+  border-color: var(--border-strong);
+}
+
+.copy-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.copy-icon {
+  font-size: 0.85rem;
+}
+
+/* === 代码区 === */
 .code-container {
-  position: relative;
-}
-
-pre {
-  margin: 0 !important;
-  padding: 1.25rem !important;
-  font-family: 'Fira Code', 'Cascadia Code', monospace !important;
-  font-size: 0.875rem !important;
-  line-height: 1.7 !important;
   overflow-x: auto;
-  background: transparent !important;
-  border: none !important; /* Fix double border */
+  overscroll-behavior-x: contain;
+  /* 横向滚动时两侧的渐隐提示（local 图层随内容滚动，scroll 图层固定） */
+  background:
+    linear-gradient(to right, var(--code-bg) 30%, rgba(0, 0, 0, 0)) left center / 40px 100% no-repeat local,
+    linear-gradient(to left, var(--code-bg) 30%, rgba(0, 0, 0, 0)) right center / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 0% 50%, rgba(120, 90, 150, 0.16), rgba(0, 0, 0, 0)) left center / 14px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(120, 90, 150, 0.16), rgba(0, 0, 0, 0)) right center / 14px 100% no-repeat scroll;
 }
 
-:deep(code) {
-  background: transparent !important;
-  padding: 0 !important;
-  border: none !important;
-  color: inherit !important;
+.code-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.code-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-medium);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 50px;
+}
+
+.code-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-strong);
+}
+
+.vf-code {
+  margin: 0;
+  padding: 1.1rem 0;
+  min-width: max-content;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.75;
+  tab-size: 2;
+  color: var(--code-text);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  white-space: pre;
+}
+
+.vf-code code {
+  display: block;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.vf-code :deep(.line) {
+  display: block;
+  min-height: 1.75em;
+  padding: 0 1.25rem;
+}
+
+.vf-code :deep(span) {
+  font-family: inherit;
+}
+
+/* MDC 把 ```js {1,3} 解析为 highlights，Shiki 会给对应行加 .highlight */
+.vf-code :deep(.line.highlight) {
+  background: var(--code-line-highlight);
+  box-shadow: inset 2px 0 0 var(--primary);
+}
+
+/* 超过 10 行才显示行号（行号取自 Shiki 写在 .line 上的 line 属性） */
+.vf-code.has-line-numbers :deep(.line)::before {
+  content: attr(line);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 0.9rem;
+  text-align: right;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* === 响应式 === */
+@media (max-width: 640px) {
+  .prose-pre-header {
+    padding: 0.45rem 0.5rem 0.45rem 0.85rem;
+  }
+
+  .copy-btn {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .copy-text {
+    display: none;
+  }
+
+  .vf-code {
+    font-size: 0.8rem;
+  }
+
+  .vf-code :deep(.line) {
+    padding: 0 1rem;
+  }
 }
 </style>

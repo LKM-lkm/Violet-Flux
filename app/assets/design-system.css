@@ -49,6 +49,8 @@
   /* === 代码块专用 === */
   --code-bg: #f3eef8;
   --code-text: #2d1b3d;
+  --code-header-bg: rgba(235, 228, 242, 0.72);
+  --code-line-highlight: rgba(180, 151, 215, 0.16);
   
   /* === 圆角系统 === */
   --radius-sm: 0.5rem;
@@ -133,6 +135,8 @@
   /* === 代码块专用 === */
   --code-bg: #1e1624;
   --code-text: #d8d0e0;
+  --code-header-bg: rgba(40, 32, 46, 0.72);
+  --code-line-highlight: rgba(168, 144, 192, 0.16);
 
   /* === 阴影系统 === */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);

@@ -122,8 +122,8 @@ export default defineNuxtConfig({
         },
         highlight: {
           theme: {
-            default: 'github-light',
-            dark: 'github-dark'
+            default: 'vitesse-light',
+            dark: 'vitesse-dark'
           },
           langs: [
             'javascript',
