@@ -34,11 +34,19 @@
                 <Icon name="lucide:arrow-right" class="btn-icon" />
               </span>
             </NuxtLink>
-            <NuxtLink to="/about" class="btn premium-btn-secondary">
-              <span class="btn-outline"></span>
-              <span class="btn-content">
-                <span>Our Story</span>
-              </span>
+            <NuxtLink to="/about" class="glass-btn-link">
+              <LiquidGlass
+                v-spotlight
+                class="glass-btn"
+                :scale="-120"
+                :chroma="4"
+                :border="0.06"
+                :mapBlur="10"
+                :blur="2"
+                :saturate="1.5"
+              >
+                <span class="glass-btn-label">Our Story</span>
+              </LiquidGlass>
             </NuxtLink>
           </div>
 
@@ -162,21 +170,40 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
   box-shadow: 0 8px 30px -6px rgba(180, 151, 215, 0.3), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
+/* 让 conic-gradient 的起始角可以被动画。
+   注意不要用 transform: rotate() —— 这个元素带着胶囊形状的 mask，
+   旋转会把整个轮廓一起转，被父级 overflow: hidden 裁切后
+   就变成一个在边缘乱扫的碎片。只转渐变角才是沿着边框跑光。 */
+@property --badge-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .badge-border-flow {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
   padding: 1px;
-  background: conic-gradient(from 0deg, transparent 70%, var(--primary) 100%);
+  background: conic-gradient(
+    from var(--badge-angle),
+    transparent 0%,
+    transparent 58%,
+    rgba(180, 151, 215, 0.3) 76%,
+    var(--primary) 88%,
+    rgba(180, 151, 215, 0.18) 96%,
+    transparent 100%
+  );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: border-spin 3s linear infinite;
+  animation: badge-sweep 4.5s linear infinite;
 }
 
-@keyframes border-spin {
-  100% { transform: rotate(360deg); }
+/* 首尾都是透明的，所以绕回 0deg 时不会出现硬边接缝 */
+@keyframes badge-sweep {
+  to { --badge-angle: 360deg; }
 }
 
 .badge-dot.pulse {
@@ -184,13 +211,21 @@ html.dark .premium-badge, [data-theme='dark'] .premium-badge {
   height: 6px;
   border-radius: 50%;
   background: var(--primary);
-  box-shadow: 0 0 0 0 rgba(180, 151, 215, 0.7);
-  animation: dot-pulse 2s infinite;
+  box-shadow: 0 0 0 0 rgba(180, 151, 215, 0.55);
+  animation: dot-pulse 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes dot-pulse {
-  70% { box-shadow: 0 0 0 6px rgba(180, 151, 215, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(180, 151, 215, 0.55); }
+  60% { box-shadow: 0 0 0 5px rgba(180, 151, 215, 0); }
   100% { box-shadow: 0 0 0 0 rgba(180, 151, 215, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-border-flow,
+  .badge-dot.pulse {
+    animation: none;
+  }
 }
 
 /* Premium Title Typography */
@@ -307,49 +342,65 @@ html.dark .premium-btn-primary:hover, [data-theme='dark'] .premium-btn-primary:h
   100% { left: 200%; }
 }
 
-.premium-btn-secondary {
-  background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.06));
-  color: var(--text-primary);
-  border: 1px solid rgba(180, 151, 215, 0.3);
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05),
-    inset 0 1px 1px rgba(255,255,255,0.4),
-    inset 0 0 0 1px rgba(255,255,255,0.1);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-html.dark .premium-btn-secondary, [data-theme='dark'] .premium-btn-secondary {
-  background: linear-gradient(180deg,
-    rgba(30, 22, 45, 0.4),
-    rgba(30, 22, 45, 0.2));
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3),
-    inset 0 1px 1px rgba(255,255,255,0.06),
-    inset 0 0 0 1px rgba(255,255,255,0.05);
-}
-
-.btn-outline {
-  position: absolute;
-  inset: 0;
+.glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 2.8rem;
   border-radius: 9999px;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--primary), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0.3;
-  transition: opacity 0.4s ease;
+  font-weight: 600;
+  font-size: 1.05rem;
+  /* 用真正的 LiquidGlass 组件，这里只做 material dressing。
+     不要用近纯白的渐变：hero 背景本身很浅，白叠白就是一片死白。
+     轻微紫调 + 顶部高光 + 底部内阴影，才有玻璃的厚度感。
+     也不能手写 backdrop-filter —— 会和库生成的 url(#id) 滤镜冲突。 */
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(242, 235, 252, 0.2) 48%,
+    rgba(222, 208, 243, 0.28) 100%);
+  color: var(--text-primary);
+  box-shadow:
+    /* 外阴影：把按钮从背景上抬起来 */
+    0 10px 24px -10px rgba(120, 84, 165, 0.38),
+    /* 顶部亮边：光源在上 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    /* 底部内阴影：形成厚度 */
+    inset 0 -3px 8px -2px rgba(120, 84, 165, 0.22),
+    /* 玻璃描边 */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 0 0 1px rgba(180, 151, 215, 0.28);
+  overflow: hidden;
 }
 
-.premium-btn-secondary:hover {
-  transform: translateY(-4px);
-  background: rgba(180, 151, 215, 0.08);
+html.dark .glass-btn, [data-theme='dark'] .glass-btn {
+  background: linear-gradient(180deg,
+    rgba(60, 48, 82, 0.5) 0%,
+    rgba(40, 30, 58, 0.34) 48%,
+    rgba(26, 18, 38, 0.44) 100%);
+  box-shadow:
+    0 10px 24px -10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -3px 8px -2px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(168, 144, 192, 0.24);
 }
 
-.premium-btn-secondary:hover .btn-outline {
-  opacity: 1;
+.glass-btn-link {
+  display: inline-flex;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.glass-btn-link:hover {
+  transform: translateY(-3px);
+}
+
+.glass-btn-label {
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
 }
 
 .btn-icon {

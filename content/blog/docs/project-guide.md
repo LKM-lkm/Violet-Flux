@@ -82,7 +82,9 @@ npm run preview    # 预览构建产物
 npm run convert-latex   # 批量把旧 LaTeX 语法转成标准语法
 ```
 
-> 改过 `nuxt.config.ts` 里的 `content.build` 配置后，如果发现内容没按预期重新解析，删掉 `.data/content/` 再构建——Nuxt Content 会缓存解析结果。
+::callout{icon="i-lucide-info" color="info"}
+改过 `nuxt.config.ts` 里的 `content.build` 配置后，如果发现内容没按预期重新解析，删掉 `.data/content/` 再构建——Nuxt Content 会缓存解析结果。
+::
 
 ## 配置要点（nuxt.config.ts）
 
@@ -116,7 +118,9 @@ npm run build          # 产出 .output/
 
 `nitro.cloudflare.pages.routes.exclude` 会把 `/blog/*`、`/_blog_assets/*` 交给静态资源，其余（含 `/api/ai-summary`）走 Pages Functions。
 
-> Windows 上构建时注意：**含中文或 emoji 的目录名会导致预渲染 HTML 读写路径编码不一致**（`项目文档` 会变成 `椤圭洰鏂囨。`），预渲染页面会 500。所以项目文档放在 ASCII 的 `content/blog/docs/` 下。发文章时也尽量用 ASCII 目录名。
+::callout{icon="i-lucide-triangle-alert" color="warning"}
+Windows 上构建时注意：**含中文或 emoji 的目录名会导致预渲染 HTML 读写路径编码不一致**（`项目文档` 会变成 `椤圭洰鏂囨。`），预渲染页面会 500。所以项目文档放在 ASCII 的 `content/blog/docs/` 下。发文章时也尽量用 ASCII 目录名。
+::
 
 ## 文章页组件
 

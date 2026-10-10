@@ -43,7 +43,9 @@ content: {
 - 中文 / emoji / 日文原样保留
 - **改了这段配置后必须删掉 `.data/content/` 再构建**，否则缓存不会重新解析
 
-> 另外，Windows 上构建时含中文/emoji 的目录名会让预渲染 HTML 的读写路径编码不一致（`项目文档` → `椤圭洰鏂囨。`），预渲染页会 500。所以**项目自己的文档放在 ASCII 目录 `content/blog/docs/` 下**；普通的笔记不受影响（它们走 SSR）。
+::callout{icon="i-lucide-triangle-alert" color="warning"}
+Windows 上构建时含中文/emoji 的目录名会让预渲染 HTML 的读写路径编码不一致（`项目文档` → `椤圭洰鏂囨。`），预渲染页会 500。所以**项目自己的文档放在 ASCII 目录 `content/blog/docs/` 下**；普通的笔记不受影响（它们走 SSR）。
+::
 
 ## frontmatter
 
@@ -59,7 +61,9 @@ image: /path/to/cover.png
 
 `content.config.ts` 的 schema 里定义的是 `tags`（字符串数组）、`date`、`image`。
 
-> 标题在页面上优先取**文件名**而不是 `title`，但列表页和 SEO 会用 `title`，建议都写。
+::callout{icon="i-lucide-info" color="info"}
+标题在页面上优先取**文件名**而不是 `title`，但列表页和 SEO 会用 `title`，建议都写。
+::
 
 ## 图片
 
@@ -76,7 +80,9 @@ image: /path/to/cover.png
 - 点击图片会打开液态玻璃样式的放大查看
 - 自动懒加载
 
-> 如果图片不显示，先确认没有用 Obsidian 的 `![[assets/x.png]]` 嵌入语法——项目只配置了标准 Markdown 图片语法。有一篇旧笔记还在用这种写法。
+::callout{icon="i-lucide-info" color="info"}
+如果图片不显示，先确认没有用 Obsidian 的 `![[assets/x.png]]` 嵌入语法——项目只配置了标准 Markdown 图片语法。有一篇旧笔记还在用这种写法。
+::
 
 ## 代码块
 
@@ -108,7 +114,7 @@ const c = 3
 
 | 行为 | 说明 |
 | --- | --- |
-| 头部 | 恒定显示，左侧是语言（大写）+ 文件名，右侧是复制按钮 |
+| 头部 | 恒定显示，左侧是语言图标 + 语言名（`JavaScript` / `C++` / `YAML` 这种规范写法，不全大写）+ 文件名，右侧是复制按钮 |
 | 复制 | 失败时不会误报成功（非 HTTPS 会降级到 `execCommand`） |
 | 行号 | **超过 10 行才显示**，短片段不显示 |
 | 行高亮 | 由 `{1,3}` 这类标记触发 |

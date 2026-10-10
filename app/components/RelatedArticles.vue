@@ -58,7 +58,7 @@ const { data: relatedArticles } = await useAsyncData(
     if (tags.length === 0) return []
     
     const articles = await queryCollection('content')
-      .where('path', 'startsWith', '/blog')
+      .where('path', 'LIKE', '/blog%')
       .where('id', '!=', props.article.id)
       .all()
     

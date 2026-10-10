@@ -32,4 +32,6 @@ Violet Flux 自身的开发文档。原来的 11 份零散文档已经合并成�
 
 ---
 
-> 文档里的链接一律写成绝对路径（`/blog/docs/xxx`）。Nuxt Content 不会重写 Markdown 的相对链接，写成 `./xxx.md` 会在浏览器里解析成 `/blog/docs/xxx.md` 这种错误地址。
+::callout{icon="i-lucide-info" color="info"}
+文档里的链接一律写成绝对路径（`/blog/docs/xxx`）。Nuxt Content 不会重写 Markdown 的相对链接，写成 `./xxx.md` 会在浏览器里解析成 `/blog/docs/xxx.md` 这种错误地址。
+::

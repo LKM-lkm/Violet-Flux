@@ -1,22 +1,12 @@
 ---
 title: 提示框 Callout
-description: Violet Flux 支持的两种提示框写法（::callout MDC 语法与 GitHub Alert 引用块）的语法、颜色图标速查与注意事项
+description: Violet Flux 提示框（::callout）的语法、颜色与图标速查
 tags: [文档, 组件]
 ---
 
-本项目的提示框有两条路：**推荐**用 Nuxt UI 的 MDC 语法 `::callout{...}`，服务端直接渲染成 `ProseCallout`，颜色和图标都能自由指定；另一种是 GitHub 风格的 `> [!NOTE]` 引用块，它**没有**对应的 remark 插件，只是靠博客文章页里的一段客户端 JavaScript 在浏览器中转换成提示框，颜色、标题都是写死的。
+提示框统一用 Nuxt UI 的 MDC 语法 `::callout{...}`：服务端直接渲染成 `ProseCallout`，颜色和图标都能自由指定，内容里可以放完整 Markdown（标题、列表、代码块、表格）。
 
-## 两种写法对比
-
-| | `::callout{...}` | `> [!NOTE]` 引用块 |
-| --- | --- | --- |
-| 语法 | MDC 块级组件 | Markdown 引用块 + 行首标记 |
-| 渲染时机 | 服务端 / 构建期直接渲染 | 浏览器端 JS 转换（水合后） |
-| 颜色 | 7 种任选 | 固定，每种标记一个色 |
-| 图标 | 任意 Lucide 图标 | 固定 emoji |
-| 标题 | 无固定标题，内容自由 | 固定英文标题（Note / Tip / …） |
-| 内容 | 完整 Markdown（标题、列表、代码块、表格） | 普通引用块内容 |
-| 本项目现状 | 正在使用（文档、笔记） | 代码支持，但没有文章实际使用 |
+另有 4 个写死配色的简写：`::note`、`::tip`、`::warning`、`::caution`。
 
 ## 推荐写法：`::callout`
 
@@ -120,38 +110,9 @@ MDC 映射里还注册了 4 个固定配色的简写（`.nuxt/dev/index.mjs` 的
 
 注意：这 4 个简写组件内部把颜色和图标写死了，**不接受** `color` / `icon` / `to` 参数，也没有 `::important` 简写。需要自定义时请用完整的 `::callout{...}`。
 
-## 另一种写法：GitHub Alert 引用块
+## 不要用 GitHub Alert 语法
 
-### 语法
-
-```markdown
-> [!WARNING]
-> 这是警告内容
-```
-
-`nuxt.config.ts` 的 `remarkPlugins` 里只有 `remark-gfm`、`remark-mdc`、`remark-wiki-link`，**没有** GitHub Alert 相关的 remark 插件，所以 Markdown 渲染出来的只是一个普通引用块，`[!NOTE]` 是字面文本；真正的转换发生在浏览器里。
-
-### 五种标记
-
-转换逻辑在 `app/pages/blog/[...slug].vue` 的 `onMounted` 中（`alertMap`）：
-
-| 标记 | 转换后的类名 | 标题文本 | 亮色 / 暗色 |
-| --- | --- | --- | --- |
-| `[!NOTE]` | `.markdown-alert-note` | ℹ️ Note | `#0969da` / `#539bf5` |
-| `[!TIP]` | `.markdown-alert-tip` | 💡 Tip | `#1a7f37` / `#3fb950` |
-| `[!IMPORTANT]` | `.markdown-alert-important` | ❗ Important | `#8250df` / `#a371f7` |
-| `[!WARNING]` | `.markdown-alert-warning` | ⚠️ Warning | `#d97706` / `#f59e0b` |
-| `[!CAUTION]` | `.markdown-alert-caution` | 🚨 Caution | `#cf222e` / `#f85149` |
-
-对应的 `:deep(.markdown-alert-*)` 样式就近写在同一个文件里（约 920–1026 行）。
-
-### 注意事项
-
-- **纯客户端转换**：脚本在 `onMounted` 里跑，只作用于 `app/pages/blog/[...slug].vue` 这一个页面。预渲染出的 HTML 里最初仍是普通引用块，水合之后才会变成提示框。
-- **标记必须在第一段开头**：脚本取引用块第一个 `<p>` 的 `textContent`，用 `startsWith('[!NOTE]')` 判断。标记前有任何文字都不会被转换。
-- **标题不可改**：标题是脚本里硬编码的英文 Note / Tip / Important / Warning / Caution。
-- **会保留引用块的部分样式**：转换只做「加类名 + 插入标题」，`.article-body blockquote` 上的斜体和大引号装饰（`font-style: italic`、`::before` 的 `"`）不会被清除。
-- 转换靠 `MutationObserver` 兜底，重复处理用 `markdown-alert` 类名做幂等保护。新内容不建议再用这种写法。
+`> [!NOTE]`、`> [!WARNING]` 这类写法**不要用**：项目没有对应的 remark 插件，渲染出来只是一个普通引用块，和提示框完全是两回事。提示框一律用上面的 `::callout{...}`（或用 `::tip` / `::note` / `::warning` / `::caution` 简写）。
 
 ## 速查表
 
@@ -164,7 +125,6 @@ MDC 映射里还注册了 4 个固定配色的简写（`.nuxt/dev/index.mjs` 的
 | 重点结论、关键信息 | `::callout` | `primary` | `i-lucide-star` |
 | 命令、安装步骤 | `::callout` | `neutral` | `i-lucide-terminal` |
 | 快速插入标准提示 | `::tip` / `::note` / `::warning` / `::caution` | 固定 | 固定 |
-| 兼容旧文章的 GitHub Alert | `> [!NOTE]` 等 | 固定 | 固定 emoji |
 
 ## 常见问题
 
@@ -174,5 +134,5 @@ MDC 映射里还注册了 4 个固定配色的简写（`.nuxt/dev/index.mjs` 的
 **能改 Callout 的默认样式吗？**
 可以，但本项目目前**没有**做任何自定义：`app.config.ts` 是空的，`Callout.vue` 读的是 `appConfig.ui?.prose?.callout`，留空即使用 Nuxt UI 默认主题。
 
-**两种写法能混用吗？**
-语法上不冲突，但外观和标题风格不一致，同一篇文章里建议只用一种。
+**能嵌套使用吗？**
+可以。`::callout` 内部支持完整 Markdown，包括列表、代码块和表格；但**不要**在一个 `::callout` 里再套一个 `::callout`，MDC 的块级嵌套解析容易出错。

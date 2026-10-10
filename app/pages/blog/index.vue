@@ -45,7 +45,7 @@
       </LiquidGlass>
 
       <main class="content">
-        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="10" :blur="1" :saturate="1.5">
+        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="6" :blur="1" :saturate="1.5">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
@@ -139,14 +139,19 @@ const { data: articles } = await useAsyncData('blog-articles-v4-premium', async 
   const all = await queryCollection('content').all()
   return all
     .map(item => {
-      // 直接用 Nuxt Content 生成的规范路径。
-      // 不要拿 item.id 拼：它带 'content/' 前缀，会得到 /blog/content/blog/... 这种坏链接。
-      const finalPath = item.path || '/blog/' + item.id.replace(/^content\//, '').replace(/\.md$/, '')
+      // 两个路径要分开用：
+      //  - path（跳转用）取 Nuxt Content 生成的规范路径 item.path。
+      //    不要用 item.id 拼，它带 'content/' 前缀，会得到 /blog/content/blog/... 这种坏链接。
+      //  - displayPath（卡片标题 + 面包屑用）必须取原始文件名 item.id。
+      //    item.path 是 slug 化过的（小写、空格变连字符），
+      //    拿它当标题会把 “MathJax LaTeX 综合测试页面” 显示成 “mathjax-latex-综合测试页面”。
+      const realPath = '/' + String(item.id || '').replace(/^content\//, '').replace(/\.md$/, '')
+      const finalPath = item.path || realPath
 
       return {
         ...item,
         path: encodeURI(finalPath),
-        displayPath: decodeURIComponent(finalPath)
+        displayPath: decodeURIComponent(realPath)
       }
     })
     .filter(item => {

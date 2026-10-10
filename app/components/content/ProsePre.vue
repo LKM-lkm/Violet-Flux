@@ -2,6 +2,7 @@
   <div v-spotlight class="prose-pre-wrapper">
     <div class="prose-pre-header">
       <div class="language-info">
+        <Icon v-if="languageIcon" :name="languageIcon" class="language-logo" />
         <span class="language-text">{{ displayLanguage }}</span>
         <span v-if="filename" class="filename-text" :title="filename">{{ filename }}</span>
       </div>
@@ -55,8 +56,77 @@ const props = defineProps({
   }
 })
 
+// 语言显示名：不再全大写，用常见的规范写法（JavaScript / C++ / YAML …）
+const LANGUAGE_LABELS = {
+  js: 'JavaScript',
+  javascript: 'JavaScript',
+  jsx: 'JSX',
+  ts: 'TypeScript',
+  typescript: 'TypeScript',
+  tsx: 'TSX',
+  py: 'Python',
+  python: 'Python',
+  java: 'Java',
+  c: 'C',
+  cpp: 'C++',
+  cxx: 'C++',
+  sh: 'Shell',
+  shell: 'Shell',
+  bash: 'Bash',
+  zsh: 'Zsh',
+  json: 'JSON',
+  jsonc: 'JSON',
+  yaml: 'YAML',
+  yml: 'YAML',
+  md: 'Markdown',
+  markdown: 'Markdown',
+  html: 'HTML',
+  css: 'CSS',
+  scss: 'SCSS',
+  vue: 'Vue',
+  text: 'Text',
+  plaintext: 'Text'
+}
+
+// 语言 logo（Simple Icons）。Simple Icons 里没有 java，官方 Java logo 用 openjdk 代替；
+// jsx/tsx 借 React / TypeScript 的图标；bash 用 GNU Bash。
+const LANGUAGE_ICONS = {
+  js: 'simple-icons:javascript',
+  javascript: 'simple-icons:javascript',
+  jsx: 'simple-icons:react',
+  ts: 'simple-icons:typescript',
+  typescript: 'simple-icons:typescript',
+  tsx: 'simple-icons:typescript',
+  py: 'simple-icons:python',
+  python: 'simple-icons:python',
+  java: 'simple-icons:openjdk',
+  c: 'simple-icons:c',
+  cpp: 'simple-icons:cplusplus',
+  cxx: 'simple-icons:cplusplus',
+  sh: 'simple-icons:gnubash',
+  shell: 'simple-icons:gnubash',
+  bash: 'simple-icons:gnubash',
+  zsh: 'simple-icons:gnubash',
+  json: 'simple-icons:json',
+  jsonc: 'simple-icons:json',
+  yaml: 'simple-icons:yaml',
+  yml: 'simple-icons:yaml',
+  md: 'simple-icons:markdown',
+  markdown: 'simple-icons:markdown',
+  html: 'simple-icons:html5',
+  css: 'simple-icons:css',
+  scss: 'simple-icons:css',
+  vue: 'simple-icons:vuedotjs'
+}
+
+const normalizedLanguage = computed(() => (props.language || 'text').toLowerCase())
+
 // 没有语言时也保持头部一致，避免出现“有头/无头”两种形态
-const displayLanguage = computed(() => (props.language || 'text').toUpperCase())
+const displayLanguage = computed(
+  () => LANGUAGE_LABELS[normalizedLanguage.value] || props.language || 'Text'
+)
+
+const languageIcon = computed(() => LANGUAGE_ICONS[normalizedLanguage.value] || null)
 
 // 超过 10 行才显示行号；Shiki 渲染前会 trimEnd，这里对齐同样的口径
 const showLineNumbers = computed(() => {
@@ -154,13 +224,19 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 
+.language-logo {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  /* Simple Icons 是单色图标，跟着主题走；塞一堆品牌色反而会在浅底上糊掉 */
+  color: var(--text-secondary);
+}
+
 .language-text {
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: var(--primary);
 }
 

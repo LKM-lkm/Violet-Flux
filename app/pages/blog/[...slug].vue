@@ -717,6 +717,18 @@ onUnmounted(() => {
   color: var(--link-hover);
 }
 
+/* Nuxt UI 会给 h2/h3/h4 的文字包一层锚点 <a href="#...">，
+   不覆盖的话标题会继承链接色和链接的悬停效果（高亮底 + 变色），
+   而不是标题自己该有的颜色。 */
+.article-body :deep(h1 a),
+.article-body :deep(h2 a),
+.article-body :deep(h3 a),
+.article-body :deep(h4 a) {
+  color: inherit;
+  background: none;
+  border-bottom: none;
+}
+
 .article-body :deep(blockquote) {
   border-left: 3px solid var(--primary);
   /* 原来叠了 4 段渐变 + 双层投影 + 整段斜体；改成平底 + 左竖线，
@@ -743,18 +755,18 @@ onUnmounted(() => {
 }
 
 .article-body :deep(code:not(pre code)) {
-  /* 行内代码要"贴住"文字：竖向 padding 收到最小，去掉边框和投影。
-     原来 0.2em 竖向 padding + 1px 边框 + 投影，盒子比文字高一截，
-     在 1.8 的行距下相邻两行的盒子会挤在一起甚至碰到。 */
+  /* 折中值：原来 0.2em 竖向 padding + 投影太占地方，会挤到相邻行；
+     但压到 0.1em 又没边框就完全看不出是代码了。
+     这里保留边框、去掉投影、字号略收，padding 取中间值，
+     并且不设 line-height: 1 —— 那会让文字贴住盒子上下边缘，看着发紧。 */
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-size: 0.875em;
   font-weight: 500;
   color: var(--link);
-  background: var(--bg-secondary);
-  padding: 0.1em 0.35em;
+  background: var(--bg-tertiary);
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--border-medium);
   border-radius: 0.3rem;
-  line-height: 1;
-  border: none;
   box-shadow: none;
 }
 
