@@ -52,9 +52,12 @@
             </div>
             <h1 class="article-title">{{ articleTitle }}</h1>
             <div class="article-meta" v-if="getTags(article).length">
-              <span v-for="tag in getTags(article)" :key="tag" class="tag-label">
-                #{{ tag }}
-              </span>
+              <NuxtLink
+                v-for="tag in getTags(article)"
+                :key="tag"
+                :to="{ path: '/blog', query: { tag } }"
+                class="tag-chip"
+              >#{{ tag }}</NuxtLink>
             </div>
 
             <!-- AI 摘要 -->
@@ -95,22 +98,15 @@
 
 <script setup>
 definePageMeta({ layout: 'default' })
-import { isDark, toggleDark } from '~/composables/useTheme'
 
 const activeId = ref('')
 const indicatorOffset = ref(0)
-const mobileMenuOpen = ref(false)
 const route = useRoute()
 
 // 修复尾部斜杠问题：/blog/ 或 /blog// 应该重定向到 /blog
 if (route.path === '/blog/' || route.path === '/blog//') {
   navigateTo('/blog', { redirectCode: 301 })
 }
-
-// 使用官方推荐的 queryCollectionItemSurroundings 获取上一页/下一页
-const { data: surround } = await useAsyncData(`surround-${route.path}`, () => {
-  return queryCollectionItemSurroundings('content', route.path)
-})
 
 const { data: article } = await useAsyncData(`article-v22-${route.path}`, async () => {
   const all = await queryCollection('content').all()
@@ -378,11 +374,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', updateActiveHeading)
 })
-
-// 关闭移动菜单当路由改变
-watch(() => route.path, () => {
-  mobileMenuOpen.value = false
-})
 </script>
 
 <style scoped>
@@ -631,53 +622,33 @@ watch(() => route.path, () => {
 .article-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
+  gap: 0.4rem;
   margin-top: var(--space-md);
 }
 
-.tag-label {
-  font-size: var(--text-xs);
-  font-weight: 600;
+/* 与列表页卡片的 .tag-chip 保持一致：小圆角、紧凑内边距，不再是又大又圆的胶囊 */
+.tag-chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: var(--primary);
-  background: linear-gradient(135deg, 
-    rgba(180, 151, 215, 0.1), 
+  background: linear-gradient(135deg,
+    rgba(180, 151, 215, 0.1),
     rgba(194, 169, 228, 0.15)
   );
-  padding: var(--space-xs) var(--space-lg);
-  border-radius: 50px;
   border: 1px solid var(--border-light);
-  backdrop-filter: blur(8px);
-  transition: all var(--duration-fast);
-  position: relative;
-  overflow: hidden;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: all 0.3s;
 }
 
-.tag-label::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.tag-label:hover {
-  background: linear-gradient(135deg, #b497d7, #a682cf);
+.tag-chip:hover {
+  background: var(--primary);
   color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 16px rgba(180, 151, 215, 0.5);
+  box-shadow: 0 4px 12px rgba(180, 151, 215, 0.4);
   transform: translateY(-2px);
-}
-
-.tag-label:hover::before {
-  left: 100%;
 }
 
 /* === 文章内容 === */

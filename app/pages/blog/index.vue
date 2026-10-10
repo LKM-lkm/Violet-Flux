@@ -108,10 +108,21 @@
 
 <script setup>
 definePageMeta({ layout: 'default' })
-import { isDark, toggleDark } from '~/composables/useTheme'
+const route = useRoute()
+const router = useRouter()
+
 const search = ref('')
 const selectedPath = ref('')
-const selectedTags = ref([])
+// 详情页点标签会带 ?tag=xxx 跳过来，所以从 query 初始化
+const selectedTags = ref([route.query.tag].flat().filter(Boolean).map(String))
+
+// 标签筛选变化时同步到地址栏，筛选结果才能被分享/收藏
+watch(selectedTags, (tags) => {
+  const query = { ...route.query }
+  if (tags.length) query.tag = tags.length === 1 ? tags[0] : [...tags]
+  else delete query.tag
+  router.replace({ query })
+}, { deep: true })
 
 // 使用官方推荐的 queryCollectionSearchSections 用于全文搜索
 const { data: searchSections } = await useAsyncData('blog-search-sections', () =>
@@ -122,9 +133,9 @@ const { data: articles } = await useAsyncData('blog-articles-v4-premium', async 
   const all = await queryCollection('content').all()
   return all
     .map(item => {
-      let cleanId = item.id.replace(/\.md$/, '')
-      let finalPath = '/blog/' + cleanId
-      finalPath = finalPath.replace(/\/+/g, '/')
+      // 直接用 Nuxt Content 生成的规范路径。
+      // 不要拿 item.id 拼：它带 'content/' 前缀，会得到 /blog/content/blog/... 这种坏链接。
+      const finalPath = item.path || '/blog/' + item.id.replace(/^content\//, '').replace(/\.md$/, '')
 
       return {
         ...item,

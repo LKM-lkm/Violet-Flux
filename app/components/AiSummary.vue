@@ -23,7 +23,11 @@
         
         <div class="summary-body">
           <p v-if="displayedText" class="text-content">
-            {{ displayedText }}
+            <span
+              v-for="(char, index) in typedChars"
+              :key="index"
+              class="typed-char"
+            >{{ char }}</span>
             <span v-if="isTyping" class="type-cursor"></span>
           </p>
           <p v-else-if="status === 'thinking'" class="placeholder-text">
@@ -112,6 +116,10 @@ const status = ref('idle') // idle, thinking, typing, done, error
 const displayedText = ref('')
 const fullText = ref('')
 const isTyping = ref(false)
+
+// 逐字渲染成独立 span：Vue 按 index 复用已有节点，
+// 于是只有「刚敲出来的那个字」会新建节点、跑一次发光动画，旧字保持静态。
+const typedChars = computed(() => (displayedText.value ? Array.from(displayedText.value) : []))
 
 // 使用本地代理接口避免 CORS 问题（服务端转发到 Cloudflare Worker）
 // 静态部署时回退到直接调用 Worker（需 Worker 配置 CORS）
@@ -219,11 +227,14 @@ const startTyping = () => {
   status.value = 'typing'
   isTyping.value = true
   displayedText.value = ''
+
+  // 按码点切分，避免 emoji 被拆成两个半字符
+  const chars = Array.from(fullText.value)
   let i = 0
 
   typingTimer = setInterval(() => {
-    if (i < fullText.value.length) {
-      displayedText.value += fullText.value[i]
+    if (i < chars.length) {
+      displayedText.value += chars[i]
       i++
     } else {
       clearInterval(typingTimer)
@@ -424,41 +435,27 @@ onUnmounted(() => {
   color: #d8d0e0;
 }
 
-/* 文字光效：一道淡紫高光沿着摘要正文缓慢扫过。
-   用 @supports 兜底，否则不支持 background-clip:text 的浏览器会把文字整段变透明。 */
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .text-content {
-    background-image: linear-gradient(
-      100deg,
-      currentColor 0%,
-      currentColor 38%,
-      var(--primary) 47%,
-      #f2e8ff 50%,
-      var(--primary) 53%,
-      currentColor 62%,
-      currentColor 100%
-    );
-    background-size: 260% 100%;
-    background-position: 130% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: summary-sheen 6.5s var(--ease-in-out) 1.2s infinite;
-  }
+/* 打字光效：每个字出现时亮一下再回落，光标同步呼吸。
+   每个字都是独立 span，动画只在节点创建时跑一次，
+   所以只有刚敲出来的字在发光，已经打完的字是静止的。 */
+.typed-char {
+  animation: char-bloom 620ms var(--ease-out) both;
 }
 
-@keyframes summary-sheen {
+@keyframes char-bloom {
   0% {
-    background-position: 130% 0;
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary), 0 0 22px var(--primary-glow);
   }
-  60%,
   100% {
-    background-position: -40% 0;
+    color: inherit;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .text-content {
+  .typed-char,
+  .type-cursor {
     animation: none;
   }
 }
@@ -539,13 +536,19 @@ onUnmounted(() => {
   background: var(--primary);
   margin-left: 4px;
   vertical-align: middle;
-  box-shadow: 0 0 8px var(--primary-glow);
-  animation: blink 0.8s infinite;
+  box-shadow: 0 0 8px var(--primary), 0 0 18px var(--primary-glow);
+  animation: cursor-breathe 0.9s ease-in-out infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+@keyframes cursor-breathe {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px var(--primary), 0 0 18px var(--primary-glow);
+  }
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 4px var(--primary-glow);
+  }
 }
 
 @media (max-width: 768px) {
