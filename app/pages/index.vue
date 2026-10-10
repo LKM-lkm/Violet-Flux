@@ -38,11 +38,11 @@
               <LiquidGlass
                 v-spotlight
                 class="glass-btn"
-                :scale="-120"
+                :scale="-160"
                 :chroma="4"
-                :border="0.06"
-                :mapBlur="10"
-                :blur="2"
+                :border="0.02"
+                :mapBlur="6"
+                :blur="1"
                 :saturate="1.5"
               >
                 <span class="glass-btn-label">Our Story</span>
@@ -352,49 +352,63 @@ html.dark .premium-btn-primary:hover, [data-theme='dark'] .premium-btn-primary:h
   font-weight: 600;
   font-size: 1.05rem;
   /* 用真正的 LiquidGlass 组件，这里只做 material dressing。
-     不要用近纯白的渐变：hero 背景本身很浅，白叠白就是一片死白。
-     轻微紫调 + 顶部高光 + 底部内阴影，才有玻璃的厚度感。
+     不要白色填充：hero 背景本身就很浅，白叠白就是一块死白，
+     玻璃的折射也被盖掉了。只用很淡的紫调，让背景透出来。
      也不能手写 backdrop-filter —— 会和库生成的 url(#id) 滤镜冲突。 */
   background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.34) 0%,
-    rgba(242, 235, 252, 0.2) 48%,
-    rgba(222, 208, 243, 0.28) 100%);
+    rgba(180, 151, 215, 0.08) 0%,
+    rgba(160, 130, 200, 0.16) 100%);
   color: var(--text-primary);
   box-shadow:
-    /* 外阴影：把按钮从背景上抬起来 */
-    0 10px 24px -10px rgba(120, 84, 165, 0.38),
-    /* 顶部亮边：光源在上 */
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    /* 底部内阴影：形成厚度 */
-    inset 0 -3px 8px -2px rgba(120, 84, 165, 0.22),
-    /* 玻璃描边 */
-    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-    0 0 0 1px rgba(180, 151, 215, 0.28);
+    /* 和旁边紫色按钮同一条底部投影，浮起高度才一致 */
+    0 20px 40px -10px rgba(145, 99, 192, 0.3),
+    /* 顶部一线高光：薄玻璃的立体感 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    /* 极细玻璃描边 */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 0 1px rgba(168, 144, 192, 0.3);
+  transition: box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
   overflow: hidden;
 }
 
 html.dark .glass-btn, [data-theme='dark'] .glass-btn {
   background: linear-gradient(180deg,
-    rgba(60, 48, 82, 0.5) 0%,
-    rgba(40, 30, 58, 0.34) 48%,
-    rgba(26, 18, 38, 0.44) 100%);
+    rgba(168, 144, 192, 0.12) 0%,
+    rgba(120, 90, 160, 0.2) 100%);
   box-shadow:
-    0 10px 24px -10px rgba(0, 0, 0, 0.6),
+    0 20px 40px -10px rgba(107, 65, 146, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -3px 8px -2px rgba(0, 0, 0, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 0 1px rgba(168, 144, 192, 0.24);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(168, 144, 192, 0.22);
 }
 
 .glass-btn-link {
   display: inline-flex;
   border-radius: 9999px;
   text-decoration: none;
-  transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  /* 与紫色按钮完全相同的过渡曲线 */
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .glass-btn-link:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.glass-btn-link:hover .glass-btn {
+  box-shadow:
+    0 30px 50px -10px rgba(145, 99, 192, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.36),
+    0 0 0 1px rgba(168, 144, 192, 0.42);
+}
+
+html.dark .glass-btn-link:hover .glass-btn,
+[data-theme='dark'] .glass-btn-link:hover .glass-btn {
+  box-shadow:
+    0 30px 50px -10px rgba(107, 65, 146, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(168, 144, 192, 0.34);
 }
 
 .glass-btn-label {
