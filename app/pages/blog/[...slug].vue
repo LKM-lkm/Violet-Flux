@@ -755,18 +755,17 @@ onUnmounted(() => {
 }
 
 .article-body :deep(code:not(pre code)) {
-  /* 折中值：原来 0.2em 竖向 padding + 投影太占地方，会挤到相邻行；
-     但压到 0.1em 又没边框就完全看不出是代码了。
-     这里保留边框、去掉投影、字号略收，padding 取中间值，
-     并且不设 line-height: 1 —— 那会让文字贴住盒子上下边缘，看着发紧。 */
+  /* 等宽字体在同样字号下视觉尺寸偏大，所以要比正文小一档；
+     边框和内边距也收小，避免行内代码块显得笨重、挤到相邻行。
+     不要设 line-height: 1 —— 那会让文字贴住盒子上下边缘，看着发紧。 */
   font-family: var(--font-mono);
-  font-size: 0.875em;
+  font-size: 0.82em;
   font-weight: 500;
   color: var(--link);
   background: var(--bg-tertiary);
-  padding: 0.15em 0.4em;
+  padding: 0.1em 0.32em;
   border: 1px solid var(--border-medium);
-  border-radius: 0.3rem;
+  border-radius: 0.25rem;
   box-shadow: none;
 }
 

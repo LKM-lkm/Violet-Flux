@@ -8,20 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "f261e36b293c6d7c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Mine/🌐网络/Great Firewall.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Great Firewall"
-            }
-          },
-          {
             "id": "76f5df7bb029a41c",
             "type": "leaf",
             "state": {
@@ -211,9 +197,12 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "f261e36b293c6d7c",
+  "active": "ac63568be97b5b9d",
   "lastOpenFiles": [
+    "Mine/☁CloudFlare/未命名 1.base",
+    "Mine/☁CloudFlare/未命名.base",
     "Mine/☁CloudFlare/Cloudflare Worker AI 摘要设置指南.md",
+    "Mine/🌐网络/Great Firewall.md",
     "音乐/𝄞Sibelius/Sibelius2026下载运行教程.md",
     "音乐/𝄞Sibelius/日式浄書的参数注意事项.md",
     "Mine/📃字体/Symbol字体对照表.md",
@@ -231,7 +220,6 @@
     "未命名.base",
     "Mine/MathJax/MathJax LaTeX 综合测试页面.md",
     "Mine/🌐网络/IPDB.md",
-    "Mine/🌐网络/Great Firewall.md",
     "Mine/折纸/Affinity 折り図制作/1. 软件下载.md",
     "Mine/折纸/Affinity 折り図制作/2. 文件参数.md",
     "Mine/折纸/Affinity 折り図制作/assets/DM_20260501215710_001.png",
@@ -247,7 +235,6 @@
     "Mine/折纸",
     "Mine/MathJax/VitePress 集成 MathJax v4.md",
     "assets",
-    "Mine/🌐网络/assets",
     "Mine/⬇️资源/如何下载无损电子版教材？.md",
     "Mine/☁CloudFlare/CloudFlare Workers 被墙解决方案.md",
     "📔我的/⬇️资源下载/Sibelius2024下载运行教程.md",

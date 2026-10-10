@@ -1,4 +1,81 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const mathExpressionsByFile = new Map<string, Map<string, string>>()
+let nextMathToken = 0
+
+function protectMathExpressions(markdown: string, expressions: Map<string, string>) {
+  const protectText = (text: string) => text.replace(
+    /(`+)[\s\S]*?\1|\$\$[\s\S]*?\$\$|\\\\\([\s\S]*?\\\\\)|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
+    (match) => {
+      if (match.startsWith('`')) return match
+
+      const token = `VioletFluxMathToken${nextMathToken++}End`
+      expressions.set(token, match)
+      return token
+    }
+  )
+
+  let result = ''
+  let text = ''
+  let fence: { character: string; length: number } | null = null
+
+  for (const line of markdown.split(/(?<=\n)/)) {
+    const lineContent = line.replace(/\r?\n$/, '')
+
+    if (fence) {
+      result += line
+      const closingFence = lineContent.match(/^ {0,3}(`+|~+)[ \t]*$/)
+      if (
+        closingFence
+        && closingFence[1][0] === fence.character
+        && closingFence[1].length >= fence.length
+      ) {
+        fence = null
+      }
+      continue
+    }
+
+    const openingFence = lineContent.match(/^ {0,3}(`{3,}|~{3,})/)
+    if (openingFence) {
+      result += protectText(text) + line
+      text = ''
+      fence = {
+        character: openingFence[1][0],
+        length: openingFence[1].length,
+      }
+      continue
+    }
+
+    text += line
+  }
+
+  return result + protectText(text)
+}
+
+function restoreMathExpressions(value: unknown, expressions: Map<string, string>): unknown {
+  if (typeof value === 'string') {
+    let restored = value
+    for (const [token, expression] of expressions) {
+      restored = restored.replaceAll(token, expression)
+    }
+    return restored
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(child => restoreMathExpressions(child, expressions))
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [
+        key,
+        restoreMathExpressions(child, expressions),
+      ])
+    )
+  }
+
+  return value
+}
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
@@ -8,6 +85,23 @@ export default defineNuxtConfig({
   
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
+
+  hooks: {
+    'content:file:beforeParse': ({ file }) => {
+      if (file.extension === '.md') {
+        const expressions = new Map<string, string>()
+        file.body = protectMathExpressions(file.body, expressions)
+        if (expressions.size > 0) mathExpressionsByFile.set(file.id, expressions)
+      }
+    },
+    'content:file:afterParse': ({ content }) => {
+      const expressions = mathExpressionsByFile.get(content.id)
+      if (!expressions) return
+
+      content.body = restoreMathExpressions(content.body, expressions)
+      mathExpressionsByFile.delete(content.id)
+    },
+  },
 
   // 禁用尾部斜杠，防止 /blog 被重定向到 /blog/
   router: {
