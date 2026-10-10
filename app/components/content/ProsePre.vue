@@ -331,7 +331,10 @@ onBeforeUnmount(() => {
 
 .vf-code {
   margin: 0;
-  padding: 1.1rem 0;
+  /* 横向 padding 放在 pre 上，而不是 .line 上：
+     MDC 对 text（以及不在 Shiki langs 白名单里的语言）根本不会跑高亮，
+     也就没有 .line 包裹，padding 写在 .line 上这些块的文字会直接贴左边框。 */
+  padding: 1.1rem 1.25rem;
   min-width: max-content;
   font-family: var(--font-mono);
   font-size: 0.85rem;
@@ -360,7 +363,7 @@ onBeforeUnmount(() => {
 .vf-code :deep(.line) {
   display: block;
   min-height: 1.75em;
-  padding: 0 1.25rem;
+  /* 横向留白由 .vf-code 统一提供，这里不再重复 */
 }
 
 .vf-code :deep(span) {
@@ -402,10 +405,8 @@ onBeforeUnmount(() => {
 
   .vf-code {
     font-size: 0.8rem;
-  }
-
-  .vf-code :deep(.line) {
-    padding: 0 1rem;
+    /* 窄屏收一点横向留白；padding 在 pre 上，所以这里也改 pre */
+    padding: 1rem 1rem;
   }
 }
 </style>

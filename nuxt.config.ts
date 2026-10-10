@@ -52,8 +52,8 @@ export default defineNuxtConfig({
               tex: {
                 packages: ['base', 'ams', 'newcommand', 'configmacros'],
                 // 使用标准 LaTeX 定界符，避免与 MDC 语法冲突
-                inlineMath: [['\\\\(', '\\\\)']],
-                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
                 // 处理选项
                 processEscapes: true,       // 使用 \\$ 表示字面量美元符号
                 processEnvironments: true,  // 处理 \\begin{xxx}...\\end{xxx}

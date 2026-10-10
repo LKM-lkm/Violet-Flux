@@ -63,11 +63,13 @@ window.MathJax = {
 | `output.font` | 输出字体 `mathjax-termes` |
 | `startup.typeset` | `false`，MathJax 不自动排版 |
 
+Nuxt 配置将这段初始化代码放在模板字符串中，因此配置源码里的 `\\(` 会生成浏览器实际需要的 `\(`。不要在这里再多加一层反斜杠，否则 MathJax 会等待错误的定界符。
+
 ## 渲染时机
 
 | 位置 | 行为 |
 | --- | --- |
-| `app/plugins/mathjax.client.ts` | 每 100ms 轮询 `window.MathJax`，最多等 10 秒；调用 `MathJax.typesetPromise()`；成功打印 `MathJax rendered successfully`，失败打印 `MathJax rendering error:` |
+| `app/plugins/mathjax.client.ts` | 每 100ms 等待 `window.MathJax.typesetPromise` 可用，最多 10 秒；调用 `typesetPromise()`；成功打印 `MathJax rendered successfully`，失败打印 `MathJax rendering error:` |
 | 插件初始化 | 立即渲染一次 |
 | 路由变化 | `router.afterEach` 之后延迟 500ms 重新渲染 |
 | `app/pages/blog/[...slug].vue` | `onMounted` 中 `nextTick` 调用一次，1000ms 后再调用一次 |

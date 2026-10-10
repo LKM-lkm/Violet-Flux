@@ -1,37 +1,30 @@
 export default defineNuxtPlugin(() => {
   // 等待 MathJax 加载
   const waitForMathJax = () => {
-    return new Promise((resolve) => {
-      if (window.MathJax) {
-        resolve(window.MathJax)
-        return
-      }
-      
-      const checkInterval = setInterval(() => {
-        if (window.MathJax) {
-          clearInterval(checkInterval)
+    return new Promise((resolve, reject) => {
+      const startedAt = Date.now()
+      const check = () => {
+        if (window.MathJax?.typesetPromise) {
           resolve(window.MathJax)
+        } else if (Date.now() - startedAt >= 10000) {
+          reject(new Error('MathJax did not become ready within 10 seconds'))
+        } else {
+          setTimeout(check, 100)
         }
-      }, 100)
-      
-      // 超时保护
-      setTimeout(() => {
-        clearInterval(checkInterval)
-        resolve(null)
-      }, 10000)
+      }
+
+      check()
     })
   }
   
   // 渲染 MathJax
   const renderMathJax = async () => {
-    const MathJax = await waitForMathJax()
-    if (MathJax && MathJax.typesetPromise) {
-      try {
-        await MathJax.typesetPromise()
-        console.log('MathJax rendered successfully')
-      } catch (err) {
-        console.error('MathJax rendering error:', err)
-      }
+    try {
+      const MathJax = await waitForMathJax()
+      await MathJax.typesetPromise()
+      console.log('MathJax rendered successfully')
+    } catch (err) {
+      console.error('MathJax rendering error:', err)
     }
   }
   

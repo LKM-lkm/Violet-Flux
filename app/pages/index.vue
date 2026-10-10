@@ -40,8 +40,8 @@
                 class="glass-btn"
                 :scale="-160"
                 :chroma="4"
-                :border="0.02"
-                :mapBlur="6"
+                :border="0.01"
+                :mapBlur="4"
                 :blur="1"
                 :saturate="1.5"
               >
