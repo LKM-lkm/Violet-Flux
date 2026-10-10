@@ -1,5 +1,5 @@
 <template>
-  <div class="prose-pre-wrapper">
+  <div v-spotlight class="prose-pre-wrapper">
     <div class="prose-pre-header">
       <div class="language-info">
         <span class="language-text">{{ displayLanguage }}</span>

@@ -110,6 +110,15 @@ export default defineNuxtConfig({
     },
     search: { enabled: false },
     build: {
+      // Nuxt Content 默认用 slugify 生成 item.path，而 slugify 会把中文/emoji 段
+      // 整段删掉（"笔记" -> ""），于是路径变成 /blog//mine//ipdb 这种残缺值，
+      // 中文目录下的文章既拿不到正确 URL，还会互相撞 path。
+      // 显式传 remove 后 slugify 只清理标点，中文、日文、emoji 都保留。
+      pathMeta: {
+        slugifyOptions: {
+          remove: /[*+~.()'"!:@/]/g
+        }
+      },
       markdown: {
         contentHeading: false,
         remarkPlugins: {

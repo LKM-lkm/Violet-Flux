@@ -13,7 +13,7 @@
 
     <div class="profile-grid">
       <!-- Author Side (Assume 'Likem' is the persona) -->
-      <LiquidGlass as="aside" class="author-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+      <LiquidGlass v-spotlight as="aside" class="author-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
         <div class="avatar-wrapper">
            <img src="https://avatars.githubusercontent.com/u/183704833?v=4" alt="Likem" class="avatar-img" />
         </div>
@@ -33,7 +33,7 @@
 
       <!-- Content Side (The Story) -->
       <div class="main-story">
-        <LiquidGlass class="story-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+        <LiquidGlass v-spotlight class="story-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
           <h3>The Vision</h3>
           <p>
             Violet Flux was born from a desire to create a sanctuary for thought. In a world of fast content, 
@@ -43,7 +43,7 @@
           </p>
         </LiquidGlass>
 
-        <LiquidGlass class="tech-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+        <LiquidGlass v-spotlight class="tech-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
           <h3>The Tech Stack</h3>
           <div class="tech-grid">
             <div class="tech-item">

@@ -132,19 +132,16 @@ console.log('Hello, World!')
 
 ## 文档
 
-完整的项目文档已整理到 [content/blog/项目文档](./content/blog/项目文档/) 目录：
+项目文档统一放在 [`content/blog/docs/`](./content/blog/docs/)，合并为 5 篇：
 
-- [项目文档索引](./content/blog/项目文档/README.md) - 文档导航
-- [项目指南](./content/blog/项目文档/PROJECT_GUIDE.md) - 完整项目指南
-- [组件使用指南](./content/blog/项目文档/COMPONENT_USAGE_GUIDE.md) - 组件使用说明
-- [MathJax 解决方案](./content/blog/项目文档/MATHJAX_SOLUTION.md) - 数学公式配置
-- [Callout 指南](./content/blog/项目文档/NUXT_UI_CALLOUT_GUIDE.md) - Callout 组件使用
+- [文档索引](./content/blog/docs/index.md) - 导航
+- [项目指南](./content/blog/docs/project-guide.md) - 目录结构、设计系统、开发命令、部署
+- [内容写作](./content/blog/docs/content-authoring.md) - frontmatter、路径规则、代码块、图片
+- [MathJax 数学公式](./content/blog/docs/mathjax.md) - 公式渲染配置与排错
+- [提示框 Callout](./content/blog/docs/callout.md) - 提示框用法与速查
+- [液态玻璃 Liquid Glass](./content/blog/docs/liquid-glass.md) - 折射效果原理、用法与限制
 
-根目录技术文档：
-
-- [LIQUID_GLASS_SETUP.md](./LIQUID_GLASS_SETUP.md) - 🔮 液态玻璃效果设置指南（含合成层限制说明）
-- [LIQUID_GLASS_FIX_JOURNEY.md](./LIQUID_GLASS_FIX_JOURNEY.md) - 📝 液态玻璃修复过程博客
-- [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md) - 📋 项目工作进程
+部署与 AI 摘要相关的说明也在文档站内可查；AI 摘要后端见 `content/blog/笔记/Mine/☁CloudFlare/`。
 
 ## 🚀 部署
 

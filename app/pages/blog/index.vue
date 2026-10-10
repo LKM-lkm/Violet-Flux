@@ -67,7 +67,7 @@
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
-            <LiquidGlass v-for="article in filteredArticles" :key="article.path" as="article" class="blog-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-for="article in filteredArticles" :key="article.path" v-spotlight as="article" class="blog-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <NuxtLink :to="article.path" class="card-link">
                 <div class="card-inner">
                   <div class="card-meta">

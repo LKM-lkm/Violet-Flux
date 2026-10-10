@@ -250,6 +250,48 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+/* === 鼠标跟随高光（配合 v-spotlight 指令） ===
+   指令只负责把指针坐标写进 --spot-x / --spot-y，光斑长什么样由这里决定。 */
+.vf-spotlight {
+  position: relative;
+}
+
+.vf-spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+  background: radial-gradient(
+    420px circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    rgba(180, 151, 215, 0.16),
+    rgba(180, 151, 215, 0.05) 42%,
+    transparent 68%
+  );
+}
+
+.vf-spotlight:hover::after {
+  opacity: 1;
+}
+
+:root.dark .vf-spotlight::after {
+  background: radial-gradient(
+    420px circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    rgba(194, 169, 228, 0.2),
+    rgba(194, 169, 228, 0.06) 42%,
+    transparent 68%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-spotlight::after {
+    transition: none;
+  }
+}
+
 /* === 响应式工具类 === */
 @media (max-width: 1024px) {
   :root {

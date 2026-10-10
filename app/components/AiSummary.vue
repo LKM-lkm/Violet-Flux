@@ -1,6 +1,6 @@
 <template>
   <div v-if="content" class="ai-summary-wrapper">
-    <LiquidGlass class="ai-summary" :scale="-120" :chroma="5" :border="0.03" :mapBlur="10" :blur="2" :saturate="1.5">
+    <LiquidGlass v-spotlight class="ai-summary" :scale="-120" :chroma="5" :border="0.03" :mapBlur="10" :blur="2" :saturate="1.5">
       <div class="card-glow"></div>
       <div class="card-border"></div>
       <div class="summary-content">
@@ -422,6 +422,45 @@ onUnmounted(() => {
 
 :root.dark .text-content {
   color: #d8d0e0;
+}
+
+/* 文字光效：一道淡紫高光沿着摘要正文缓慢扫过。
+   用 @supports 兜底，否则不支持 background-clip:text 的浏览器会把文字整段变透明。 */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .text-content {
+    background-image: linear-gradient(
+      100deg,
+      currentColor 0%,
+      currentColor 38%,
+      var(--primary) 47%,
+      #f2e8ff 50%,
+      var(--primary) 53%,
+      currentColor 62%,
+      currentColor 100%
+    );
+    background-size: 260% 100%;
+    background-position: 130% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: summary-sheen 6.5s var(--ease-in-out) 1.2s infinite;
+  }
+}
+
+@keyframes summary-sheen {
+  0% {
+    background-position: 130% 0;
+  }
+  60%,
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-content {
+    animation: none;
+  }
 }
 
 .placeholder-text {

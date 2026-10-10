@@ -7,6 +7,7 @@
     <div class="articles-grid">
       <NuxtLink
         v-for="article in relatedArticles"
+        v-spotlight
         :key="article.id"
         :to="article.path"
         class="article-card"

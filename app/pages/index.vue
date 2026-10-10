@@ -45,7 +45,7 @@
           <!-- Feature Cards / Bento Grid -->
           <div class="features-grid animate-fade-in-up" style="animation-delay: 0.5s">
             <!-- Card 1 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -58,7 +58,7 @@
             </LiquidGlass>
 
             <!-- Card 2 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -71,7 +71,7 @@
             </LiquidGlass>
 
             <!-- Card 3 -->
-            <LiquidGlass class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
