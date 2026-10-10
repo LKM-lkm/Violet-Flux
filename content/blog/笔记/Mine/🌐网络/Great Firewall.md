@@ -1,7 +1,6 @@
 ---
 tags:
   - 科学上网
-  - 节点
 ---
 
 ## 免费软件推荐
@@ -27,7 +26,7 @@ tags:
   - 签到随机赠送流量
   - [邀请链接](https://ikuuu.de/auth/register?code=TAmS)
 
-## Cloudflare自建节点
+## Cloudflare自建节点（目前疑似失效）
 
 1. **edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
    ### ✨ 核心特性

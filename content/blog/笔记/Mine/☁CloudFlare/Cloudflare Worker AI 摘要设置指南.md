@@ -15,6 +15,8 @@ tags:
 
 将以下代码复制并粘贴到您的Worker的`index.js`（或`index.ts`）中：
 
+> 仓库中的 `scripts/worker-code.js` 才是当前实际部署使用的版本（`@cf/meta/llama-3.1-8b-instruct` + CORS 白名单），建议优先粘贴那一份。下面这段是最小示例，CORS 为全开且模型不同，仅供理解结构。
+
 ```javascript
 export default {
   async fetch(request, env) {
@@ -79,11 +81,17 @@ export default {
 
 ## 4. 最后步骤: Update Frontend
 
-Once your Worker is deployed, copy its URL and update the `WORKER_URL` constant in:
-`app/components/AiSummary.vue` (around line 43).
+Once your Worker is deployed, copy its URL and update the two constants below（两处都要改，只改一处会导致代理和直连回退指向不同的 Worker）：
+
+| 文件 | 常量 | 作用 |
+| --- | --- | --- |
+| `server/api/ai-summary.post.ts` | `WORKER_URL` | 服务端代理转发目标（线上实际走的路径） |
+| `app/components/AiSummary.vue` | `DIRECT_URL` | 代理不可用时的浏览器直连回退 |
 
 ```javascript
 const WORKER_URL = 'https://your-worker.your-subdomain.workers.dev'
+// 以及 app/components/AiSummary.vue 中的：
+const DIRECT_URL = 'https://your-worker.your-subdomain.workers.dev'
 ```
 
 ---

@@ -29,10 +29,16 @@
           <p v-else-if="status === 'thinking'" class="placeholder-text">
             <span class="placeholder-glow">Synthesizing the digital essence...</span>
           </p>
-          <p v-else-if="status === 'error'" class="error-text">
-            <Icon name="lucide:alert-triangle" class="error-icon" />
-            The flux was interrupted. Could not generate summary.
-          </p>
+          <div v-else-if="status === 'error'" class="error-state">
+            <p class="error-text">
+              <Icon name="lucide:alert-triangle" class="error-icon" />
+              The flux was interrupted. Could not generate summary.
+            </p>
+            <button type="button" class="retry-button" @click="retrySummary">
+              <Icon name="lucide:refresh-cw" class="retry-icon" />
+              重试
+            </button>
+          </div>
         </div>
       </div>
     </LiquidGlass>
@@ -40,9 +46,12 @@
 </template>
 
 <script setup>
+import { extractPlainText } from '~/utils/minimark-text'
+
 const props = defineProps({
+  // article.body：Nuxt Content v3 的 Minimark 树；同时兼容 JSON 字符串和纯文本
   content: {
-    type: String,
+    type: [Object, String],
     required: true
   },
   articleId: {
@@ -50,6 +59,54 @@ const props = defineProps({
     required: true
   }
 })
+
+// 缓存版本号：提取逻辑、提示词或缓存格式变化时必须递增，
+// 否则浏览器会继续读旧的摘要（包括之前生成失败时存下的错误内容）
+const CACHE_VERSION = 'v3'
+// 摘要缓存有效期：超过后重新生成，避免文章改了还一直显示旧摘要
+const CACHE_TTL = 30 * 24 * 60 * 60 * 1000 // 30 天
+
+const dropCachedSummary = (key) => {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // localStorage 不可用时忽略
+  }
+}
+
+const readCachedSummary = (key) => {
+  let raw = null
+  try {
+    raw = localStorage.getItem(key)
+  } catch {
+    return null // 隐私模式等场景下 localStorage 不可用
+  }
+  if (!raw) return null
+
+  try {
+    const entry = JSON.parse(raw)
+    if (!entry?.text) return null
+    if (!entry.at || Date.now() - entry.at > CACHE_TTL) {
+      dropCachedSummary(key)
+      return null
+    }
+    return entry.text
+  } catch {
+    // 格式损坏，丢弃重来
+    dropCachedSummary(key)
+    return null
+  }
+}
+
+const writeCachedSummary = (key, text) => {
+  try {
+    localStorage.setItem(key, JSON.stringify({ text, at: Date.now() }))
+  } catch (err) {
+    console.warn('Failed to cache AI summary:', err)
+  }
+}
+
+let typingTimer = null
 
 const status = ref('idle') // idle, thinking, typing, done, error
 const displayedText = ref('')
@@ -61,6 +118,32 @@ const isTyping = ref(false)
 const PROXY_URL = '/api/ai-summary'
 const DIRECT_URL = 'https://vfs.likem.cc.cd'
 
+// article.body 是 Minimark 树（不是 MDC/HAST 树），必须用专门的遍历提取正文，
+// 否则拿到的会是 `{"type":"minimark","value":[["h1",{},...` 这样的原始 JSON。
+// 实现见 app/utils/minimark-text.js
+const extractArticleText = () => {
+  const source = props.content
+
+  // 兼容直接传入 JSON 字符串的场景
+  if (typeof source === 'string') {
+    try {
+      const parsed = JSON.parse(source)
+      return extractFromTree(parsed) || source.substring(0, 3000)
+    } catch {
+      // 不是 JSON，说明本身就是纯文本
+      return source.substring(0, 3000)
+    }
+  }
+
+  return extractFromTree(source)
+}
+
+const extractFromTree = (tree) => {
+  if (!tree || typeof tree !== 'object') return ''
+  // 默认跳过块级代码（pre）；若整篇只剩代码，再退回不跳过，避免出现空摘要
+  return extractPlainText(tree) || extractPlainText(tree, { skipTags: [] })
+}
+
 const generateSummary = async () => {
   if (status.value !== 'idle') return
   
@@ -68,8 +151,8 @@ const generateSummary = async () => {
   
   try {
     // Check localStorage first for cache
-    const cacheKey = `summary_${props.articleId}`
-    const cached = localStorage.getItem(cacheKey)
+    const cacheKey = `summary_${CACHE_VERSION}_${props.articleId}`
+    const cached = readCachedSummary(cacheKey)
     
     if (cached) {
       fullText.value = cached
@@ -77,19 +160,9 @@ const generateSummary = async () => {
       return
     }
 
-    // Extract raw text from Nuxt Content AST to send cleaner data to AI
-    let rawText = ''
-    try {
-      const body = JSON.parse(props.content)
-      const extractText = (node) => {
-        if (node.type === 'text') return node.value
-        if (node.children) return node.children.map(extractText).join(' ')
-        return ''
-      }
-      rawText = body.children.map(extractText).join('\n').substring(0, 3000)
-    } catch (e) {
-      rawText = props.content.substring(0, 3000)
-    }
+    // 提取正文纯文本再送给 AI
+    const rawText = extractArticleText()
+    if (!rawText) throw new Error('Article content is empty after text extraction')
 
     // Call Cloudflare Worker (优先走代理，失败后直连)
     console.log('Requesting AI summary for:', props.articleId)
@@ -131,7 +204,7 @@ const generateSummary = async () => {
     fullText.value = data.summary
     
     // Save to cache
-    localStorage.setItem(cacheKey, fullText.value)
+    writeCachedSummary(cacheKey, fullText.value)
     
     startTyping()
   } catch (err) {
@@ -141,24 +214,42 @@ const generateSummary = async () => {
 }
 
 const startTyping = () => {
+  if (typingTimer) clearInterval(typingTimer)
+
   status.value = 'typing'
   isTyping.value = true
+  displayedText.value = ''
   let i = 0
-  const interval = setInterval(() => {
+
+  typingTimer = setInterval(() => {
     if (i < fullText.value.length) {
       displayedText.value += fullText.value[i]
       i++
     } else {
-      clearInterval(interval)
+      clearInterval(typingTimer)
+      typingTimer = null
       isTyping.value = false
       status.value = 'done'
     }
   }, 30) // Speed of typing
 }
 
+// 生成失败后允许手动重试，不用刷新页面或清 localStorage
+const retrySummary = () => {
+  if (status.value !== 'error') return
+  status.value = 'idle'
+  generateSummary()
+}
+
 onMounted(() => {
   // Delay a bit to ensure smooth entry
   setTimeout(generateSummary, 1000)
+})
+
+onUnmounted(() => {
+  // 组件卸载后停止打字机定时器，避免定时器继续修改已卸载组件的状态
+  if (typingTimer) clearInterval(typingTimer)
+  typingTimer = null
 })
 </script>
 
@@ -349,6 +440,14 @@ onMounted(() => {
   50% { opacity: 1; }
 }
 
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .error-text {
   display: flex;
   align-items: center;
@@ -361,6 +460,37 @@ onMounted(() => {
 .error-icon {
   font-size: 1rem;
   flex-shrink: 0;
+}
+
+.retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  border: 1px solid rgba(180, 151, 215, 0.35);
+  background: linear-gradient(135deg,
+    rgba(180, 151, 215, 0.15),
+    rgba(180, 151, 215, 0.05));
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.retry-button:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 16px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.retry-button:active {
+  transform: translateY(0);
+}
+
+.retry-icon {
+  font-size: 0.85rem;
 }
 
 .type-cursor {

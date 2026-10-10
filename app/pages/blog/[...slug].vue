@@ -60,7 +60,7 @@
             <!-- AI 摘要 -->
             <AiSummary 
               v-if="article" 
-              :content="JSON.stringify(article.body)" 
+              :content="article.body" 
               :article-id="article.id" 
             />
           </header>
