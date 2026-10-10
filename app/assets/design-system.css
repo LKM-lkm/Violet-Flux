@@ -27,6 +27,9 @@
   --primary-hover: #c2a9e4;
   --primary-glow: rgba(180, 151, 215, 0.3);
   --primary-light: rgba(180, 151, 215, 0.1);
+  /* 正文里的链接与行内代码：--primary 在浅底上只有约 2.4:1 对比度，远低于 AA 的 4.5:1 */
+  --link: #7743a3;
+  --link-hover: #5d3480;
   --secondary: #a682cf;
   --accent: #c2a9e4;
   --glass-bg: rgba(250, 248, 252, 0.7);
@@ -47,9 +50,11 @@
   --border-strong: rgba(180, 151, 215, 0.35);
   
   /* === 代码块专用 === */
-  --code-bg: #f3eef8;
+  /* 接近中性的底色：vitesse-light 的 token 是按白底设计的，
+     原来偏紫的 #f3eef8 会让注释等浅色 token 更难读，也显得花 */
+  --code-bg: #fcfbfe;
   --code-text: #2d1b3d;
-  --code-header-bg: rgba(235, 228, 242, 0.72);
+  --code-header-bg: rgba(240, 235, 248, 0.8);
   --code-line-highlight: rgba(180, 151, 215, 0.16);
   
   /* === 圆角系统 === */
@@ -113,6 +118,8 @@
   --primary-hover: #b8a4d0;
   --primary-glow: rgba(168, 144, 192, 0.3);
   --primary-light: rgba(168, 144, 192, 0.1);
+  --link: #c2a9e4;
+  --link-hover: #d8c9ef;
   --secondary: #9a84b8;
   --accent: #b8a4d0;
   --glass-bg: rgba(22, 16, 24, 0.85);

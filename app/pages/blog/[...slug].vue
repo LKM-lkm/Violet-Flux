@@ -616,7 +616,8 @@ onUnmounted(() => {
     transparent 100%
   );
   border-radius: var(--radius-sm);
-  box-shadow: 0 0 16px rgba(180, 151, 215, 0.6);
+  /* 原来 16px 的光晕太重，标题下方像在发光；收小到几乎只是描边 */
+  box-shadow: 0 0 6px rgba(180, 151, 215, 0.3);
 }
 
 .article-meta {
@@ -695,7 +696,7 @@ onUnmounted(() => {
 }
 
 .article-body :deep(a) {
-  color: var(--primary);
+  color: var(--link);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: all var(--duration-fast);
@@ -711,27 +712,20 @@ onUnmounted(() => {
 }
 
 .article-body :deep(a:hover) {
-  border-bottom-color: var(--primary);
+  border-bottom-color: var(--link);
   background-size: 100% 100%;
-  color: var(--primary-hover);
-  text-shadow: 0 0 8px var(--primary-glow);
+  color: var(--link-hover);
 }
 
 .article-body :deep(blockquote) {
-  border-left: 4px solid var(--primary);
-  background: linear-gradient(135deg,
-    rgba(250, 248, 252, 0.9) 0%,
-    rgba(243, 238, 248, 0.7) 40%,
-    rgba(235, 228, 242, 0.6) 70%,
-    rgba(235, 228, 242, 0.5) 100%
-  );
+  border-left: 3px solid var(--primary);
+  /* 原来叠了 4 段渐变 + 双层投影 + 整段斜体；改成平底 + 左竖线，
+     斜体在中文长引用里可读性差，投影也和其它卡片的层次重复 */
+  background: var(--bg-secondary);
   padding: var(--space-lg) var(--space-xl);
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-  font-style: italic;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   margin: var(--space-xl) 0;
   color: var(--text-secondary);
-  box-shadow: var(--shadow-md),
-              inset 4px 0 0 var(--primary);
   position: relative;
   overflow: hidden;
 }
@@ -743,25 +737,9 @@ onUnmounted(() => {
   left: 20px;
   font-size: 80px;
   color: var(--primary);
-  opacity: 0.1;
+  opacity: 0.08;
   font-family: Georgia, serif;
   line-height: 1;
-}
-
-.article-body :deep(blockquote)::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(
-    circle at bottom right,
-    rgba(180, 151, 215, 0.15),
-    transparent 70%
-  );
-  opacity: 0.6;
-  pointer-events: none;
 }
 
 .article-body :deep(code:not(pre code)) {
@@ -769,7 +747,7 @@ onUnmounted(() => {
   padding: 0.2em 0.4em;
   border-radius: var(--radius-sm);
   font-size: 0.9em;
-  color: var(--primary);
+  color: var(--link);
   font-weight: 500;
   font-family: var(--font-mono);
   border: 1px solid var(--border-light);

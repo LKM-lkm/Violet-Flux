@@ -437,19 +437,46 @@ onUnmounted(() => {
 
 /* 打字光效：每个字出现时亮一下再回落，光标同步呼吸。
    每个字都是独立 span，动画只在节点创建时跑一次，
-   所以只有刚敲出来的字在发光，已经打完的字是静止的。 */
+   所以只有刚敲出来的字在发光，已经打完的字是静止的。
+
+   关键在时长：30ms 一个字，动画太长（比如 600ms）会让约 20 个字
+   同时停在紫色中间态，整体糊成一片紫雾；300ms 只有末尾三五个字在亮，
+   才是"新字在发光"的样子。光晕半径也要小，大了同样会糊。 */
 .typed-char {
-  animation: char-bloom 620ms var(--ease-out) both;
+  animation: char-bloom 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes char-bloom {
   0% {
+    color: #7a4ba3;
+    text-shadow: 0 0 6px rgba(180, 151, 215, 0.85);
+  }
+  40% {
     color: var(--primary);
-    text-shadow: 0 0 10px var(--primary), 0 0 22px var(--primary-glow);
+    text-shadow: 0 0 3px rgba(180, 151, 215, 0.4);
   }
   100% {
     color: inherit;
-    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0 rgba(180, 151, 215, 0);
+  }
+}
+
+:root.dark .typed-char {
+  animation-name: char-bloom-dark;
+}
+
+@keyframes char-bloom-dark {
+  0% {
+    color: #f4ecff;
+    text-shadow: 0 0 8px rgba(194, 169, 228, 0.95);
+  }
+  40% {
+    color: var(--primary);
+    text-shadow: 0 0 4px rgba(194, 169, 228, 0.45);
+  }
+  100% {
+    color: inherit;
+    text-shadow: 0 0 0 rgba(194, 169, 228, 0);
   }
 }
 
@@ -536,18 +563,18 @@ onUnmounted(() => {
   background: var(--primary);
   margin-left: 4px;
   vertical-align: middle;
-  box-shadow: 0 0 8px var(--primary), 0 0 18px var(--primary-glow);
+  box-shadow: 0 0 6px var(--primary), 0 0 12px var(--primary-glow);
   animation: cursor-breathe 0.9s ease-in-out infinite;
 }
 
 @keyframes cursor-breathe {
   0%, 100% {
     opacity: 1;
-    box-shadow: 0 0 8px var(--primary), 0 0 18px var(--primary-glow);
+    box-shadow: 0 0 6px var(--primary), 0 0 12px var(--primary-glow);
   }
   50% {
-    opacity: 0.35;
-    box-shadow: 0 0 4px var(--primary-glow);
+    opacity: 0.4;
+    box-shadow: 0 0 3px var(--primary-glow);
   }
 }
 

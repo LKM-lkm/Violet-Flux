@@ -113,8 +113,14 @@ const router = useRouter()
 
 const search = ref('')
 const selectedPath = ref('')
-// 详情页点标签会带 ?tag=xxx 跳过来，所以从 query 初始化
-const selectedTags = ref([route.query.tag].flat().filter(Boolean).map(String))
+const selectedTags = ref([])
+
+// /blog 是预渲染的，静态 HTML 里不可能带 query，所以标签只在客户端从 ?tag= 读。
+// 放在 onMounted 里还能避免服务端与客户端首帧不一致导致的水合报错。
+onMounted(() => {
+  const tags = [route.query.tag].flat().filter(Boolean).map(String)
+  if (tags.length) selectedTags.value = tags
+})
 
 // 标签筛选变化时同步到地址栏，筛选结果才能被分享/收藏
 watch(selectedTags, (tags) => {
