@@ -14,10 +14,20 @@
         <NuxtLink to="/" class="logo-link">
           <h1 class="logo">Violet Flux</h1>
         </NuxtLink>
-        <nav class="nav">
-          <NuxtLink to="/" class="nav-link">Home</NuxtLink>
-          <NuxtLink to="/blog" class="nav-link">Blog</NuxtLink>
-          <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+        <button
+          class="mobile-menu-btn"
+          type="button"
+          aria-controls="site-navigation"
+          :aria-expanded="mobileNavOpen"
+          :aria-label="mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'"
+          @click="mobileNavOpen = !mobileNavOpen"
+        >
+          <Icon :name="mobileNavOpen ? 'lucide:x' : 'lucide:menu'" />
+        </button>
+        <nav id="site-navigation" class="nav" :class="{ 'is-open': mobileNavOpen }">
+          <NuxtLink to="/" class="nav-link" @click="mobileNavOpen = false">Home</NuxtLink>
+          <NuxtLink to="/blog" class="nav-link" @click="mobileNavOpen = false">Blog</NuxtLink>
+          <NuxtLink to="/about" class="nav-link" @click="mobileNavOpen = false">About</NuxtLink>
           <div class="nav-divider"></div>
           <button @click="toggleDark()" class="theme-toggle">
             <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
@@ -52,7 +62,13 @@
 
 <script setup>
 import { isDark, toggleDark } from '~/composables/useTheme'
+const mobileNavOpen = ref(false)
+const route = useRoute()
 const currentYear = new Date().getFullYear();
+
+watch(() => route.path, () => {
+  mobileNavOpen.value = false
+})
 </script>
 
 <style scoped>
@@ -211,6 +227,7 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .logo-link {
@@ -225,6 +242,19 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
 
 .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; margin: 0; }
 .nav { display: flex; gap: 0.5rem; align-items: center; }
+
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+}
 
 .nav-link {
   position: relative;
@@ -330,10 +360,68 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
 }
 
 @media (max-width: 768px) {
+  .header {
+    height: 64px;
+  }
+
+  .header-container {
+    padding-inline: 1rem;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 1rem;
+    z-index: 1000;
+    min-width: 200px;
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    box-shadow: var(--shadow-xl);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+  }
+
+  .nav.is-open {
+    display: flex;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-link.router-link-active::after {
+    display: none;
+  }
+
+  .nav-divider {
+    width: 100%;
+    height: 1px;
+    margin: 0.35rem 0;
+  }
+
+  .theme-toggle {
+    width: 100%;
+    height: 42px;
+  }
+
   .footer-container {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
+  }
+
+  .footer {
+    padding: 2rem 0;
   }
 }
 </style>

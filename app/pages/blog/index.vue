@@ -3,46 +3,58 @@
 
     <div class="container blog-container">
       <!-- Sidebar for Tree Navigation and Tags -->
-      <LiquidGlass as="aside" class="sidebar" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
-        <div class="filter-section">
-          <h3 class="section-title">Knowledge</h3>
-          <nav class="tree-nav">
-            <button 
-              :class="{ active: !selectedPath }" 
-              @click="selectedPath = ''"
-              class="tree-root-btn"
-            >
-              <Icon name="lucide:layers" class="icon-m" />
-              All Content
-            </button>
-            
-            <div class="folder-tree">
-              <TreeItem 
-                v-for="item in folderTree" 
-                :key="item.path" 
-                :item="item" 
-                :selected-path="selectedPath"
-                @select="selectedPath = $event"
-              />
-            </div>
-          </nav>
-        </div>
+      <div class="library-filters" :class="{ 'is-open': mobileFiltersOpen }">
+        <button
+          class="mobile-filter-toggle"
+          type="button"
+          aria-controls="library-filter-panel"
+          :aria-expanded="mobileFiltersOpen"
+          @click="mobileFiltersOpen = !mobileFiltersOpen"
+        >
+          <span>Browse library filters</span>
+          <Icon :name="mobileFiltersOpen ? 'lucide:x' : 'lucide:sliders-horizontal'" />
+        </button>
+        <LiquidGlass id="library-filter-panel" as="aside" class="sidebar" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+          <div class="filter-section">
+            <h3 class="section-title">Knowledge</h3>
+            <nav class="tree-nav">
+              <button
+                :class="{ active: !selectedPath }"
+                @click="selectedPath = ''"
+                class="tree-root-btn"
+              >
+                <Icon name="lucide:layers" class="icon-m" />
+                All Content
+              </button>
 
-        <div class="filter-section mt-10">
-          <h3 class="section-title">Topics</h3>
-          <div class="tag-cloud">
-            <button 
-              v-for="tag in allTags" 
-              :key="tag"
-              :class="{ active: selectedTags.includes(tag) }"
-              @click="toggleTag(tag)"
-              class="tag-btn"
-            >
-              #{{ tag }}
-            </button>
+              <div class="folder-tree">
+                <TreeItem
+                  v-for="item in folderTree"
+                  :key="item.path"
+                  :item="item"
+                  :selected-path="selectedPath"
+                  @select="selectedPath = $event"
+                />
+              </div>
+            </nav>
           </div>
-        </div>
-      </LiquidGlass>
+
+          <div class="filter-section mt-10">
+            <h3 class="section-title">Topics</h3>
+            <div class="tag-cloud">
+              <button
+                v-for="tag in allTags"
+                :key="tag"
+                :class="{ active: selectedTags.includes(tag) }"
+                @click="toggleTag(tag)"
+                class="tag-btn"
+              >
+                #{{ tag }}
+              </button>
+            </div>
+          </div>
+        </LiquidGlass>
+      </div>
 
       <main class="content">
         <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="4" :blur="2" :saturate="1.5">
@@ -114,6 +126,7 @@ const router = useRouter()
 const search = ref('')
 const selectedPath = ref('')
 const selectedTags = ref([])
+const mobileFiltersOpen = ref(false)
 
 // /blog 是预渲染的，静态 HTML 里不可能带 query，所以标签只在客户端从 ?tag= 读。
 // 放在 onMounted 里还能避免服务端与客户端首帧不一致导致的水合报错。
@@ -351,6 +364,14 @@ const filteredArticles = computed(() => {
   -ms-overflow-style: none; /* IE/Edge */
 }
 
+.library-filters {
+  display: contents;
+}
+
+.mobile-filter-toggle {
+  display: none;
+}
+
 .sidebar::-webkit-scrollbar { 
   display: none; 
 }
@@ -508,7 +529,7 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
 /* CARDS ANIMATION & GRID */
 .article-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
   gap: 2.5rem;
   position: relative;
 }
@@ -763,15 +784,101 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
 }
 
 @media (max-width: 1200px) {
-  .blog-container { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .path-display { font-size: 2rem; }
+  .blog-container {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 3rem 1.5rem;
+  }
+
+  .library-filters {
+    display: block;
+  }
+
+  .mobile-filter-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-weight: 650;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .mobile-filter-toggle :deep(svg) {
+    color: var(--primary);
+  }
+
+  .library-filters .sidebar {
+    display: none;
+    position: static;
+    max-height: min(65vh, 34rem);
+    margin-top: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .library-filters.is-open .sidebar {
+    display: block;
+  }
+
+  .path-display {
+    font-size: clamp(1.35rem, 5vw, 2rem);
+    min-width: 0;
+  }
 }
 
 @media (max-width: 768px) {
-  .content-header { flex-direction: column; align-items: stretch; gap: 1.5rem; }
-  .search-box-wrapper { width: 100%; justify-content: stretch; }
-  .search-box { width: 100%; }
-  .article-grid { grid-template-columns: 1fr; }
+  .blog-container {
+    padding: 2rem 1rem;
+  }
+
+  .content-header {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin: 0 0 1.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .path-display {
+    gap: 0.35rem;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .search-box-wrapper,
+  .search-box {
+    width: 100%;
+  }
+
+  .search-input {
+    padding-block: 0.85rem;
+  }
+
+  .article-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .card-inner {
+    padding: 1.25rem;
+  }
+
+  .card-title {
+    font-size: 1.35rem;
+    overflow-wrap: anywhere;
+  }
+
+  .card-desc {
+    margin-bottom: 1.5rem;
+  }
 }
 </style>

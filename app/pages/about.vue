@@ -136,7 +136,7 @@ definePageMeta({ layout: 'default' })
 /* PROFILE GRID - FIXING LAYOUT */
 .profile-grid {
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 350px minmax(0, 1fr);
   gap: 3rem;
   align-items: start;
 }
@@ -144,6 +144,7 @@ definePageMeta({ layout: 'default' })
 .author-card,
 .story-card,
 .tech-card {
+  min-width: 0;
   border-radius: 1.2rem;
   padding: 2.5rem;
   overflow: hidden;
@@ -286,8 +287,46 @@ definePageMeta({ layout: 'default' })
 .tech-icon { color: var(--primary); width: 1.25rem; height: 1.25rem; }
 
 @media (max-width: 1024px) {
-  .profile-grid { grid-template-columns: 1fr; }
+  .profile-grid { grid-template-columns: minmax(0, 1fr); }
   .author-card { position: relative; top: 0; }
   .hero-simple .title { font-size: 2.75rem; }
+}
+
+@media (max-width: 640px) {
+  .page-content {
+    padding: 2rem 0;
+  }
+
+  .hero-simple {
+    margin-bottom: 2rem;
+  }
+
+  .hero-simple .title {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    overflow-wrap: anywhere;
+  }
+
+  .hero-simple .subtitle {
+    font-size: 1rem;
+  }
+
+  .profile-grid {
+    gap: 1.25rem;
+  }
+
+  .author-card,
+  .story-card,
+  .tech-card {
+    padding: 1.25rem;
+  }
+
+  .story-card p {
+    font-size: 1rem;
+  }
+
+  .tech-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
 }
 </style>
