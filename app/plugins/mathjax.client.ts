@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   // 等待 MathJax 加载
   const waitForMathJax = () => {
     return new Promise((resolve, reject) => {
@@ -28,17 +28,15 @@ export default defineNuxtPlugin(() => {
     }
   }
   
-  // 页面加载后渲染
-  if (process.client) {
-    // 立即尝试渲染
-    renderMathJax()
-    
-    // 路由变化时重新渲染
-    const router = useRouter()
-    router.afterEach(() => {
-      setTimeout(renderMathJax, 500)
-    })
-  }
+  // 等 Vue 完成首次挂载后再改写 DOM，避免干扰 SSR hydration。
+  nuxtApp.hook('app:mounted', () => {
+    void renderMathJax()
+  })
+
+  const router = useRouter()
+  router.afterEach(() => {
+    setTimeout(renderMathJax, 500)
+  })
   
   return {
     provide: {

@@ -56,6 +56,8 @@ const nextArticle = computed(() => surround.value?.[1] || null)
 // 从路径中提取文件名
 const getFileName = (item) => {
   if (!item) return ''
+  if (item.title) return item.title
+
   const path = item.stem || item.path || ''
   const parts = path.split('/').filter(Boolean)
   let name = parts[parts.length - 1] || ''
@@ -77,10 +79,10 @@ const truncate = (text, length) => {
 <style scoped>
 .article-navigation {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin: 3rem 0;
-  padding: 2rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem 0;
   border-top: 1px solid var(--border-light);
 }
 
@@ -88,7 +90,7 @@ const truncate = (text, length) => {
   display: block;
   text-decoration: none;
   color: inherit;
-  padding: 2rem;
+  padding: 1.25rem;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-light);
   background: var(--glass-bg);
@@ -196,7 +198,7 @@ const truncate = (text, length) => {
   }
   
   .nav-card {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
 }
 </style>

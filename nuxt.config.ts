@@ -93,7 +93,7 @@ export default defineNuxtConfig({
 
   hooks: {
     'content:file:beforeParse': ({ file }) => {
-      if (file.extension === '.md') {
+      if (file.extension === 'md' || file.extension === '.md') {
         const expressions = new Map<string, string>()
         file.body = protectMathExpressions(file.body, expressions)
         if (expressions.size > 0) mathExpressionsByFile.set(file.id, expressions)
@@ -152,7 +152,9 @@ export default defineNuxtConfig({
                 packages: ['base', 'ams', 'newcommand', 'configmacros'],
                 // 使用标准 LaTeX 定界符，避免与 MDC 语法冲突
                 inlineMath: [['\\\\(', '\\\\)']],
-                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+                // Markdown may reduce a block formula's delimiters to single dollars; only
+                // displayMath accepts the single-dollar form to preserve its block layout.
+                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]'], ['$', '$']],
                 // 处理选项
                 processEscapes: true,       // 使用 \\$ 表示字面量美元符号
                 processEnvironments: true,  // 处理 \\begin{xxx}...\\end{xxx}
@@ -183,7 +185,7 @@ export default defineNuxtConfig({
         {
           src: 'https://cdn.jsdelivr.net/npm/mathjax@4.1.1/tex-mml-chtml.js',
           id: 'MathJax-script',
-          async: true
+          defer: true
         }
       ]
     }

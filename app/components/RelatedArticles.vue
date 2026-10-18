@@ -13,7 +13,7 @@
         class="article-card"
       >
         <div class="card-header">
-          <h4 class="card-title">{{ article.stem || article.title }}</h4>
+          <h4 class="card-title">{{ article.title || getFileName(article) }}</h4>
           <div v-if="article.tags?.length" class="card-tags">
             <span 
               v-for="tag in article.tags.slice(0, 2)" 
@@ -81,30 +81,29 @@ const truncate = (text, length) => {
   if (!text) return ''
   return text.length > length ? text.substring(0, length) + '...' : text
 }
+
+const getFileName = (item) => {
+  const path = item.stem || item.path || ''
+  const name = path.split('/').filter(Boolean).pop() || ''
+  try {
+    return decodeURIComponent(name).replace(/\.md$/, '')
+  } catch {
+    return name.replace(/\.md$/, '')
+  }
+}
 </script>
 
 <style scoped>
 .related-articles {
-  margin: var(--space-3xl) 0;
-  padding: var(--space-2xl);
+  margin: 1.5rem 0;
+  padding: 1.25rem;
   border-radius: var(--radius-xl);
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--border-light);
   position: relative;
   overflow: hidden;
-}
-
-.related-articles::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at top right,
-    rgba(112, 26, 69, 0.05) 0%,
-    transparent 50%
-  );
-  pointer-events: none;
 }
 
 .related-title {
@@ -112,10 +111,10 @@ const truncate = (text, length) => {
   align-items: center;
   gap: var(--space-sm);
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--space-xl);
+  margin-bottom: 1rem;
   position: relative;
   z-index: 1;
 }
@@ -128,8 +127,8 @@ const truncate = (text, length) => {
 
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
   position: relative;
   z-index: 1;
 }
@@ -137,10 +136,12 @@ const truncate = (text, length) => {
 .article-card {
   display: flex;
   flex-direction: column;
-  padding: var(--space-lg);
+  padding: 1.25rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
-  background: var(--bg-primary);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   text-decoration: none;
   transition: all var(--duration-normal);
   position: relative;
@@ -153,8 +154,8 @@ const truncate = (text, length) => {
   inset: 0;
   background: linear-gradient(
     135deg,
-    var(--primary-light) 0%,
-    transparent 100%
+    rgba(180, 151, 215, 0.08) 0%,
+    rgba(194, 169, 228, 0.035) 100%
   );
   opacity: 0;
   transition: opacity var(--duration-normal);
@@ -253,7 +254,7 @@ const truncate = (text, length) => {
   }
   
   .related-articles {
-    padding: var(--space-lg);
+    padding: 1rem;
   }
 }
 </style>

@@ -110,9 +110,15 @@ MDC 映射里还注册了 4 个固定配色的简写（`.nuxt/dev/index.mjs` 的
 
 注意：这 4 个简写组件内部把颜色和图标写死了，**不接受** `color` / `icon` / `to` 参数，也没有 `::important` 简写。需要自定义时请用完整的 `::callout{...}`。
 
-## 不要用 GitHub Alert 语法
+## GitHub Alert 转换
 
-`> [!NOTE]`、`> [!WARNING]` 这类写法**不要用**：项目没有对应的 remark 插件，渲染出来只是一个普通引用块，和提示框完全是两回事。提示框一律用上面的 `::callout{...}`（或用 `::tip` / `::note` / `::warning` / `::caution` 简写）。
+`> [!NOTE]`、`> [!WARNING]` 等 GitHub Alert 语法不会自动渲染为提示框。需要批量迁移时运行：
+
+```bash
+npm run convert-alerts
+```
+
+命令会将 Markdown 正文中的 GitHub Alert 转换成对应的 `::callout{...}`，并跳过 frontmatter 和 fenced code block。运行后请用 `git diff` 检查变更。
 
 ## 速查表
 

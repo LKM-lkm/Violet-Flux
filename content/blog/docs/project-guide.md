@@ -132,7 +132,7 @@ Windows 上构建时注意：**含中文或 emoji 的目录名会导致预渲染
 | `AiSummary` | 标题下方 | AI 摘要卡片，传 `:content="article.body"` 与 `:article-id` |
 | `ArticleNavigation` | 正文下方 | 上一篇 / 下一篇卡片，传 `:current-path="article.path"`，内部用 `queryCollectionItemSurroundings` |
 | `RelatedArticles` | 导航下方 | 按标签重叠度推荐，传 `:article` 与 `:max-items`（默认 3） |
-| `CwdComments` | 页面底部 | CWD 评论，用 `article.path` 作为 slug |
+| `CwdComments` | 页面底部 | CWD 评论；过长标题自动映射为稳定短 ID，旧评论仍需在后端迁移旧 slug 后才能显示 |
 | `ProsePre` / `ProseImg` | 内容渲染时 | Nuxt Content 的 Prose 覆盖组件，写法见[内容写作](/blog/docs/content-authoring) |
 
 常见现象：

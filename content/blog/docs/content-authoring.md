@@ -78,7 +78,9 @@ image: /path/to/cover.png
 - **alt 写纯数字时会被当成宽度**（像素），例如 `![50](assets/x.png)` 显示成 50px 宽
 - alt 不是文件名时，会在图片下方渲染成说明文字
 - 点击图片会打开液态玻璃样式的放大查看
-- 自动懒加载
+- 自动懒加载、异步解码；加载失败时提供重试与原图链接
+
+当前不自动把原图转为 WebP/AVIF：文章资产仍保留原格式，避免透明图或需要无损保留的素材被有损转换，也不额外复制多套图片。若后续测得图片带宽确实是瓶颈，再用保留原图的派生格式和 `srcset` 做按需优化。
 
 ::callout{icon="i-lucide-info" color="info"}
 如果图片不显示，先确认没有用 Obsidian 的 `![[assets/x.png]]` 嵌入语法——项目只配置了标准 Markdown 图片语法。有一篇旧笔记还在用这种写法。
@@ -149,6 +151,7 @@ Nuxt Content **不会**重写相对链接。写成 `[项目指南](./project-gui
 ## 提示框
 
 见 [提示框 Callout](/blog/docs/callout)。
+批量迁移 GitHub Alert 可运行 `npm run convert-alerts`。
 
 ## 小工具
 

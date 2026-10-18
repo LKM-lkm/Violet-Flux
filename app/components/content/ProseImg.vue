@@ -1,11 +1,20 @@
 <template>
   <div class="prose-img-wrapper">
-    <img 
-      :src="resolvedSrc" 
-      :alt="alt" 
-      :title="title" 
+    <div v-if="imageError" class="image-error" role="status">
+      <span>图片加载失败</span>
+      <button type="button" @click="retryImage">重试</button>
+      <a :href="resolvedSrc" target="_blank" rel="noreferrer">打开原图</a>
+    </div>
+    <img
+      v-else
+      :src="resolvedSrc"
+      :alt="alt"
+      :title="title"
       class="prose-img"
       loading="lazy"
+      decoding="async"
+      @load="imageError = false"
+      @error="imageError = true"
       @click="toggleExpand"
     />
     <!-- 只在 alt 不是文件名时显示说明 -->
@@ -53,13 +62,27 @@ const props = defineProps({
 
 const route = useRoute()
 const isExpanded = ref(false)
+const imageError = ref(false)
 
 // 响应式锁定滚动
 const isLocked = useScrollLock(import.meta.client ? document.body : null)
 
 const toggleExpand = () => {
+  if (imageError.value) return
   isExpanded.value = !isExpanded.value
   isLocked.value = isExpanded.value
+}
+
+const retryImage = () => {
+  imageError.value = false
+  const image = new Image()
+  image.onload = () => {
+    imageError.value = false
+  }
+  image.onerror = () => {
+    imageError.value = true
+  }
+  image.src = resolvedSrc.value
 }
 
 // 监听 ESC 键关闭
@@ -191,6 +214,28 @@ const resolvedSrc = computed(() => {
   opacity: 0.8;
 }
 
+.image-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: min(100%, 36rem);
+  padding: 1rem;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.image-error button,
+.image-error a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 /* Lightbox Styles */
 .lightbox-overlay {
   position: fixed;
@@ -207,6 +252,7 @@ const resolvedSrc = computed(() => {
   justify-content: center;
   cursor: zoom-out;
   padding: 2rem;
+  overflow: auto;
 }
 
 .lightbox-container {
@@ -220,6 +266,8 @@ const resolvedSrc = computed(() => {
 }
 
 .lightbox-glass {
+  max-width: min(90vw, 1200px);
+  max-height: 90vh;
   border-radius: 2rem;
   overflow: hidden;
   background: linear-gradient(180deg,
@@ -252,11 +300,14 @@ const resolvedSrc = computed(() => {
   flex-direction: column;
   align-items: center;
   position: relative;
+  max-width: min(90vw, 1200px);
+  max-height: 90vh;
+  overflow: auto;
 }
 
 .lightbox-img {
   max-width: 100%;
-  max-height: 80vh;
+  max-height: calc(90vh - 6rem);
   object-fit: contain;
   border-radius: 1.25rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -343,6 +394,27 @@ const resolvedSrc = computed(() => {
 @keyframes zoom-out {
   from { transform: scale(1); opacity: 1; }
   to { transform: scale(0.95); opacity: 0; }
+}
+
+@media (max-width: 640px) {
+  .lightbox-overlay {
+    padding: 0.75rem;
+  }
+
+  .lightbox-container,
+  .lightbox-glass,
+  .lightbox-content-wrapper {
+    max-width: 100%;
+  }
+
+  .lightbox-content-wrapper {
+    padding: 0.65rem;
+  }
+
+  .lightbox-close {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
 }
 
 /* Dark mode adjustment for excessive brightness */

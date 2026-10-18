@@ -51,6 +51,19 @@
               </NuxtLink>
             </div>
             <h1 class="article-title">{{ articleTitle }}</h1>
+            <details v-if="tocLinks.length" class="mobile-toc">
+              <summary>
+                <Icon name="lucide:list" />
+                文章目录
+              </summary>
+              <nav aria-label="文章目录">
+                <ul>
+                  <li v-for="link in tocLinks" :key="link.id" :style="{ paddingLeft: `${(link.depth - 1) * 0.75}rem` }">
+                    <a :href="`#${link.id}`" @click.prevent="scrollTo(link.id)">{{ link.text }}</a>
+                  </li>
+                </ul>
+              </nav>
+            </details>
             <div class="article-meta" v-if="getTags(article).length">
               <NuxtLink
                 v-for="tag in getTags(article)"
@@ -1023,6 +1036,10 @@ onUnmounted(() => {
 }
 
 /* === 响应式设计 === */
+.mobile-toc {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .page-container.has-sidebar {
     grid-template-columns: 1fr;
@@ -1060,6 +1077,7 @@ onUnmounted(() => {
   
   .article-title {
     font-size: var(--text-4xl);
+    overflow-wrap: anywhere;
   }
   
   .article-body {
@@ -1077,9 +1095,64 @@ onUnmounted(() => {
   .sidebar {
     display: none;
   }
-  
-  .toc-wrapper {
-    padding: var(--space-md);
+
+  .main-content {
+    padding: var(--space-lg);
+  }
+
+  .mobile-toc {
+    display: block;
+    margin: 1rem 0 1.5rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+  }
+
+  .mobile-toc summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    color: var(--text-primary);
+    font-weight: 650;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mobile-toc summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-toc summary::after {
+    content: '+';
+    margin-left: auto;
+    color: var(--primary);
+    font-size: 1.25rem;
+  }
+
+  .mobile-toc[open] summary::after {
+    content: '−';
+  }
+
+  .mobile-toc ul {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0 1rem 1rem;
+    list-style: none;
+  }
+
+  .mobile-toc a {
+    display: block;
+    padding: 0.35rem 0.5rem;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-toc a:hover {
+    color: var(--primary);
   }
 }
 
