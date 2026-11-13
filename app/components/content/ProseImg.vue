@@ -61,6 +61,7 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const articleAssetDirectory = inject('articleAssetDirectory', null)
 const isExpanded = ref(false)
 const imageError = ref(false)
 
@@ -115,18 +116,16 @@ const resolvedSrc = computed(() => {
     return props.src
   }
 
-  // Handle Obsidian-style WikiLink images (just a filename, or starts with assets/)
-  // We resolve them relative to the current blog post directory
-  const currentPath = route.path || ''
-  const cleanRoutePath = decodeURIComponent(currentPath.replace(/\/$/, ''))
-  const segments = cleanRoutePath.split('/').filter(Boolean)
-  
-  // Remove ALL occurrences of 'blog' and 'content' to handle malformed routes
-  const baseSegments = segments.filter(s => s !== 'blog' && s !== 'content')
-  
-  // Remove the last segment (the slug/filename of the post) to get the directory
-  if (baseSegments.length > 0) {
-    baseSegments.pop()
+  const sourceDirectory = unref(articleAssetDirectory)
+  let baseSegments
+
+  if (sourceDirectory) {
+    baseSegments = sourceDirectory.split('/').filter(Boolean)
+  } else {
+    const currentPath = route.path || ''
+    const cleanRoutePath = decodeURIComponent(currentPath.replace(/\/$/, ''))
+    baseSegments = cleanRoutePath.split('/').filter(Boolean).filter(s => s !== 'blog' && s !== 'content')
+    if (baseSegments.length > 0) baseSegments.pop()
   }
   
   // Clean up the src - decode first to handle %20 etc
@@ -243,9 +242,9 @@ const resolvedSrc = computed(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 5, 15, 0.8);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  background: rgba(22, 16, 24, 0.72);
+  backdrop-filter: blur(10px) saturate(125%);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -256,8 +255,8 @@ const resolvedSrc = computed(() => {
 }
 
 .lightbox-container {
-  max-width: 90vw;
-  max-height: 90vh;
+  width: min(94vw, 1280px);
+  max-height: 92vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -266,51 +265,40 @@ const resolvedSrc = computed(() => {
 }
 
 .lightbox-glass {
-  max-width: min(90vw, 1200px);
-  max-height: 90vh;
-  border-radius: 2rem;
+  width: 100%;
+  max-height: 92vh;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.25),
-    rgba(255, 255, 255, 0.08));
-  border: 1px solid rgba(180, 151, 215, 0.25);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   box-shadow:
-    0 40px 80px -20px rgba(0, 0, 0, 0.5),
-    0 0 60px rgba(180, 151, 215, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5),
-    inset 0 -8px 20px rgba(255, 255, 255, 0.06),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    var(--shadow-2xl),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 :root.dark .lightbox-glass {
-  background: linear-gradient(180deg,
-    rgba(30, 22, 45, 0.4),
-    rgba(30, 22, 45, 0.2));
   box-shadow:
-    0 40px 80px -20px rgba(0, 0, 0, 0.6),
-    0 0 60px rgba(168, 144, 192, 0.08),
-    inset 0 1px 1px rgba(255, 255, 255, 0.1),
-    inset 0 -8px 20px rgba(255, 255, 255, 0.02),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    var(--shadow-2xl),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .lightbox-content-wrapper {
-  padding: 1.25rem;
+  padding: clamp(0.5rem, 1.4vw, 1.25rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  max-width: min(90vw, 1200px);
-  max-height: 90vh;
+  width: 100%;
+  max-height: 92vh;
   overflow: auto;
 }
 
 .lightbox-img {
   max-width: 100%;
-  max-height: calc(90vh - 6rem);
+  max-height: calc(92vh - 4rem);
   object-fit: contain;
-  border-radius: 1.25rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .lightbox-caption {
@@ -333,29 +321,22 @@ const resolvedSrc = computed(() => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.1));
-  border: 1px solid rgba(180, 151, 215, 0.25);
-  color: white;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
-              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 :root.dark .lightbox-close {
-  background: linear-gradient(180deg,
-    rgba(30, 22, 45, 0.5),
-    rgba(30, 22, 45, 0.3));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
-              inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .lightbox-close:hover {
@@ -363,8 +344,7 @@ const resolvedSrc = computed(() => {
     rgba(180, 151, 215, 0.4),
     rgba(180, 151, 215, 0.2));
   transform: rotate(90deg) scale(1.05);
-  box-shadow: 0 12px 32px rgba(180, 151, 215, 0.3),
-              inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 /* Animations */

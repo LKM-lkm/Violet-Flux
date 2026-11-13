@@ -167,6 +167,17 @@ const { data: article } = await useAsyncData(`article-v22-${route.path}`, async 
   return found || null
 })
 
+const articleAssetDirectory = computed(() => {
+  const sourceId = String(article.value?.id || '')
+    .replace(/^content\//, '')
+    .replace(/^blog\//, '')
+    .replace(/\.md$/, '')
+
+  return sourceId.split('/').slice(0, -1).join('/')
+})
+
+provide('articleAssetDirectory', articleAssetDirectory)
+
 // 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
 const articleTitle = computed(() => {
   if (!article.value) return ''

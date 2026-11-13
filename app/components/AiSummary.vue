@@ -22,12 +22,8 @@
         </div>
         
         <div class="summary-body">
-          <p v-if="displayedText" class="text-content">
-            <span
-              v-for="(char, index) in typedChars"
-              :key="index"
-              class="typed-char"
-            >{{ char }}</span>
+          <p v-if="hasDisplayedText" class="text-content">
+            <span>{{ stableText }}</span><span :key="typedIndex" class="typed-char">{{ currentChar }}</span>
             <span v-if="isTyping" class="type-cursor"></span>
           </p>
           <p v-else-if="status === 'thinking'" class="placeholder-text">
@@ -113,13 +109,12 @@ const writeCachedSummary = (key, text) => {
 let typingTimer = null
 
 const status = ref('idle') // idle, thinking, typing, done, error
-const displayedText = ref('')
+const stableText = ref('')
+const currentChar = ref('')
+const typedIndex = ref(0)
 const fullText = ref('')
 const isTyping = ref(false)
-
-// 逐字渲染成独立 span：Vue 按 index 复用已有节点，
-// 于是只有「刚敲出来的那个字」会新建节点、跑一次发光动画，旧字保持静态。
-const typedChars = computed(() => (displayedText.value ? Array.from(displayedText.value) : []))
+const hasDisplayedText = computed(() => stableText.value.length > 0 || currentChar.value.length > 0)
 
 // 使用本地代理接口避免 CORS 问题（服务端转发到 Cloudflare Worker）
 // 静态部署时回退到直接调用 Worker（需 Worker 配置 CORS）
@@ -226,7 +221,9 @@ const startTyping = () => {
 
   status.value = 'typing'
   isTyping.value = true
-  displayedText.value = ''
+  stableText.value = ''
+  currentChar.value = ''
+  typedIndex.value = 0
 
   // 按码点切分，避免 emoji 被拆成两个半字符
   const chars = Array.from(fullText.value)
@@ -234,15 +231,19 @@ const startTyping = () => {
 
   typingTimer = setInterval(() => {
     if (i < chars.length) {
-      displayedText.value += chars[i]
+      stableText.value += currentChar.value
+      currentChar.value = chars[i]
+      typedIndex.value++
       i++
     } else {
       clearInterval(typingTimer)
       typingTimer = null
+      stableText.value += currentChar.value
+      currentChar.value = ''
       isTyping.value = false
       status.value = 'done'
     }
-  }, 30) // Speed of typing
+  }, 20)
 }
 
 // 生成失败后允许手动重试，不用刷新页面或清 localStorage
@@ -435,48 +436,50 @@ onUnmounted(() => {
   color: #d8d0e0;
 }
 
-/* 打字光效：每个字出现时亮一下再回落，光标同步呼吸。
-   每个字都是独立 span，动画只在节点创建时跑一次，
-   所以只有刚敲出来的字在发光，已经打完的字是静止的。
-
-   关键在时长：30ms 一个字，动画太长（比如 600ms）会让约 20 个字
-   同时停在紫色中间态，整体糊成一片紫雾；300ms 只有末尾三五个字在亮，
-   才是"新字在发光"的样子。光晕半径也要小，大了同样会糊。 */
+/* Animate only the newest character; fade a compact glow instead of lighting the whole line. */
 .typed-char {
-  animation: char-bloom 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: char-ignite 360ms ease-out both;
 }
 
-@keyframes char-bloom {
+@keyframes char-ignite {
   0% {
     color: #7a4ba3;
-    text-shadow: 0 0 6px rgba(180, 151, 215, 0.85);
+    text-shadow:
+      0 0 3px rgba(180, 151, 215, 0.95),
+      0 0 8px rgba(180, 151, 215, 0.62);
   }
-  40% {
+  45% {
     color: var(--primary);
-    text-shadow: 0 0 3px rgba(180, 151, 215, 0.4);
+    text-shadow:
+      0 0 2px rgba(180, 151, 215, 0.55),
+      0 0 5px rgba(180, 151, 215, 0.25);
   }
   100% {
     color: inherit;
-    text-shadow: 0 0 0 rgba(180, 151, 215, 0);
+    text-shadow: none;
   }
 }
 
 :root.dark .typed-char {
-  animation-name: char-bloom-dark;
+  animation-name: char-ignite-dark;
 }
 
-@keyframes char-bloom-dark {
+@keyframes char-ignite-dark {
   0% {
     color: #f4ecff;
-    text-shadow: 0 0 8px rgba(194, 169, 228, 0.95);
+    text-shadow:
+      0 0 3px rgba(194, 169, 228, 0.95),
+      0 0 8px rgba(194, 169, 228, 0.65);
   }
-  40% {
+  45% {
     color: var(--primary);
-    text-shadow: 0 0 4px rgba(194, 169, 228, 0.45);
+    text-shadow:
+      0 0 2px rgba(194, 169, 228, 0.58),
+      0 0 5px rgba(194, 169, 228, 0.28);
   }
   100% {
     color: inherit;
-    text-shadow: 0 0 0 rgba(194, 169, 228, 0);
+    text-shadow: none;
   }
 }
 
