@@ -33,9 +33,21 @@
                 </div>
               </div>
             </LiquidGlass>
-            <button class="lightbox-close" @click="toggleExpand" aria-label="关闭">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+            <LiquidGlass
+              as="button"
+              type="button"
+              class="lightbox-close"
+              aria-label="关闭"
+              :scale="-80"
+              :chroma="3"
+              :border="0.03"
+              :mapBlur="8"
+              :blur="1"
+              :saturate="1.5"
+              @click="toggleExpand"
+            >
+              <Icon name="lucide:x" />
+            </LiquidGlass>
           </div>
         </div>
       </Transition>
@@ -316,8 +328,8 @@ const resolvedSrc = computed(() => {
 
 .lightbox-close {
   position: absolute;
-  top: -16px;
-  right: -16px;
+  top: 0.75rem;
+  right: 0.75rem;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -330,8 +342,6 @@ const resolvedSrc = computed(() => {
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
   box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -392,8 +402,8 @@ const resolvedSrc = computed(() => {
   }
 
   .lightbox-close {
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.45rem;
+    right: 0.45rem;
   }
 }
 

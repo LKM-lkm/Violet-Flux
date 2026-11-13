@@ -436,27 +436,20 @@ onUnmounted(() => {
   color: #d8d0e0;
 }
 
-/* Animate only the newest character; fade a compact glow instead of lighting the whole line. */
+/* Animate only the newest character; the glyph color itself fades back to body text. */
 .typed-char {
-  animation: char-ignite 360ms ease-out both;
+  animation: char-ignite 700ms ease-out both;
 }
 
 @keyframes char-ignite {
   0% {
-    color: #7a4ba3;
-    text-shadow:
-      0 0 3px rgba(180, 151, 215, 0.95),
-      0 0 8px rgba(180, 151, 215, 0.62);
+    color: #7743a3;
   }
-  45% {
-    color: var(--primary);
-    text-shadow:
-      0 0 2px rgba(180, 151, 215, 0.55),
-      0 0 5px rgba(180, 151, 215, 0.25);
+  35% {
+    color: #a682cf;
   }
   100% {
     color: inherit;
-    text-shadow: none;
   }
 }
 
@@ -465,22 +458,9 @@ onUnmounted(() => {
 }
 
 @keyframes char-ignite-dark {
-  0% {
-    color: #f4ecff;
-    text-shadow:
-      0 0 3px rgba(194, 169, 228, 0.95),
-      0 0 8px rgba(194, 169, 228, 0.65);
-  }
-  45% {
-    color: var(--primary);
-    text-shadow:
-      0 0 2px rgba(194, 169, 228, 0.58),
-      0 0 5px rgba(194, 169, 228, 0.28);
-  }
-  100% {
-    color: inherit;
-    text-shadow: none;
-  }
+  0% { color: #fff; }
+  35% { color: #d4c0ed; }
+  100% { color: inherit; }
 }
 
 @media (prefers-reduced-motion: reduce) {
