@@ -51,7 +51,17 @@
               </NuxtLink>
             </div>
             <h1 class="article-title">{{ articleTitle }}</h1>
-            <details v-if="tocLinks.length" class="mobile-toc">
+            <LiquidGlass
+              v-if="tocLinks.length"
+              as="details"
+              class="mobile-toc"
+              :scale="-96"
+              :chroma="4"
+              :border="0.04"
+              :mapBlur="8"
+              :blur="2"
+              :saturate="1.6"
+            >
               <summary>
                 <Icon name="lucide:list" />
                 文章目录
@@ -63,7 +73,7 @@
                   </li>
                 </ul>
               </nav>
-            </details>
+            </LiquidGlass>
             <div class="article-meta" v-if="getTags(article).length">
               <NuxtLink
                 v-for="tag in getTags(article)"

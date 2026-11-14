@@ -4,16 +4,23 @@
     <div class="container blog-container">
       <!-- Sidebar for Tree Navigation and Tags -->
       <div class="library-filters" :class="{ 'is-open': mobileFiltersOpen }">
-        <button
+        <LiquidGlass
+          as="button"
           class="mobile-filter-toggle"
           type="button"
           aria-controls="library-filter-panel"
           :aria-expanded="mobileFiltersOpen"
+          :scale="-96"
+          :chroma="4"
+          :border="0.04"
+          :mapBlur="8"
+          :blur="2"
+          :saturate="1.6"
           @click="mobileFiltersOpen = !mobileFiltersOpen"
         >
           <span>Browse library filters</span>
           <Icon :name="mobileFiltersOpen ? 'lucide:x' : 'lucide:sliders-horizontal'" />
-        </button>
+        </LiquidGlass>
         <LiquidGlass id="library-filter-panel" as="aside" class="sidebar" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
           <div class="filter-section">
             <h3 class="section-title">Knowledge</h3>
@@ -838,7 +845,9 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   }
 
   .content-header {
-    position: static;
+    position: sticky;
+    top: 72px;
+    z-index: 50;
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;

@@ -23,7 +23,7 @@
         
         <div class="summary-body">
           <p v-if="hasDisplayedText" class="text-content">
-            <span>{{ stableText }}</span><span :key="typedIndex" class="typed-char">{{ currentChar }}</span>
+            <span>{{ stableText }}</span><span class="typed-tail" :class="{ 'is-settling': status === 'done' }">{{ typedTail }}</span>
             <span v-if="isTyping" class="type-cursor"></span>
           </p>
           <p v-else-if="status === 'thinking'" class="placeholder-text">
@@ -109,12 +109,13 @@ const writeCachedSummary = (key, text) => {
 let typingTimer = null
 
 const status = ref('idle') // idle, thinking, typing, done, error
-const stableText = ref('')
-const currentChar = ref('')
-const typedIndex = ref(0)
+const typedText = ref('')
 const fullText = ref('')
 const isTyping = ref(false)
-const hasDisplayedText = computed(() => stableText.value.length > 0 || currentChar.value.length > 0)
+const typedCharacters = computed(() => Array.from(typedText.value))
+const stableText = computed(() => typedCharacters.value.slice(0, -6).join(''))
+const typedTail = computed(() => typedCharacters.value.slice(-6).join(''))
+const hasDisplayedText = computed(() => typedText.value.length > 0)
 
 // 使用本地代理接口避免 CORS 问题（服务端转发到 Cloudflare Worker）
 // 静态部署时回退到直接调用 Worker（需 Worker 配置 CORS）
@@ -217,33 +218,40 @@ const generateSummary = async () => {
 }
 
 const startTyping = () => {
-  if (typingTimer) clearInterval(typingTimer)
+  if (typingTimer) clearTimeout(typingTimer)
 
   status.value = 'typing'
   isTyping.value = true
-  stableText.value = ''
-  currentChar.value = ''
-  typedIndex.value = 0
+  typedText.value = ''
 
   // 按码点切分，避免 emoji 被拆成两个半字符
   const chars = Array.from(fullText.value)
   let i = 0
 
-  typingTimer = setInterval(() => {
-    if (i < chars.length) {
-      stableText.value += currentChar.value
-      currentChar.value = chars[i]
-      typedIndex.value++
-      i++
-    } else {
-      clearInterval(typingTimer)
+  const typeNextCharacter = () => {
+    if (i >= chars.length) {
       typingTimer = null
-      stableText.value += currentChar.value
-      currentChar.value = ''
       isTyping.value = false
       status.value = 'done'
+      return
     }
-  }, 20)
+
+    const character = chars[i]
+    typedText.value += character
+    i++
+
+    const delay = /[.!?。！？]/u.test(character)
+      ? 260
+      : /[,，;；:：]/u.test(character)
+        ? 145
+        : /\s/u.test(character)
+          ? 24
+          : 38
+
+    typingTimer = setTimeout(typeNextCharacter, delay)
+  }
+
+  typingTimer = setTimeout(typeNextCharacter, 180)
 }
 
 // 生成失败后允许手动重试，不用刷新页面或清 localStorage
@@ -260,7 +268,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   // 组件卸载后停止打字机定时器，避免定时器继续修改已卸载组件的状态
-  if (typingTimer) clearInterval(typingTimer)
+  if (typingTimer) clearTimeout(typingTimer)
   typingTimer = null
 })
 </script>
@@ -436,35 +444,56 @@ onUnmounted(() => {
   color: #d8d0e0;
 }
 
-/* Animate only the newest character; the glyph color itself fades back to body text. */
-.typed-char {
-  animation: char-ignite 700ms ease-out both;
+.typed-tail {
+  color: transparent;
+  background-image: linear-gradient(100deg, #9b70cb 0%, #b890dc 38%, #e8d9fa 49%, #b890dc 60%, #9b70cb 100%);
+  background-size: 260% 100%;
+  background-position: 0% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 3px rgba(180, 130, 230, 0.28);
+  animation: text-ignite 2.2s ease-in-out infinite;
 }
 
-@keyframes char-ignite {
-  0% {
-    color: #7743a3;
+@keyframes text-ignite {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: brightness(1.04);
+    text-shadow: 0 0 2px rgba(180, 130, 230, 0.22);
   }
-  35% {
-    color: #a682cf;
-  }
-  100% {
-    color: inherit;
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1.24);
+    text-shadow: 0 0 4px rgba(196, 151, 240, 0.38);
   }
 }
 
-:root.dark .typed-char {
-  animation-name: char-ignite-dark;
+.typed-tail.is-settling {
+  animation: text-settle 2.2s ease-out forwards;
 }
 
-@keyframes char-ignite-dark {
-  0% { color: #fff; }
-  35% { color: #d4c0ed; }
-  100% { color: inherit; }
+@keyframes text-settle {
+  to {
+    color: var(--text-primary);
+    background-image: none;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
+    -webkit-text-fill-color: currentColor;
+    text-shadow: none;
+    filter: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .typed-char,
+  .typed-tail {
+    color: var(--text-primary);
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    text-shadow: none;
+    animation: none;
+  }
+
   .type-cursor {
     animation: none;
   }

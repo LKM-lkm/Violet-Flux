@@ -29,6 +29,8 @@ const containerRef = ref<HTMLElement | null>(null);
 let glassInstance: { supported: boolean; refresh: () => void; destroy: () => void } | null = null;
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 let rafId: number | null = null;
+let resizeObserver: ResizeObserver | null = null;
+let applyPending = false;
 
 /**
  * 原版库 Framework usage:
@@ -40,6 +42,16 @@ let rafId: number | null = null;
  * 关键改进：等待脚本加载 + rAF 确保布局已渲染
  */
 onMounted(() => {
+  const el = containerRef.value;
+  if (el && typeof ResizeObserver !== 'undefined') {
+    resizeObserver = new ResizeObserver(() => {
+      if (!glassInstance && typeof (window as any).liquidGlass === 'function') {
+        scheduleApply();
+      }
+    });
+    resizeObserver.observe(el);
+  }
+
   if (typeof window !== 'undefined' && typeof (window as any).liquidGlass === 'function') {
     scheduleApply();
   } else {
@@ -61,6 +73,8 @@ onMounted(() => {
 
 /** 等待下一帧渲染完成后再应用，确保元素已有布局尺寸 */
 function scheduleApply() {
+  if (glassInstance || applyPending) return;
+  applyPending = true;
   rafId = requestAnimationFrame(() => {
     rafId = null;
     applyGlass();
@@ -68,11 +82,13 @@ function scheduleApply() {
 }
 
 function applyGlass() {
+  applyPending = false;
   const el = containerRef.value;
   if (!el) return;
   // 确保元素有实际尺寸
   if (!el.offsetWidth || !el.offsetHeight) return;
 
+  if (glassInstance) return;
   glassInstance = (window as any).liquidGlass(el, {
     scale: props.scale,
     chroma: props.chroma,
@@ -94,6 +110,9 @@ onBeforeUnmount(() => {
     cancelAnimationFrame(rafId);
     rafId = null;
   }
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+  applyPending = false;
   if (glassInstance) {
     glassInstance.destroy();
     glassInstance = null;

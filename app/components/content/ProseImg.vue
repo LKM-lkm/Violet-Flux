@@ -25,7 +25,7 @@
       <Transition name="lightbox-fade">
         <div v-if="isExpanded" class="lightbox-overlay" @click="toggleExpand">
           <div class="lightbox-container" @click.stop>
-            <LiquidGlass class="lightbox-glass" :scale="-140" :chroma="6" :border="0.04" :mapBlur="12" :blur="4" :saturate="1.8">
+            <LiquidGlass class="lightbox-glass" :scale="-176" :chroma="8" :border="0.06" :mapBlur="14" :blur="7" :saturate="1.9">
               <div class="lightbox-content-wrapper">
                 <img :src="resolvedSrc" :alt="alt" class="lightbox-img" />
                 <div v-if="alt && !isFileName(alt)" class="lightbox-caption">
@@ -281,17 +281,21 @@ const resolvedSrc = computed(() => {
   max-height: 92vh;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.32), rgba(235, 222, 250, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow:
     var(--shadow-2xl),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    inset 0 -1px 0 rgba(145, 99, 192, 0.14);
 }
 
 :root.dark .lightbox-glass {
+  background: linear-gradient(145deg, rgba(48, 36, 61, 0.64), rgba(25, 19, 34, 0.42));
+  border-color: rgba(224, 204, 245, 0.18);
   box-shadow:
     var(--shadow-2xl),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(180, 151, 215, 0.1);
 }
 
 .lightbox-content-wrapper {

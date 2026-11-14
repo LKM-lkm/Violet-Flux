@@ -86,6 +86,23 @@ image: /path/to/cover.png
 请使用标准 Markdown 图片语法 `![说明](assets/x.png)`；Obsidian 的 `![[assets/x.png]]` 嵌入语法不会被渲染为图片。相对路径会按 Markdown 源文件的原始目录解析，因此目录名大小写和空格不受 URL slug 变化影响。
 ::
 
+### Obsidian 图片设置与修复
+
+建议在 Obsidian 的 **设置 → 文件与链接** 中设置：
+
+- **新附件的默认位置**：当前文件夹下的子文件夹
+- **附件文件夹名称**：`assets`
+- **新链接格式**：相对于当前文件的路径
+- 关闭 **使用 `[[Wikilinks]]`**
+
+这样新插入的图片会使用普通 Markdown 图片链接，并放在文章旁边的 `assets/` 目录。已有笔记里的 Obsidian 图片嵌入可以在项目根目录执行一次：
+
+```bash
+npm run convert-images
+```
+
+转换会把 `![[图片.png]]`、`![[assets/图片.png|说明文字]]` 等图片嵌入改成 Markdown 图片语法；代码块、行内代码、frontmatter 和非图片嵌入不会被改动。没有扩展名的图片引用会按当前约定转换为 `assets/文件名`，请确保对应图片确实位于文章的 `assets/` 文件夹。
+
 ## 代码块
 
 ````markdown

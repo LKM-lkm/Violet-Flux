@@ -600,12 +600,18 @@ html.dark .glass-card:hover, [data-theme='dark'] .glass-card:hover {
   
   .cta-group {
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
     width: 100%;
     max-width: 320px;
   }
   
-  .btn {
+  .cta-group > .btn,
+  .cta-group > .glass-btn-link {
+    width: 100%;
+  }
+
+  .cta-group .glass-btn {
     width: 100%;
   }
 }

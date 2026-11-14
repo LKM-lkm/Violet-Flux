@@ -24,7 +24,7 @@
         >
           <Icon :name="mobileNavOpen ? 'lucide:x' : 'lucide:menu'" />
         </button>
-        <nav id="site-navigation" class="nav" :class="{ 'is-open': mobileNavOpen }">
+        <nav class="desktop-nav">
           <NuxtLink to="/" class="nav-link" @click="mobileNavOpen = false">Home</NuxtLink>
           <NuxtLink to="/blog" class="nav-link" @click="mobileNavOpen = false">Blog</NuxtLink>
           <NuxtLink to="/about" class="nav-link" @click="mobileNavOpen = false">About</NuxtLink>
@@ -35,6 +35,30 @@
         </nav>
       </div>
     </header>
+
+    <Teleport to="body">
+      <LiquidGlass
+        as="nav"
+        id="site-navigation"
+        class="mobile-nav"
+        :class="{ 'is-open': mobileNavOpen }"
+        aria-label="Site navigation"
+        :scale="-160"
+        :chroma="3"
+        :border="0.02"
+        :mapBlur="4"
+        :blur="2"
+        :saturate="1.2"
+      >
+        <NuxtLink to="/" class="nav-link" @click="mobileNavOpen = false">Home</NuxtLink>
+        <NuxtLink to="/blog" class="nav-link" @click="mobileNavOpen = false">Blog</NuxtLink>
+        <NuxtLink to="/about" class="nav-link" @click="mobileNavOpen = false">About</NuxtLink>
+        <div class="nav-divider"></div>
+        <button @click="toggleDark()" class="theme-toggle">
+          <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" />
+        </button>
+      </LiquidGlass>
+    </Teleport>
 
     <!-- Page Content Slot -->
     <div class="page-wrapper">
@@ -241,7 +265,7 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
 }
 
 .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: inherit; letter-spacing: normal; margin: 0; }
-.nav { display: flex; gap: 0.5rem; align-items: center; }
+.desktop-nav { display: flex; gap: 0.5rem; align-items: center; }
 
 .mobile-menu-btn {
   display: none;
@@ -251,9 +275,10 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   height: 42px;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  background: var(--glass-bg);
+  background: transparent;
   color: var(--text-primary);
   cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .nav-link {
@@ -372,46 +397,71 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
     display: inline-flex;
   }
 
-  .nav {
+  .desktop-nav {
     display: none;
-    position: absolute;
-    top: calc(100% + 0.5rem);
+  }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    top: 72px;
     right: 1rem;
-    z-index: 1000;
+    z-index: 2000;
     min-width: 200px;
+    max-width: calc(100vw - 2rem);
     padding: 0.75rem;
     flex-direction: column;
     align-items: stretch;
     gap: 0.25rem;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
-    background: var(--glass-bg);
-    box-shadow: var(--shadow-xl);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--glass-border);
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.35rem);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
   }
 
-  .nav.is-open {
-    display: flex;
+  .mobile-nav.is-open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
-  .nav-link {
+  .mobile-nav > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mobile-nav .nav-link {
     padding: 0.75rem 1rem;
   }
 
-  .nav-link.router-link-active::after {
+  .mobile-nav .nav-link.router-link-active::after {
     display: none;
   }
 
-  .nav-divider {
+  .mobile-nav .nav-divider {
     width: 100%;
     height: 1px;
     margin: 0.35rem 0;
   }
 
-  .theme-toggle {
+  .mobile-nav .theme-toggle {
     width: 100%;
     height: 42px;
+  }
+
+  :root.dark .mobile-nav,
+  [data-theme='dark'] .mobile-nav {
+    background: rgba(30, 22, 45, 0.2);
+    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   .footer-container {
@@ -424,4 +474,5 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
     padding: 2rem 0;
   }
 }
+
 </style>
