@@ -38,7 +38,7 @@
               type="button"
               class="lightbox-close"
               aria-label="关闭"
-              preset="button"
+              preset="iconButton"
               @click="toggleExpand"
             >
               <Icon name="lucide:x" />
@@ -332,28 +332,53 @@ const resolvedSrc = computed(() => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  /* 只做 material dressing：淡紫渐变让背景透出来，LiquidGlass 注入的
+     url(#...) SVG 折射才看得见。不要用 var(--glass-bg) 实色底，也别手写
+     backdrop-filter —— 两者都会盖住引擎滤镜，退回旧毛玻璃。 */
+  background: linear-gradient(180deg,
+    rgba(180, 151, 215, 0.10) 0%,
+    rgba(160, 130, 200, 0.18) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  /* 只过渡颜色与阴影：transition all 会把 transform 一起动画，触发合成层
+     阻断玻璃采样背景。旋转交给下面的图标做。 */
+  transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
   z-index: 10;
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 :root.dark .lightbox-close {
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg,
+    rgba(168, 144, 192, 0.12) 0%,
+    rgba(120, 90, 160, 0.2) 100%);
+  border-color: rgba(224, 204, 245, 0.18);
+  box-shadow: var(--shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .lightbox-close:hover {
   background: linear-gradient(180deg,
-    rgba(180, 151, 215, 0.4),
-    rgba(180, 151, 215, 0.2));
+    rgba(180, 151, 215, 0.2) 0%,
+    rgba(180, 151, 215, 0.3) 100%);
+  box-shadow: var(--shadow-xl),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 旋转放到图标上，按钮本体不 transform，避免合成层阻断折射采样 */
+.lightbox-close :deep(svg) {
+  transition: transform 0.3s ease;
+}
+
+.lightbox-close:hover :deep(svg) {
   transform: rotate(90deg) scale(1.05);
-  box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 /* Animations */

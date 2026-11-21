@@ -50,6 +50,13 @@ export const LIQUID_GLASS_PRESETS = {
 
   // 图片灯箱：稍厚的玻璃和较强高光，用于突出遮罩上的中央图像。
   lightbox: { blur: 1, thickness: 100, edgeWidth: 29, ior: 1.3, displacementScale: 1, specularOpacity: 0.46, specularSaturation: 6, specularHardness: 2.4 },
+
+  // 灯箱关闭按钮这类小圆形图标按钮：直径约 44px、圆角 50%。
+  // 通用 button 预设的 edgeWidth=29 会被引擎 clamp 到半径 22，整颗按钮全是边缘带，
+  // 没有平坦中心，加上浮在均匀的深色遮罩上（没有可折射的背景），看起来就扁平。
+  // 这里收窄边缘带腾出平坦中心，并把白色高光环加亮加锐 —— 在深色背景上，
+  // 高光是小按钮唯一撑得起立体玻璃感的部分。
+  iconButton: { blur: 1, thickness: 90, edgeWidth: 9, ior: 1.3, displacementScale: 1, specularOpacity: 0.75, specularSaturation: 6, specularHardness: 2.6 },
 } satisfies Record<string, Partial<LiquidGlassOptions>>
 
 export type LiquidGlassPreset = keyof typeof LIQUID_GLASS_PRESETS
