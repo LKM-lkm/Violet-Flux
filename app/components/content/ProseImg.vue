@@ -41,7 +41,11 @@
               preset="iconButton"
               @click="toggleExpand"
             >
-              <Icon name="lucide:x" />
+              <!-- 旋转放在这层 span 上：按钮本体不能 transform（会创建合成层
+                   阻断玻璃采样），而 Icon 的 svg 有时在 shadow DOM 里选不中。 -->
+              <span class="lightbox-close-icon">
+                <Icon name="lucide:x" />
+              </span>
             </LiquidGlass>
           </div>
         </div>
@@ -262,7 +266,10 @@ const resolvedSrc = computed(() => {
 }
 
 .lightbox-container {
-  width: min(94vw, 1280px);
+  /* 宽度跟随图片实际尺寸，而不是一律撑满 1280px；只保留上限。
+     小图就是小面板，大图才长到上限，玻璃紧贴图片四周。 */
+  width: fit-content;
+  max-width: min(94vw, 1280px);
   max-height: 92vh;
   position: relative;
   display: flex;
@@ -272,7 +279,8 @@ const resolvedSrc = computed(() => {
 }
 
 .lightbox-glass {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   max-height: 92vh;
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -299,30 +307,41 @@ const resolvedSrc = computed(() => {
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 100%;
+  /* 跟着图片收缩，玻璃不会比图片宽出一圈空白 */
+  width: fit-content;
+  max-width: 100%;
   max-height: 92vh;
   overflow: auto;
 }
 
 .lightbox-img {
-  max-width: 100%;
+  display: block;
+  /* 以视口为上限等比缩放，图片原始尺寸小于上限时保持原尺寸 */
+  max-width: min(90vw, 1280px);
   max-height: calc(92vh - 4rem);
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
 
 .lightbox-caption {
-  margin-top: 1.5rem;
-  color: var(--text-primary);
-  font-size: 1rem;
+  margin-top: 1.25rem;
+  /* 和关闭按钮同理：灯箱永远在深色遮罩上，标题不能用主题文字色，
+     否则浅色主题下是深字压深底，几乎读不出来。 */
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.9375rem;
   font-weight: 500;
+  line-height: 1.5;
   text-align: center;
   padding: 0 1rem;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 :root.dark .lightbox-caption {
-  color: #d8d0e0;
+  color: rgba(238, 232, 248, 0.94);
 }
 
 .lightbox-close {
@@ -339,7 +358,9 @@ const resolvedSrc = computed(() => {
     rgba(180, 151, 215, 0.10) 0%,
     rgba(160, 130, 200, 0.18) 100%);
   border: 1px solid rgba(255, 255, 255, 0.28);
-  color: var(--text-primary);
+  /* 按钮永远浮在深色遮罩上，不能跟随主题色——浅色主题的 --text-primary
+     是近黑色，压在深色遮罩上等于看不见。 */
+  color: rgba(255, 255, 255, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -372,13 +393,19 @@ const resolvedSrc = computed(() => {
     inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* 旋转放到图标上，按钮本体不 transform，避免合成层阻断折射采样 */
-.lightbox-close :deep(svg) {
-  transition: transform 0.3s ease;
+/* 旋转放到图标包装层上，按钮本体不 transform，避免合成层阻断折射采样。
+   这是插槽内容，带父作用域标记，不需要 :deep。 */
+.lightbox-close-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  will-change: transform;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
-.lightbox-close:hover :deep(svg) {
-  transform: rotate(90deg) scale(1.05);
+.lightbox-close:hover .lightbox-close-icon {
+  transform: rotate(90deg) scale(1.08);
 }
 
 /* Animations */

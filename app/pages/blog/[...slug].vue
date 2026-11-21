@@ -646,7 +646,7 @@ onUnmounted(() => {
 
 .article-title {
   font-family: var(--font-display);
-  font-size: var(--text-6xl);
+  font-size: var(--text-5xl);
   line-height: 1.1;
   margin-bottom: var(--space-lg);
   font-weight: 800;
@@ -739,6 +739,13 @@ onUnmounted(() => {
   scroll-margin-top: 100px;
   letter-spacing: -0.02em;
   line-height: 1.3;
+}
+
+/* 头部已经渲染了文章标题，正文里 md 自带的第一个 # 标题不要再显示一次。
+   Nuxt Content 把正文包在 <div data-content-id> 里，所以 targeting 该容器的首个 h1。
+   （这条规则曾在 f04f35a 存在，后来丢失导致正文重复标题。） */
+.article-body :deep([data-content-id] > h1:first-child) {
+  display: none;
 }
 
 .article-body :deep(h1) {
@@ -1110,7 +1117,7 @@ onUnmounted(() => {
   }
   
   .article-title {
-    font-size: var(--text-5xl);
+    font-size: var(--text-4xl);
   }
 }
 
@@ -1128,7 +1135,7 @@ onUnmounted(() => {
   }
   
   .article-title {
-    font-size: var(--text-4xl);
+    font-size: var(--text-3xl);
     overflow-wrap: anywhere;
   }
   
@@ -1229,7 +1236,7 @@ onUnmounted(() => {
   }
   
   .article-title {
-    font-size: var(--text-3xl);
+    font-size: var(--text-2xl);
   }
   
   .page-container {

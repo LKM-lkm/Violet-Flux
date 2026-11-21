@@ -2,7 +2,7 @@
 title: 液态玻璃 Liquid Glass
 description: Violet Flux 液态玻璃的实现原理、组件用法、集中式预设、浏览器差异与排查清单
 tags: [文档, 视觉效果]
-lastModified: "2026-11-21T17:06:45.694Z"
+lastModified: "2026-11-21T18:11:26.074Z"
 ---
 
 # 液态玻璃 Liquid Glass
@@ -54,7 +54,7 @@ LIQUID_GLASS_DEFAULTS.thickness = 100
 LIQUID_GLASS_PRESETS.menu = { /* ... */ }
 ```
 
-可选预设共 8 个：`default`、`card`、`panel`、`subtle`、`menu`、`button`、`summary`、`lightbox`。站点里的对应关系：
+可选预设共 9 个：`default`、`card`、`panel`、`subtle`、`menu`、`button`、`summary`、`lightbox`、`iconButton`。站点里的对应关系：
 
 | 预设 | 用在哪里 |
 | --- | --- |
@@ -64,9 +64,14 @@ LIQUID_GLASS_PRESETS.menu = { /* ... */ }
 | `menu` | 移动端展开菜单 |
 | `summary` | AI 摘要面板 |
 | `lightbox` | 图片灯箱遮罩 |
-| `button` | 胶囊按钮（当前 preset 保留定义，页面尚未直接使用） |
+| `button` | 胶囊按钮 |
+| `iconButton` | 灯箱关闭按钮这类小圆形图标按钮 |
 
 各预设共用同一条物理基线，只在厚度、高光强度等少量参数上做局部微调，因此不会出现"每块玻璃观感都不一样"的情况。当前基线对齐原版 Mixed UI demo：
+
+::callout{icon="i-lucide-lightbulb" color="success"}
+**小图标按钮为什么看起来扁平？** 折射的原理是扭曲元素**背后的画面**；灯箱关闭按钮浮在一片均匀的深色遮罩上，没有可折射的内容，位移前后几乎一样。加上按钮直径约 44px、圆角 50%（半径 22px），通用 `button` 预设的 `edgeWidth=29` 会被引擎 clamp 到 22，整颗按钮全是边缘带、没有平坦中心。所以 `iconButton` 预设把 `edgeWidth` 收到 9 腾出平坦中心，并把白色高光环的 `specularOpacity` 提到 0.75——在深色背景上，高光是小按钮唯一撑得起立体玻璃感的部分。同理，这类按钮的 CSS 也不要用实色 `background` 或 `transform` 动画盖住滤镜。
+::
 
 ```
 blur = 1        thickness = 90     edgeWidth = 29     ior = 1.3
