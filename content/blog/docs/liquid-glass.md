@@ -2,6 +2,7 @@
 title: 液态玻璃 Liquid Glass
 description: Violet Flux 液态玻璃的实现原理、组件用法、集中式预设、浏览器差异与排查清单
 tags: [文档, 视觉效果]
+lastModified: "2026-11-21T17:06:45.694Z"
 ---
 
 # 液态玻璃 Liquid Glass

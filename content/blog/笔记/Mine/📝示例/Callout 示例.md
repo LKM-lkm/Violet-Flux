@@ -2,6 +2,7 @@
 title: Nuxt UI Callout 示例
 description: 展示如何使用 Nuxt UI Callout 组件
 tags: [示例, Nuxt UI]
+lastModified: "2026-07-26T11:51:36.448Z"
 ---
 
 # Nuxt UI Callout 示例

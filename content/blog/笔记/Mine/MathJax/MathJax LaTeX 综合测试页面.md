@@ -1,6 +1,7 @@
 ---
 title: MathJax LaTeX 综合测试页面
 description: 使用本项目支持的 LaTeX 定界符测试 MathJax 的行内公式与块级公式
+lastModified: "2026-10-10T17:37:48.636Z"
 ---
 # MathJax LaTeX 综合测试页面
 

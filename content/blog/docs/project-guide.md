@@ -2,6 +2,7 @@
 title: 项目指南
 description: Violet Flux 的目录结构、设计系统、开发命令与部署方式
 tags: [文档, 指南]
+lastModified: "2026-11-15T03:47:31.613Z"
 ---
 
 # 项目指南

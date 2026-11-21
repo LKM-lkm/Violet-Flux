@@ -4,6 +4,7 @@ tags:
   - 文字渲染
 comment: true
 description: 目前仅适用于nolebase-template，不适用于原版。
+lastModified: "2026-02-23T09:24:53.139Z"
 ---
 # VitePress 优雅集成 MathJax v4：打造专业级数学公式显示
 

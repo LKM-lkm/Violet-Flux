@@ -2,6 +2,7 @@
 tags:
   - 系统操作
 comment: true
+lastModified: "2026-11-13T16:09:05.762Z"
 ---
 
 # Windows系统下删除时：你需要来自 Administrator 的权限才能对此文件夹进行更改

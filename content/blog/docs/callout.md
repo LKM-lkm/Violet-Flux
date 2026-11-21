@@ -2,6 +2,7 @@
 title: 提示框 Callout
 description: Violet Flux 提示框（::callout）的语法、颜色与图标速查
 tags: [文档, 组件]
+lastModified: "2026-10-18T02:07:21.398Z"
 ---
 
 提示框统一用 Nuxt UI 的 MDC 语法 `::callout{...}`：服务端直接渲染成 `ProseCallout`，颜色和图标都能自由指定，内容里可以放完整 Markdown（标题、列表、代码块、表格）。

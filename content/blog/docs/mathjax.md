@@ -2,6 +2,7 @@
 title: MathJax 数学公式
 description: MathJax v4 的接入方式、可用定界符与语法、旧语法迁移和排查清单
 tags: [文档, MathJax]
+lastModified: "2026-10-18T02:30:05.455Z"
 ---
 
 # MathJax 数学公式

@@ -2,6 +2,7 @@
 title: 内容写作
 description: 在 Violet Flux 里写文章：路径规则、frontmatter、代码块、图片与链接
 tags: [文档, 写作]
+lastModified: "2026-11-21T17:36:06.477Z"
 ---
 
 # 内容写作
@@ -59,10 +60,26 @@ image: /path/to/cover.png
 ---
 ```
 
-`content.config.ts` 的 schema 里定义的是 `tags`（字符串数组）、`date`、`image`。
+`content.config.ts` 的 schema 里定义的是 `tags`（字符串数组）、`date`、`lastModified`、`image`。
 
 ::callout{icon="i-lucide-info" color="info"}
 标题在页面上优先取**文件名**而不是 `title`，但列表页和 SEO 会用 `title`，建议都写。
+::
+
+### 更新时间（lastModified）
+
+`lastModified` 不用手填，由本地脚本根据文件真实修改时间自动生成：
+
+```bash
+npm run collect-dates
+```
+
+它把每篇 md 的本地 `mtime` 写进 frontmatter 的 `lastModified` 字段，写入后恢复原 `mtime`，所以可重复运行。`npm run dev` 会自动先跑一次。
+
+::callout{icon="i-lucide-alert-triangle" color="warning"}
+构建时不再读取文件系统时间。云端 CI checkout 后所有文件的 `mtime` 都会变成构建时间，如果依赖它，全站文章的"最后更新"会显示成同一个部署日期。所以时间必须在本地收集并**随文章一起提交**；新建或修改文章后记得跑 `npm run collect-dates` 再 commit。
+
+手动写的 `lastModified` 会在下次运行时被脚本覆盖，不用管这个字段。
 ::
 
 ## 图片

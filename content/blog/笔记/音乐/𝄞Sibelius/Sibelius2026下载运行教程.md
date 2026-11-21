@@ -2,6 +2,7 @@
 tags:
   - 软件
   - 音乐
+lastModified: "2026-07-25T17:15:21.439Z"
 ---
 
 # Sibelius2026下载运行教程

@@ -2,6 +2,7 @@
 title: 项目文档
 description: Violet Flux 的开发文档索引
 tags: [文档]
+lastModified: "2026-11-15T03:47:31.586Z"
 ---
 
 # 项目文档

@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { statSync } from 'node:fs'
 
 const mathExpressionsByFile = new Map<string, Map<string, string>>()
 let nextMathToken = 0
@@ -96,17 +95,10 @@ export default defineNuxtConfig({
   hooks: {
     'content:file:beforeParse': ({ file }) => {
       if (file.extension === 'md' || file.extension === '.md') {
-        const lastModified = statSync(file.path).mtime.toISOString()
-        const frontmatter = file.body.match(/^---\r?\n([\s\S]*?)\r?\n---(?=\r?\n|$)/)
-        const field = `lastModified: "${lastModified}"`
-
-        if (frontmatter) {
-          const yaml = frontmatter[1].replace(/^lastModified:.*(?:\r?\n|$)/m, '')
-          file.body = file.body.replace(frontmatter[0], `---\n${yaml.trimEnd()}\n${field}\n---`)
-        } else {
-          file.body = `---\n${field}\n---\n${file.body}`
-        }
-
+        // 文章的 lastModified 已由 `npm run collect-dates` 在本地固化进 frontmatter。
+        // 这里刻意不再用 statSync 读取文件 mtime：云端 CI checkout 后所有文件的
+        // mtime 都会变成构建时间，会让所有文章显示同一个部署日期。
+        // 新增文章请先运行 npm run collect-dates 再提交。
         const expressions = new Map<string, string>()
         file.body = protectMathExpressions(file.body, expressions)
         if (expressions.size > 0) mathExpressionsByFile.set(file.id, expressions)

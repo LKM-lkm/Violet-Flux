@@ -2,6 +2,7 @@
 title: 测试 MDC 组件
 description: 测试 Nuxt UI 的 MDC 组件是否正常工作
 tags: [test]
+lastModified: "2026-02-26T04:22:15.653Z"
 ---
 
 # 测试 MDC 组件

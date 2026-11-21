@@ -1,6 +1,7 @@
 ---
 title: 'My First Blog Post'
 description: 'This is my first blog post'
+lastModified: "2026-02-11T05:42:58.605Z"
 ---
 
 # My First Blog Post

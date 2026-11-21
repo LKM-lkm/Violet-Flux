@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/copy-blog-assets.mjs && nuxt build",
-    "dev": "node scripts/copy-blog-assets.mjs && nuxt dev",
+    "dev": "node scripts/collect-last-modified.mjs && node scripts/copy-blog-assets.mjs && nuxt dev",
     "generate": "node scripts/copy-blog-assets.mjs && nuxt generate",
     "preview": "nuxt preview",
+    "collect-dates": "node scripts/collect-last-modified.mjs",
     "convert-latex": "node scripts/convert-to-standard-latex.mjs",
     "convert-alerts": "node scripts/convert-github-alerts.mjs",
     "convert-images": "node scripts/convert-obsidian-images.mjs"

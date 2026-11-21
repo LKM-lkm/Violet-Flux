@@ -5,6 +5,7 @@ tags:
   - Nuxt
 description: 通过 Cloudflare Worker + Workers AI 为 Violet Flux 博客部署 AI 摘要系统，使用 Qwen3 模型生成中文博文摘要。
 date: 2026-10-10
+lastModified: "2026-10-10T16:00:17.110Z"
 ---
 # Cloudflare Worker AI 摘要设置指南
 
