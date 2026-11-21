@@ -25,7 +25,7 @@
       <Transition name="lightbox-fade">
         <div v-if="isExpanded" class="lightbox-overlay" @click="toggleExpand">
           <div class="lightbox-container" @click.stop>
-            <LiquidGlass class="lightbox-glass" :scale="-176" :chroma="8" :border="0.06" :mapBlur="14" :blur="7" :saturate="1.9">
+            <LiquidGlass class="lightbox-glass" preset="lightbox">
               <div class="lightbox-content-wrapper">
                 <img :src="resolvedSrc" :alt="alt" class="lightbox-img" />
                 <div v-if="alt && !isFileName(alt)" class="lightbox-caption">
@@ -38,12 +38,7 @@
               type="button"
               class="lightbox-close"
               aria-label="关闭"
-              :scale="-80"
-              :chroma="3"
-              :border="0.03"
-              :mapBlur="8"
-              :blur="1"
-              :saturate="1.5"
+              preset="button"
               @click="toggleExpand"
             >
               <Icon name="lucide:x" />

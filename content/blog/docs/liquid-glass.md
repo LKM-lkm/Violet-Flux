@@ -1,127 +1,151 @@
 ---
 title: 液态玻璃 Liquid Glass
-description: Violet Flux 中 Apple 风格液态玻璃折射效果的原理、组件用法、实现要点与排查清单
+description: Violet Flux 液态玻璃的实现原理、组件用法、集中式预设、浏览器差异与排查清单
 tags: [文档, 视觉效果]
 ---
 
-液态玻璃（Liquid Glass）是一种 Apple 风格的界面材质：元素背景被真实地**折射、放大并带上边缘色散**，而不是简单地模糊。本项目通过 `public/liquid-glass.js`（原版库，直接引入）实现，并由 `app/components/LiquidGlass.vue` 封装成 Vue 组件使用。
+# 液态玻璃 Liquid Glass
 
-## 原理
+液态玻璃是一种 Apple 风格的界面材质：元素背后的内容被真实地**折射、位移并带上边缘高光**，而不是简单糊一层毛玻璃。Violet Flux 的实现分三层，日常使用只接触前两层：
 
-```text
-Canvas 生成位移贴图 → data URI → SVG feImage
-→ feDisplacementMap（×3，RGB 通道分离）→ 颜色合成
-→ 元素 backdrop-filter: url(#lg-filter-N) blur() saturate()
-```
+| 层 | 文件 | 职责 |
+| --- | --- | --- |
+| 组件 | `app/components/LiquidGlass.vue` | Vue 封装：自动导入、生命周期、尺寸观察、卸载清理 |
+| 配置 | `app/config/liquid-glass.ts` | 集中参数与语义化预设 |
+| 引擎 | `app/lib/vendor/liunian-liquid-glass.ts` | LiuNian 算法：烘焙折射图、构造 SVG 滤镜、浏览器回退 |
 
-库在 `<body>` 中插入一个 0×0 的 SVG（`display: none` 会让 `feImage` 失效，所以用尺寸为 0 而不是隐藏），动态生成每个元素专属的滤镜，再由 `backdrop-filter` 对元素**背后已渲染的内容**采样。位移贴图用红/蓝两个渐变通道分别编码 X/Y 位移，中间一块 50% 灰的内缩圆角矩形把折射限制在边缘带内。
+核心算法来自 LiuNian 的 LiquidGlass 实现（MIT），原项目许可证随源码保存在 `app/lib/vendor/LICENSE.liunian-filter-demo`。它与早年文档里提到的 `public/liquid-glass.js` 是同一套算法的不同封装：旧版是全局脚本 + 页面手动传参，现在已收拢为组件 + 配置化预设，不再需要在页面里逐个调参。
 
 ## 组件用法
 
-`app/components/LiquidGlass.vue`（自动导入，无需 import）。渲染标签由 `as` 决定，默认 `div`，内容通过默认插槽传入。
-
-### Props
-
-| Prop | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `as` | `string` | `'div'` | 渲染的标签名，如 `aside`、`article` |
-| `scale` | `number` | `-112` | 折射强度，负数为放大凸起；推荐区间 `-60`（微妙）～ `-180`（强烈） |
-| `chroma` | `number` | `6` | 每通道缩放错位量（棱镜边缘），`0` 关闭色差 |
-| `border` | `number` | `0.07` | 中性内缩比例，占较短边的比例 |
-| `mapBlur` | `number` | `12` | 位移贴图灰边的柔化程度（px），小 = 硬边，大 = 圆顶 |
-| `blur` | `number` | `3` | 玻璃内部背景模糊（px） |
-| `saturate` | `number` | `1.5` | 背景饱和度增强 |
-| `radius` | `number \| null` | `null` | 圆角覆盖（px）；为 `null` 时读取元素的 `border-radius`（支持 px 与百分比） |
-| `fallbackBlur` | `number` | `16` | Safari/Firefox 降级为磨砂模糊的模糊半径（px） |
-
-以上默认值与 `liquid-glass.js` 内部默认值一致。组件不做额外包装，只把 props 透传；`radius` 仅在显式传入时才加入选项。
-
-### 使用示例
+`LiquidGlass` 由 Nuxt 自动导入，无需 `import`。内容走默认插槽，样式类写在组件上：
 
 ```vue
-<template>
-  <LiquidGlass
-    v-spotlight
-    as="article"
-    class="glass-card"
-    :scale="-160"
-    :chroma="4"
-    :border="0.02"
-    :mapBlur="8"
-    :blur="1"
-    :saturate="1.5"
-  >
-    <div class="card-body">内容</div>
-  </LiquidGlass>
-</template>
-
-<style scoped>
-.glass-card {
-  border-radius: 28px;
-  /* 轻微色调，不要不透明背景，否则折射被挡住 */
-  background: linear-gradient(180deg, rgba(14, 14, 22, 0.18), rgba(14, 14, 22, 0.32));
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.13);
-}
-</style>
+<LiquidGlass v-spotlight as="article" class="glass-card" preset="card">
+  <h2>标题</h2>
+  <p>内容</p>
+</LiquidGlass>
 ```
 
-`v-spotlight`（`app/plugins/spotlight.ts`）是可选的鼠标跟随高光，与液态玻璃无关，只是常一起使用。
+组件只有两个 prop：
 
-### 项目中已有的用法
+| Prop | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `as` | `string` | `'div'` | 渲染的标签名，需要语义化时用 `aside`、`article`、`nav` 等 |
+| `preset` | `LiquidGlassPreset` | `'default'` | 光学预设，决定折射与高光参数 |
 
-| 位置 | 参数要点 |
-|------|----------|
-| `app/pages/index.vue` 三张特色卡片 | `scale -160`、`chroma 4`、`mapBlur 8`、`blur 1` |
-| `app/components/AiSummary.vue` | `scale -120`、`chroma 5`、`border 0.03`、`mapBlur 10`、`blur 2` |
-| `app/pages/about.vue` 作者卡与内容卡 | `as="aside"` / `div`，统一 `scale -160`、`blur 1` |
-| `app/pages/blog/index.vue` 侧栏 / 头部 / 卡片 | 侧栏 `scale -80`、`blur 2`；卡片 `as="article"`、`scale -160` |
-| `app/pages/blog/[...slug].vue` 目录 | `scale -80`、`chroma 3`、`blur 1` |
-| `app/components/content/ProseImg.vue` 灯箱 | `scale -140`、`chroma 6`、`mapBlur 12`、`blur 4`、`saturate 1.8` |
+`v-spotlight` 是与玻璃**独立**的鼠标跟随高光指令（见 `app/plugins/spotlight.ts`），负责 `::after` 那层随光标移动的亮斑，两者可以同时使用，别混为一谈。
 
-## 实现要点
+组件在挂载后用 `ResizeObserver` 观察尺寸，等元素有非零宽高才通过 `requestAnimationFrame` 初始化引擎；切换 `preset` 会销毁旧实例再重建；卸载时移除滤镜和观察器。所以把它用在 `v-if` 或条件列表里是安全的。
 
-这几条是"必须这样做才生效"的，不是风格选择。
+## 集中调整参数
 
-1. **脚本以 `defer` 引入，所以组件必须等待。** `nuxt.config.ts` 的 `app.head.script` 中配置 `{ src: '/liquid-glass.js', defer: true }`，脚本执行时机与组件挂载顺序不保证。组件 `onMounted` 时先检查 `window.liquidGlass`，若还不是函数则以 100ms 间隔轮询，最多 50 次（约 5 秒）后放弃。
-2. **必须等一帧再应用。** 通过 `requestAnimationFrame` 延后执行，确保元素已经完成布局；`applyGlass()` 还会检查 `offsetWidth`/`offsetHeight`，尺寸为 0 时直接跳过（在位移贴图里 0 尺寸是无意义的）。
-3. **容器元素不能有创建合成层的祖先。** `backdrop-filter` 只能从当前合成层内部采样；祖先一旦成为独立合成层（`animation`、`transform`、`will-change`、`filter`、`isolation: isolate`、`contain: paint/layout`），采样到的就是空白内容，玻璃会表现为"完全透明"。**即使只是 opacity 动画也一样**——Chrome 会为任何活跃的 animation 提升合成层，且动画结束后可能仍然保留。
-4. **不要手写 `backdrop-filter`。** 库会自行写入 `url(#id) blur() saturate()`；全局样式里再叠一层会冲突（`app/assets/design-system.css` 明确不再为 `.glass-card` 设置全局 `backdrop-filter`）。
-5. **背景层本身不能有 `transform`/`will-change`/`filter`。** `app/layouts/default.vue` 的 `.ambient-background` 保持 `position: fixed; inset: 0`，只让子元素（光斑）做动画。
-6. **组件销毁要清干净。** `onBeforeUnmount` 依次清理轮询定时器、`requestAnimationFrame` 与 `glassInstance.destroy()`；库的 `destroy()` 会断开 `ResizeObserver`、移除 SVG 滤镜节点并清空 `backdrop-filter` 内联样式。不做这一步会在路由切换后残留滤镜定义。
-7. **尺寸变化由库自己处理。** 库内部用 `ResizeObserver` 监听元素，120ms 防抖后重新生成贴图；位置动画不需要新贴图，只有尺寸变化才需要。
+所有参数集中在 `app/config/liquid-glass.ts`：
 
-## 已知限制 / 避坑
+- `LIQUID_GLASS_DEFAULTS`：全站共用的基础光学参数。
+- `LIQUID_GLASS_PRESETS`：按用途划分的预设。
 
-| 限制 | 说明与应对 |
-|------|-----------|
-| 浏览器支持 | 仅 Chromium 内核（Chrome、Edge、Arc、Brave）有真实折射。脚本对 Safari/Firefox 直接返回 `supported: false`，改用 `blur(fallbackBlur) saturate(...)` 的磨砂降级，并加上 `lg-fallback` 类。检测还包含 `CSS.supports('backdrop-filter', 'url(#lg)')` 与 Canvas `getImageData` 可用性（被阻止时同样降级）。 |
-| 合成层隔离 | 最常见的失效原因。见"实现要点"第 3 条。 |
-| 入场动画 | `backdrop-filter` 元素与带动画的祖先不兼容。可选：移除容器动画（本项目采用，`.features-grid`/`.cta-group` 直接 `animation: none; opacity: 1`）、动画结束后用 JS 移除 `animation`、或把玻璃元素移出动画容器。 |
-| 不承载语义 | 折射只是视觉增强，不要用它表达信息状态。 |
-| 可读性 | 背景较花时提高 `blur`、加大 `border`，或降低 `scale`/`chroma`；不要改用不透明背景。 |
-| 性能 | 贴图生成是 O(w×h)；滤镜每帧在 GPU 上运行。适合卡片、导航栏、按钮，避免单个元素任一边超过约 800px。 |
-| `getComputedStyle` 不可信 | `getComputedStyle(el).backdropFilter` 有正确值 ≠ 实际渲染出效果，采样不到内容时它依然返回合法值，不能作为判断依据。 |
+```ts
+// 改全站基础折射
+LIQUID_GLASS_DEFAULTS.thickness = 100
+
+// 只改某一类组件
+LIQUID_GLASS_PRESETS.menu = { /* ... */ }
+```
+
+可选预设共 8 个：`default`、`card`、`panel`、`subtle`、`menu`、`button`、`summary`、`lightbox`。站点里的对应关系：
+
+| 预设 | 用在哪里 |
+| --- | --- |
+| `card` | 首页特性卡、关于页卡片、文章卡片 |
+| `panel` | 博客正文标题区 |
+| `subtle` | 目录侧栏、筛选面板 |
+| `menu` | 移动端展开菜单 |
+| `summary` | AI 摘要面板 |
+| `lightbox` | 图片灯箱遮罩 |
+| `button` | 胶囊按钮（当前 preset 保留定义，页面尚未直接使用） |
+
+各预设共用同一条物理基线，只在厚度、高光强度等少量参数上做局部微调，因此不会出现"每块玻璃观感都不一样"的情况。当前基线对齐原版 Mixed UI demo：
+
+```
+blur = 1        thickness = 90     edgeWidth = 29     ior = 1.3
+displacementScale = 1   specularOpacity = 0.4   specularSaturation = 6
+backdropSaturation = 1  specularHardness = 2    fallbackBlur = 16
+```
+
+主要光学参数：
+
+| 参数 | 效果 |
+| --- | --- |
+| `thickness` | 模拟玻璃厚度，越大折射位移越强 |
+| `edgeWidth` | 参与折射的圆角边缘倒角宽度 |
+| `ior` | 折射率；物理玻璃约 `1.52`，项目用原版偏夸张的 `1.3` |
+| `displacementScale` | 位移强度倍率，`1` 为算法计算值 |
+| `blur` | 玻璃内部背景的磨砂程度（CSS px） |
+| `specularOpacity` | 边缘高光强度，`0` 关闭高光 |
+| `specularHardness` | 高光锐度，数值越大越集中 |
+| `specularSaturation` | 边缘高光的饱和度 |
+| `backdropSaturation` | 折射背景的饱和度倍率 |
+| `fallbackBlur` | 不支持 SVG 滤镜时的降级模糊半径 |
+
+引擎还支持 `radius`、`tintColor`、`magnifyingScale`、`specularAngle`、`dpr` 等选项，但组件没有把它们暴露成 prop；需要时用原生 `liquidGlass(el, options)` 调用。
+
+## 折射是怎么算出来的
+
+引擎按斯内尔定律（Snell's Law）计算凸角倒角上每一点的折射位移，再由 Canvas 烘焙成位图，交给 SVG 滤镜作用到元素背后的内容上：
+
+```text
+Canvas 逐像素烘焙：位移图 + 高光图
+  → 转成 data URI
+  → 注入共享 <svg><defs>，每个元素生成一个 <filter id="lg-N">
+  → feDisplacementMap 按位移图扭曲 backdrop
+  → 高光层做饱和度提升与混合
+  → 元素样式 backdrop-filter: url(#lg-N)
+```
+
+几个实现要点：
+
+- 位移图用红/绿通道分别编码 X/Y 位移，中间一块 50% 灰的内缩圆角矩形把折射限制在边缘带内，玻璃中央保持平坦，正文不会被扭曲。
+- 折射曲线只取决于 `thickness` / `edgeWidth` / `ior`，与元素尺寸无关；尺寸变化时只重新烘焙位图。
+- 所有滤镜共用一个 0×0 的 `<svg><defs>` 容器（不能用 `display:none`，会让 `feImage` 失效），每个元素一个独立 `filter`。
+- 圆角不是单独传参，而是读取组件根元素计算后的 `border-top-left-radius`（支持 px 与百分比）。所以圆角要写在 `<LiquidGlass>` 的 CSS 上，且不要传入不一致的 `radius` 选项。
+- 颜色、背景透明度、描边和阴影仍由组件自己的 CSS 负责；引擎只管折射滤镜。
+
+::callout{icon="i-lucide-alert-triangle" color="warning"}
+不要再给玻璃组件手写 `backdrop-filter`。CSS 里再写一次 `blur()` 会覆盖引擎注入的 `url(#lg-N)`，折射和高光就没了，只剩普通毛玻璃。移动菜单曾踩过这个坑：模板里虽然用了 `<LiquidGlass preset="menu">`，但 `.mobile-nav` 的 scoped 样式里留了一行 `backdrop-filter: blur(22px)`，结果一直是旧观感。背景色、描边、阴影可以写，滤镜交给引擎。
+::
+
+## 浏览器支持与降级
+
+折射依赖 SVG 滤镜作用于 `backdrop-filter`，这不是所有浏览器都支持：
+
+- **Chromium 内核**（Chrome、Edge 等）：支持 `backdrop-filter: url(#...)`，能看到完整的折射与边缘高光。
+- **Safari、Firefox**：不支持这套滤镜，引擎退化为 `blur(fallbackBlur) saturate(backdropSaturation)` 的普通磨砂模糊；高光和折射不会出现。
+
+支持性在模块加载时检测一次（UA + `CSS.supports('backdrop-filter', 'url(...)')` + Canvas 像素读取），运行结果通过实例的 `supported` 字段暴露。降级实例仍提供 `refresh()` / `destroy()` 等空实现，组件无需分支处理。
+
+折射采样的背景来自真实页面，所以内容、布局和浏览器合成方式都会影响观感。颜色叠层要保持轻薄，不透明背景会直接盖住折射。
+
+## 文件与维护
+
+- `app/lib/vendor/liunian-liquid-glass.ts`：核心引擎，无框架依赖。
+- `app/lib/vendor/LICENSE.liunian-filter-demo`：原项目 MIT 许可证。
+- `app/components/LiquidGlass.vue`：Vue 生命周期、尺寸观察与浏览器回退封装。
+- `app/config/liquid-glass.ts`：集中参数与语义化预设。
+
+调整观感优先改配置里的预设，不要动 vendor 里的引擎源码；确实要更新引擎时保留原项目的 MIT 许可证声明，并回归检查 Chromium 折射与 Safari/Firefox 降级两条路径。
 
 ## 排查清单
 
-| 现象 | 可能原因 | 处理 |
-|------|----------|------|
-| 卡片完全透明、背景线条笔直穿过 | 祖先存在合成层触发器 | 沿祖先链检查 `transform` / `will-change` / `animation-name` / `filter` / `isolation`，逐个移除；重点看入场动画容器 |
-| 页面所有玻璃元素都无效果 | 脚本未加载，或 `window.liquidGlass` 不是函数 | 控制台执行 `typeof window.liquidGlass`，应为 `function`；检查 `nuxt.config.ts` 的 head.script |
-| 效果时有时无、刷新才出现 | 组件挂载早于 defer 脚本 | 组件已内建轮询；若自定义调用，需自行等待脚本就绪 |
-| 元素有滤镜但看不出折射 | 尺寸为 0（未布局、被折叠） | 确认 `offsetWidth`/`offsetHeight` 非 0 |
-| 折射被"糊掉"或颜色发闷 | 背景不透明，或重复写了 `backdrop-filter` | 改用 0.18～0.38 的 `rgba` 轻微色调，移除手写 `backdrop-filter` |
-| Safari/Firefox 完全没有折射 | 预期行为 | 只会得到磨砂模糊，属正常降级 |
-| 路由切换后玻璃失效或样式残留 | 组件销毁未清理 | 确认使用 `LiquidGlass` 组件而非手动调用，让 `onBeforeUnmount` 生效 |
+::callout{icon="i-lucide-book-open" color="info"}
+玻璃没出现或效果不对，按下面顺序查，多数情况在前三条就能定位。
+::
 
-快速隔离测试：在控制台创建一个 `position: fixed` 的测试元素并加上 `backdrop-filter: url(#lg-filter-1) blur(2px)`。如果它有折射而同页面的卡片没有，就可以确认是祖先合成层问题，而不是滤镜或脚本问题。
+1. **组件有没有包住内容**：`LiquidGlass` 是容器组件，内容要写在默认插槽里。
+2. **CSS 有没有覆盖滤镜**：全局搜索 `backdrop-filter`，玻璃元素上只允许引擎注入的 `url(#...)`。
+3. **元素有没有尺寸**：初始化需要非零 `offsetWidth` / `offsetHeight`；被 `display:none` 或零宽容器包住时组件会等 `ResizeObserver` 再试。
+4. **预设是否用对**：检查 `preset` 拼写，8 个可选值见上文；切预设会重建实例。
+5. **浏览器是否支持**：Safari/Firefox 必然是降级观感，这是设计如此，不是 bug。
+6. **圆角是否设在根元素**：引擎读的是组件自身的 `border-top-left-radius`，设在内层元素上不会生效。
 
-## 参考
-
-- [liquid-glass](https://github.com/deepika-builds/liquid-glass) — Apple-style liquid glass for the web
-- [Aave: Building glass for the web](https://aave.com/design/building-glass-for-the-web)
-- [rizroze/liquid-glass](https://github.com/rizroze/liquid-glass)
-- [CSS Compositing and Blending Level 1](https://www.w3.org/TR/compositing-1/)
+更多项目结构信息见 [项目指南](/blog/docs/project-guide)。

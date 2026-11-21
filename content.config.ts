@@ -12,6 +12,7 @@ export default defineContentConfig({
       schema: z.object({
         tags: z.array(z.string()).default([]),
         date: z.string().optional(),
+        lastModified: z.string().optional(),
         image: z.string().optional(),
       })
     }),

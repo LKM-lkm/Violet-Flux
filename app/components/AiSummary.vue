@@ -1,6 +1,6 @@
 <template>
   <div v-if="content" class="ai-summary-wrapper">
-    <LiquidGlass v-spotlight class="ai-summary" :scale="-120" :chroma="5" :border="0.03" :mapBlur="10" :blur="2" :saturate="1.5">
+    <LiquidGlass v-spotlight class="ai-summary" preset="summary">
       <div class="card-glow"></div>
       <div class="card-border"></div>
       <div class="summary-content">

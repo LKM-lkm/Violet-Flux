@@ -28,7 +28,7 @@ Violet Flux 自身的开发文档。原来的 11 份零散文档已经合并成�
 - [MathJax](https://docs.mathjax.org)
 - [Shiki](https://shiki.style)
 - [Lucide 图标库](https://lucide.dev/icons/)
-- [liquid-glass 原库](https://github.com/deepika-builds/liquid-glass)
+- LiuNian 液态玻璃算法（本地 `liquid-glass-filter-demo` 项目，MIT）
 
 ---
 

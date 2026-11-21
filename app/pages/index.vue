@@ -38,12 +38,7 @@
               <LiquidGlass
                 v-spotlight
                 class="glass-btn"
-                :scale="-160"
-                :chroma="4"
-                :border="0.01"
-                :mapBlur="4"
-                :blur="1"
-                :saturate="1.5"
+                preset="button"
               >
                 <span class="glass-btn-label">Our Story</span>
               </LiquidGlass>
@@ -53,7 +48,7 @@
           <!-- Feature Cards / Bento Grid -->
           <div class="features-grid animate-fade-in-up" style="animation-delay: 0.5s">
             <!-- Card 1 -->
-            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" preset="card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -66,7 +61,7 @@
             </LiquidGlass>
 
             <!-- Card 2 -->
-            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" preset="card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">
@@ -79,7 +74,7 @@
             </LiquidGlass>
 
             <!-- Card 3 -->
-            <LiquidGlass v-spotlight class="glass-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-spotlight class="glass-card" preset="card">
               <div class="card-glow"></div>
               <div class="card-border"></div>
               <div class="card-content">

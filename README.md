@@ -6,7 +6,7 @@
 
 - 📝 **Markdown 支持** - 基于文件的内容管理，支持 MDC 扩展语法
 - 🔢 **数学公式** - MathJax v4 渲染，支持标准 LaTeX 语法
-- 🔮 **液态玻璃折射** - Apple 风格 SVG 位移滤镜折射效果，边缘色差棱镜
+- 🔮 **液态玻璃折射** - 基于斯内尔定律的 SVG 位移折射与边缘高光，Safari/Firefox 自动降级
 - 🎨 **优雅设计** - 紫色梦幻配色，毛玻璃效果，朦胧神秘风格
 - 🌓 **主题切换** - 亮色/暗色模式自动切换
 - 💻 **代码高亮** - Shiki 语法高亮，支持多种语言
@@ -112,12 +112,12 @@ console.log('Hello, World!')
 ## 设计系统
 
 - **主色调**: 紫色梦幻 (#b497d7, #9163c0, #7a4ba3)
-- **液态玻璃**: SVG feDisplacementMap 折射 + RGB 色差棱镜边缘
-- **毛玻璃效果**: backdrop-filter blur + saturate
+- **液态玻璃**: SVG feDisplacementMap 折射 + 斯内尔曲线 + 边缘高光
+- **毛玻璃效果**: Safari/Firefox 上的 backdrop-filter blur + saturate 降级
 - **响应式断点**: 移动端、平板、桌面
 - **CSS 变量**: 统一的颜色和间距系统
 
-详见 `app/assets/design-system.css` 和 `LIQUID_GLASS_SETUP.md`
+详见 `app/assets/design-system.css` 和 [液态玻璃 Liquid Glass](./content/blog/docs/liquid-glass.md)（折射原理、组件用法、参数预设与排查清单）
 
 ## 技术栈
 
@@ -125,21 +125,21 @@ console.log('Hello, World!')
 - **内容**: @nuxt/content
 - **样式**: Tailwind CSS + 自定义 CSS
 - **数学**: MathJax 4
-- **视觉**: liquid-glass（SVG 折射滤镜）
+- **视觉**: LiuNian（基于 Snell 定律的 SVG 折射与边缘高光）
 - **代码高亮**: Shiki
 - **图标**: @nuxt/icon
 - **动画**: GSAP
 
 ## 文档
 
-项目文档统一放在 [`content/blog/docs/`](./content/blog/docs/)，合并为 5 篇：
+项目文档统一放在 [`content/blog/docs/`](./content/blog/docs/)，共 1 篇索引 + 5 篇正文：
 
 - [文档索引](./content/blog/docs/index.md) - 导航
 - [项目指南](./content/blog/docs/project-guide.md) - 目录结构、设计系统、开发命令、部署
 - [内容写作](./content/blog/docs/content-authoring.md) - frontmatter、路径规则、代码块、图片
 - [MathJax 数学公式](./content/blog/docs/mathjax.md) - 公式渲染配置与排错
 - [提示框 Callout](./content/blog/docs/callout.md) - 提示框用法与速查
-- [液态玻璃 Liquid Glass](./content/blog/docs/liquid-glass.md) - 折射效果原理、用法与限制
+- [液态玻璃 Liquid Glass](./content/blog/docs/liquid-glass.md) - 折射原理、组件用法、参数预设与排查清单
 
 部署与 AI 摘要相关的说明也在文档站内可查；AI 摘要后端见 `content/blog/笔记/Mine/☁CloudFlare/`。
 
@@ -158,7 +158,7 @@ console.log('Hello, World!')
 - [Nuxt Content](https://content.nuxt.com)
 - [MathJax](https://www.mathjax.org)
 - [Tailwind CSS](https://tailwindcss.com)
-- [liquid-glass](https://github.com/deepika-builds/liquid-glass) - Apple 风格液态玻璃折射
+- LiuNian 液态玻璃算法来自本地 `liquid-glass-filter-demo` 项目（MIT，许可证见 `app/lib/vendor/`）
 
 ## 许可证
 

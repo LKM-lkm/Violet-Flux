@@ -10,18 +10,13 @@
           type="button"
           aria-controls="library-filter-panel"
           :aria-expanded="mobileFiltersOpen"
-          :scale="-96"
-          :chroma="4"
-          :border="0.04"
-          :mapBlur="8"
-          :blur="2"
-          :saturate="1.6"
+          preset="button"
           @click="mobileFiltersOpen = !mobileFiltersOpen"
         >
           <span>Browse library filters</span>
           <Icon :name="mobileFiltersOpen ? 'lucide:x' : 'lucide:sliders-horizontal'" />
         </LiquidGlass>
-        <LiquidGlass id="library-filter-panel" as="aside" class="sidebar" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="2" :saturate="1.5">
+        <LiquidGlass id="library-filter-panel" as="aside" class="sidebar" preset="subtle">
           <div class="filter-section">
             <h3 class="section-title">Knowledge</h3>
             <nav class="tree-nav">
@@ -64,7 +59,7 @@
       </div>
 
       <main class="content">
-        <LiquidGlass class="content-header" :scale="-160" :chroma="3" :border="0.02" :mapBlur="4" :blur="2" :saturate="1.5">
+        <LiquidGlass class="content-header" preset="panel">
           <div class="path-display">
             <span class="root-label" @click="selectedPath = ''">Library</span>
             <template v-if="selectedPath">
@@ -86,11 +81,18 @@
         
         <div v-if="filteredArticles?.length">
           <TransitionGroup name="article-list" tag="div" class="article-grid">
-            <LiquidGlass v-for="article in filteredArticles" :key="article.path" v-spotlight as="article" class="blog-card" :scale="-160" :chroma="4" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+            <LiquidGlass v-for="article in filteredArticles" :key="article.path" v-spotlight as="article" class="blog-card" preset="card">
               <NuxtLink :to="article.path" class="card-link">
                 <div class="card-inner">
                   <div class="card-meta">
                     <span class="meta-folder">{{ getBreadcrumbs(article.displayPath) }}</span>
+                    <time
+                      v-if="getArticleModifiedAt(article)"
+                      class="card-date"
+                      :datetime="getArticleModifiedAt(article)?.toISOString()"
+                    >
+                      {{ getArticleDatePrefix(article) }} {{ formatArticleDate(getArticleModifiedAt(article)) }}
+                    </time>
                   </div>
                   <h2 class="card-title">{{ getFileName(article.displayPath) }}</h2>
                   <p v-if="article.description" class="card-desc">{{ article.description }}</p>
@@ -180,11 +182,41 @@ const { data: articles } = await useAsyncData('blog-articles-v4-premium', async 
       return true
     })
     .sort((a, b) => {
-      const dateA = new Date(a.mtime || a.meta?.mtime || 0).getTime()
-      const dateB = new Date(b.mtime || b.meta?.mtime || 0).getTime()
+      const dateA = getArticleDateValue(a)
+      const dateB = getArticleDateValue(b)
       return dateB - dateA
     })
 })
+
+// 用函数声明（会提升），不能在 useAsyncData 的 sort 回调里调用尚未初始化的 const 箭头函数
+function getArticleDateValue(article) {
+  const raw = article.lastModified || article.meta?.lastModified
+    || article.date || article.meta?.date
+  if (!raw) return 0
+  const date = new Date(raw)
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime()
+}
+
+function getArticleModifiedAt(article) {
+  const raw = article.lastModified || article.meta?.lastModified
+    || article.date || article.meta?.date
+  if (!raw) return null
+  const date = new Date(raw)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function getArticleDatePrefix(article) {
+  return article.lastModified || article.meta?.lastModified ? '更新于' : '发布于'
+}
+
+function formatArticleDate(date) {
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'Asia/Shanghai',
+  }).format(date)
+}
 
 const folderTree = computed(() => {
   if (!articles.value) return []
@@ -643,7 +675,13 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   position: relative;
 }
 
-.card-meta { margin-bottom: 1.5rem; }
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
 .meta-folder {
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -651,6 +689,10 @@ html.dark .sidebar, [data-theme='dark'] .sidebar {
   color: var(--primary);
   font-weight: 800;
   opacity: 0.8;
+}
+.card-date {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
 }
 
 .card-title {

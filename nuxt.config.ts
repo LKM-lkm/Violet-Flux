@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { statSync } from 'node:fs'
+
 const mathExpressionsByFile = new Map<string, Map<string, string>>()
 let nextMathToken = 0
 
@@ -94,6 +96,17 @@ export default defineNuxtConfig({
   hooks: {
     'content:file:beforeParse': ({ file }) => {
       if (file.extension === 'md' || file.extension === '.md') {
+        const lastModified = statSync(file.path).mtime.toISOString()
+        const frontmatter = file.body.match(/^---\r?\n([\s\S]*?)\r?\n---(?=\r?\n|$)/)
+        const field = `lastModified: "${lastModified}"`
+
+        if (frontmatter) {
+          const yaml = frontmatter[1].replace(/^lastModified:.*(?:\r?\n|$)/m, '')
+          file.body = file.body.replace(frontmatter[0], `---\n${yaml.trimEnd()}\n${field}\n---`)
+        } else {
+          file.body = `---\n${field}\n---\n${file.body}`
+        }
+
         const expressions = new Map<string, string>()
         file.body = protectMathExpressions(file.body, expressions)
         if (expressions.size > 0) mathExpressionsByFile.set(file.id, expressions)
@@ -138,10 +151,6 @@ export default defineNuxtConfig({
         }
       ],
       script: [
-        {
-          src: '/liquid-glass.js',
-          defer: true,
-        },
         {
           innerHTML: `
             window.MathJax = {

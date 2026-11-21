@@ -56,6 +56,8 @@
   --code-text: #2d1b3d;
   --code-header-bg: rgba(240, 235, 248, 0.8);
   --code-line-highlight: rgba(180, 151, 215, 0.16);
+  --inline-code-bg: rgba(180, 151, 215, 0.14);
+  --inline-code-text: #7743a3;
   
   /* === 圆角系统 === */
   --radius-sm: 0.5rem;
@@ -144,6 +146,8 @@
   --code-text: #d8d0e0;
   --code-header-bg: rgba(40, 32, 46, 0.72);
   --code-line-highlight: rgba(168, 144, 192, 0.16);
+  --inline-code-bg: rgba(168, 144, 192, 0.18);
+  --inline-code-text: #d8c3f0;
 
   /* === 阴影系统 === */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);

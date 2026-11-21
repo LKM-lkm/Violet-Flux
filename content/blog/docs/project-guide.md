@@ -18,7 +18,7 @@ tags: [文档, 指南]
 | 数学公式 | MathJax 4（CDN 引入，见 [MathJax](/blog/docs/mathjax)） |
 | 图标 | `@nuxt/icon`（Lucide） |
 | 评论 | `cwd-widget` |
-| 视觉 | [liquid-glass](/blog/docs/liquid-glass)（SVG 折射滤镜） |
+| 视觉 | [liquid-glass](/blog/docs/liquid-glass)（LiuNian SVG 折射与高光） |
 
 ## 目录结构
 
@@ -38,7 +38,9 @@ Violet Flux/
 ├── content/
 │   ├── blog/                      # 博客文章（唯一的 content 集合来源）
 │   └── index.md / about.md        # 首页与关于页（不在 content 集合内）
-├── public/                        # 静态资源（字体、liquid-glass.js）
+├── app/lib/vendor/                # 液态玻璃引擎与许可证
+├── app/config/liquid-glass.ts     # 集中式玻璃参数与预设
+├── public/                        # 静态资源（字体等）
 ├── scripts/
 │   ├── copy-blog-assets.mjs       # 构建前同步笔记资源
 │   ├── convert-to-standard-latex.mjs

@@ -11,7 +11,7 @@
       <!-- 侧边栏目录 -->
       <ClientOnly>
         <aside v-if="tocLinks.length" class="sidebar">
-          <LiquidGlass class="toc-wrapper" :scale="-80" :chroma="3" :border="0.02" :mapBlur="8" :blur="1" :saturate="1.5">
+          <LiquidGlass class="toc-wrapper" preset="subtle">
             <div class="toc-header">
               <Icon name="lucide:list" class="toc-icon" />
               <span class="toc-title">目录</span>
@@ -51,16 +51,16 @@
               </NuxtLink>
             </div>
             <h1 class="article-title">{{ articleTitle }}</h1>
+            <p v-if="articleModifiedAt" class="article-date">
+              <Icon name="lucide:calendar-days" aria-hidden="true" />
+              <span>{{ articleDatePrefix }}</span>
+              <time :datetime="articleModifiedAt.toISOString()">{{ articleModifiedLabel }}</time>
+            </p>
             <LiquidGlass
               v-if="tocLinks.length"
               as="details"
               class="mobile-toc"
-              :scale="-96"
-              :chroma="4"
-              :border="0.04"
-              :mapBlur="8"
-              :blur="2"
-              :saturate="1.6"
+              preset="panel"
             >
               <summary>
                 <Icon name="lucide:list" />
@@ -188,6 +188,29 @@ const articleAssetDirectory = computed(() => {
 
 provide('articleAssetDirectory', articleAssetDirectory)
 
+const articleDatePrefix = computed(() => {
+  const art = article.value
+  return art?.lastModified || art?.meta?.lastModified ? '最后更新' : '发布日期'
+})
+
+const articleModifiedAt = computed(() => {
+  const raw = article.value?.lastModified || article.value?.meta?.lastModified
+    || article.value?.date || article.value?.meta?.date
+  if (!raw) return null
+  const date = new Date(raw)
+  return Number.isNaN(date.getTime()) ? null : date
+})
+
+const articleModifiedLabel = computed(() => {
+  if (!articleModifiedAt.value) return ''
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'Asia/Shanghai',
+  }).format(articleModifiedAt.value)
+})
+
 // 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
 const articleTitle = computed(() => {
   if (!article.value) return ''
@@ -262,17 +285,12 @@ const updateActiveHeading = () => {
 onMounted(() => {
   window.addEventListener('scroll', updateActiveHeading)
   
-  // 使用插件渲染 MathJax
+  // 使用插件渲染 MathJax。插件内部已串行化，这里只需在内容挂载后触发一次。
   const { $renderMathJax } = useNuxtApp()
   if ($renderMathJax) {
     nextTick(() => {
       $renderMathJax()
     })
-    
-    // 延迟再次渲染确保 DOM 完全加载
-    setTimeout(() => {
-      $renderMathJax()
-    }, 1000)
   }
   
   setTimeout(updateActiveHeading, 600)
@@ -661,6 +679,22 @@ onUnmounted(() => {
   margin-top: var(--space-md);
 }
 
+.article-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.article-date :deep(svg) {
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary);
+}
+
 /* 与列表页卡片的 .tag-chip 保持一致：小圆角、紧凑内边距，不再是又大又圆的胶囊 */
 .tag-chip {
   display: inline-block;
@@ -789,17 +823,14 @@ onUnmounted(() => {
 }
 
 .article-body :deep(code:not(pre code)) {
-  /* 等宽字体在同样字号下视觉尺寸偏大，所以要比正文小一档；
-     边框和内边距也收小，避免行内代码块显得笨重、挤到相邻行。
-     不要设 line-height: 1 —— 那会让文字贴住盒子上下边缘，看着发紧。 */
   font-family: var(--font-mono);
-  font-size: 0.82em;
+  font-size: 0.84em;
   font-weight: 500;
-  color: var(--link);
-  background: var(--bg-tertiary);
-  padding: 0.1em 0.32em;
-  border: 1px solid var(--border-medium);
-  border-radius: 0.25rem;
+  color: var(--inline-code-text);
+  background: var(--inline-code-bg);
+  padding: 0.12em 0.38em;
+  border: 0;
+  border-radius: 0.35em;
   box-shadow: none;
 }
 

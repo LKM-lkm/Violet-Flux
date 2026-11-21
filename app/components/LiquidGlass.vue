@@ -1,123 +1,69 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { liquidGlass } from '../lib/vendor/liunian-liquid-glass'
+import type { LiquidGlassInstance } from '../lib/vendor/liunian-liquid-glass'
+import {
+  LIQUID_GLASS_DEFAULTS,
+  LIQUID_GLASS_PRESETS,
+  type LiquidGlassPreset,
+} from '../config/liquid-glass'
 
-interface Props {
-  as?: string;
-  scale?: number;
-  chroma?: number;
-  border?: number;
-  mapBlur?: number;
-  blur?: number;
-  saturate?: number;
-  radius?: number | null;
-  fallbackBlur?: number;
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<{
+  as?: string
+  preset?: LiquidGlassPreset
+}>(), {
   as: 'div',
-  scale: -112,
-  chroma: 6,
-  border: 0.07,
-  mapBlur: 12,
-  blur: 3,
-  saturate: 1.5,
-  radius: null,
-  fallbackBlur: 16,
-});
+  preset: 'default',
+})
 
-const containerRef = ref<HTMLElement | null>(null);
-let glassInstance: { supported: boolean; refresh: () => void; destroy: () => void } | null = null;
-let pollTimer: ReturnType<typeof setInterval> | null = null;
-let rafId: number | null = null;
-let resizeObserver: ResizeObserver | null = null;
-let applyPending = false;
+const containerRef = ref<HTMLElement | null>(null)
+let glassInstance: LiquidGlassInstance | null = null
+let resizeObserver: ResizeObserver | null = null
+let rafId: number | null = null
+let disposed = false
 
-/**
- * 原版库 Framework usage:
- *   useEffect(() => {
- *     const glass = liquidGlass(ref.current);
- *     return () => glass.destroy();
- *   }, []);
- *
- * 关键改进：等待脚本加载 + rAF 确保布局已渲染
- */
-onMounted(() => {
-  const el = containerRef.value;
-  if (el && typeof ResizeObserver !== 'undefined') {
-    resizeObserver = new ResizeObserver(() => {
-      if (!glassInstance && typeof (window as any).liquidGlass === 'function') {
-        scheduleApply();
-      }
-    });
-    resizeObserver.observe(el);
-  }
-
-  if (typeof window !== 'undefined' && typeof (window as any).liquidGlass === 'function') {
-    scheduleApply();
-  } else {
-    // defer 脚本可能尚未执行，轮询等待
-    let attempts = 0;
-    pollTimer = setInterval(() => {
-      attempts++;
-      if (typeof (window as any).liquidGlass === 'function') {
-        clearInterval(pollTimer!);
-        pollTimer = null;
-        scheduleApply();
-      } else if (attempts >= 50) {
-        clearInterval(pollTimer!);
-        pollTimer = null;
-      }
-    }, 100);
-  }
-});
-
-/** 等待下一帧渲染完成后再应用，确保元素已有布局尺寸 */
-function scheduleApply() {
-  if (glassInstance || applyPending) return;
-  applyPending = true;
-  rafId = requestAnimationFrame(() => {
-    rafId = null;
-    applyGlass();
-  });
-}
+const getOptions = () => ({
+  ...LIQUID_GLASS_DEFAULTS,
+  ...LIQUID_GLASS_PRESETS[props.preset],
+})
 
 function applyGlass() {
-  applyPending = false;
-  const el = containerRef.value;
-  if (!el) return;
-  // 确保元素有实际尺寸
-  if (!el.offsetWidth || !el.offsetHeight) return;
+  rafId = null
+  const el = containerRef.value
+  if (disposed || !el || !el.offsetWidth || !el.offsetHeight || glassInstance) return
 
-  if (glassInstance) return;
-  glassInstance = (window as any).liquidGlass(el, {
-    scale: props.scale,
-    chroma: props.chroma,
-    border: props.border,
-    mapBlur: props.mapBlur,
-    blur: props.blur,
-    saturate: props.saturate,
-    fallbackBlur: props.fallbackBlur,
-    ...(props.radius != null ? { radius: props.radius } : {}),
-  });
+  const options = getOptions()
+  glassInstance = liquidGlass(el, options)
 }
 
+function scheduleApply() {
+  if (glassInstance || rafId !== null) return
+  rafId = requestAnimationFrame(applyGlass)
+}
+
+watch(() => props.preset, () => {
+  glassInstance?.destroy()
+  glassInstance = null
+  scheduleApply()
+})
+
+onMounted(() => {
+  const el = containerRef.value
+  if (!el) return
+
+  resizeObserver = new ResizeObserver(() => {
+    if (!glassInstance) scheduleApply()
+  })
+  resizeObserver.observe(el)
+  scheduleApply()
+})
+
 onBeforeUnmount(() => {
-  if (pollTimer) {
-    clearInterval(pollTimer);
-    pollTimer = null;
-  }
-  if (rafId) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-  }
-  resizeObserver?.disconnect();
-  resizeObserver = null;
-  applyPending = false;
-  if (glassInstance) {
-    glassInstance.destroy();
-    glassInstance = null;
-  }
-});
+  disposed = true
+  if (rafId !== null) cancelAnimationFrame(rafId)
+  resizeObserver?.disconnect()
+  glassInstance?.destroy()
+  glassInstance = null
+})
 </script>
 
 <template>

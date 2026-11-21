@@ -43,12 +43,7 @@
         class="mobile-nav"
         :class="{ 'is-open': mobileNavOpen }"
         aria-label="Site navigation"
-        :scale="-160"
-        :chroma="3"
-        :border="0.02"
-        :mapBlur="4"
-        :blur="2"
-        :saturate="1.2"
+        preset="menu"
       >
         <NuxtLink to="/" class="nav-link" @click="mobileNavOpen = false">Home</NuxtLink>
         <NuxtLink to="/blog" class="nav-link" @click="mobileNavOpen = false">Blog</NuxtLink>
@@ -242,8 +237,9 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
   -webkit-backdrop-filter: blur(10px);
   z-index: 999;
   flex-shrink: 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
 }
 
@@ -413,13 +409,17 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
     flex-direction: column;
     align-items: stretch;
     gap: 0.25rem;
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--glass-border);
-    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(22px) saturate(170%);
-    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    /* 只做 material dressing：淡紫底色 + 镜面高光 + 细描边。
+       不要手写 backdrop-filter —— LiquidGlass 组件会注入 url(#...) SVG 折射滤镜，
+       手写的 blur() 会把折射盖掉，退回旧毛玻璃。 */
+    background: linear-gradient(180deg,
+      rgba(180, 151, 215, 0.10) 0%,
+      rgba(160, 130, 200, 0.16) 100%);
+    box-shadow: var(--shadow-xl),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16);
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
@@ -460,8 +460,12 @@ html.dark .ambient-orb, [data-theme='dark'] .ambient-orb {
 
   :root.dark .mobile-nav,
   [data-theme='dark'] .mobile-nav {
-    background: rgba(30, 22, 45, 0.2);
-    box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg,
+      rgba(168, 144, 192, 0.12) 0%,
+      rgba(120, 90, 160, 0.20) 100%);
+    box-shadow: var(--shadow-xl),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   }
 
   .footer-container {
