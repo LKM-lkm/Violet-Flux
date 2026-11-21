@@ -211,17 +211,28 @@ const articleModifiedLabel = computed(() => {
   }).format(articleModifiedAt.value)
 })
 
-// 设置 SEO 元数据，确保浏览器标签页标题也使用文件名
+// 设置 SEO 元数据与页头标题
 const articleTitle = computed(() => {
-  if (!article.value) return ''
-  // 优先从 id 提取（与博客列表页 getFileName 逻辑一致）
-  const source = article.value.id || article.value.path || ''
+  const art = article.value
+  if (!art) return ''
+
+  const source = art.id || art.path || ''
   const name = source.replace(/\.md$/, '').split('/').pop() || ''
+  let stem = name
   try {
-    return decodeURIComponent(name)
+    stem = decodeURIComponent(name)
   } catch {
-    return name
+    stem = name
   }
+
+  // 约定：中文笔记的文件名本身就是标题，直接用文件名（标签页与文件一一对应）。
+  // docs 这类英文 slug 文件则回退到 frontmatter 的 title，否则页头会显示
+  // "liquid-glass" 这种文件名而不是「液态玻璃 Liquid Glass」。
+  const isCjkStem = /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(stem)
+  const frontmatterTitle = art.title || art.meta?.title || ''
+  const resolved = isCjkStem ? stem : (frontmatterTitle || stem)
+
+  return resolved.trim() || stem
 })
 
 useSeoMeta({
